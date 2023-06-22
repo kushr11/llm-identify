@@ -29,7 +29,7 @@ from transformers import LogitsProcessor
 from nltk.util import ngrams
 
 from normalizers import normalization_strategy_lookup
-import copy
+
 
 class WatermarkBase:
     def __init__(
@@ -55,8 +55,6 @@ class WatermarkBase:
         self.idx_t = 0
         self.userid = userid
         self.hit = 0
-        self.max_logit = np.zeros(200)
-        self.green_list=[]
 
     def _seed_rng(self, input_ids: torch.LongTensor, seeding_scheme: str = None) -> None:
         # can optionally override the seeding scheme,
@@ -216,14 +214,12 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
             else:
                 _, greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
             # greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
-            if self.idx_t!=1:
-                self.green_list.append(greenlist_ids)
             batched_greenlist_ids[b_idx] = greenlist_ids
             # if b_idx<2:
             #     print(b_idx,greenlist_ids)
         # print(preferance)
         green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
-        scores_withnomask=copy.deepcopy(scores)
+
         scores = self._bias_greenlist_logits(scores=scores, greenlist_mask=green_tokens_mask, greenlist_bias=self.delta)
 
         # print(self.idx_t,torch.argmax(scores) in greenlist_ids)
@@ -231,10 +227,7 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
             # if (self.idx_t < 11):
             #     print("in generation, ", self.idx_t, torch.argmax(scores))
             self.hit += 1
-        ##for debugging
-        # print(self.idx_t-1,self.hit,scores.mean())
-        # print(scores.max(),scores_withnomask.max())
-        self.max_logit[self.idx_t-1]=scores.max()
+            # print(self.idx_t-1,self.hit)
 
         return scores
 
@@ -246,8 +239,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             device: torch.device = None,
             tokenizer: Tokenizer = None,
             z_threshold: float = 4.0,
-            # normalizers: list[str] = ["unicode"],
-            normalizers: list[str] = [],  # or also: ["unicode", "homoglyphs", "truecase"]
+            normalizers: list[str] = ["unicode"],  # or also: ["unicode", "homoglyphs", "truecase"]
             ignore_repeated_bigrams: bool = False,
             # userid,
             **kwargs,
@@ -342,8 +334,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     greenlist_ids, _ = self._get_greenlist_ids(input_ids[:idx])
                 else:
                     _, greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
-                print(idx,len(input_ids))
-                self.green_list.append(greenlist_ids)
+
                 # if (idx < 20):
                 #     print(idx, curr_token in greenlist_ids)
                 # greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
