@@ -38,6 +38,7 @@ class WatermarkBase:
             vocab: list[int] = None,
             gamma: float = 0.5,
             delta: float = 2.0,
+            wm_mode = "combination",
             seeding_scheme: str = "simple_1",  # mostly unused/always default
             hash_key: int = 15485863,  # just a large prime number to create a rng seed with sufficient bit width
             select_green_tokens: bool = True,
@@ -45,6 +46,7 @@ class WatermarkBase:
     ):
 
         # watermarking parameters
+        self.wm_mode=wm_mode
         self.vocab = vocab
         self.vocab_size = len(vocab)
         self.gamma = gamma
@@ -206,7 +208,10 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # print(input_ids[0])
         # sys.exit()
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
-        preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
+        if self.wm_mode =='single':
+            preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
+        else:
+            preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]) % n]  # 1->green ; 0-> red
         self.idx_t += 1
         # this is lazy to allow us to colocate on the watermarked model's device
         if self.rng is None:
@@ -270,11 +275,14 @@ class WatermarkDetector_with_preferance(WatermarkBase):
         self.z_threshold = z_threshold
         self.rng = torch.Generator(device=self.device)
 
-        if self.seeding_scheme == "simple_1":
+        if self.seeding_scheme == "simple_1" and self.wm_mode == 'single':
             self.min_prefix_len = 1
+        elif self.wm_mode == 'combination':
+            self.min_prefix_len = 2 
         else:
             raise NotImplementedError(f"Unexpected seeding_scheme: {self.seeding_scheme}")
 
+        
         self.normalizers = []
         for normalization_strategy in normalizers:
             self.normalizers.append(normalization_strategy_lookup(normalization_strategy))
@@ -343,7 +351,10 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     # print(input_ids[idx])
                 curr_token = input_ids[idx]
                 n = len(self.userid)
-                preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
+                if self.wm_mode == 'single':
+                    preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
+                else:
+                    preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]) % n]  # 1->green ; 0-> red
                 # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
                 # print(preferance,end="")
                 if preferance == '1':

@@ -57,6 +57,12 @@ def parse_args():
         description="A minimum working example of applying the watermark to any LLM that supports the huggingface 🤗 `generate` API")
 
     parser.add_argument(
+        "--wm_mode",
+        type=str,
+        default="single",
+        help="single or combination",
+    )
+    parser.add_argument(
         "--user_dist",
         type=str,
         default="dense",
@@ -107,7 +113,7 @@ def parse_args():
     parser.add_argument(
         "--sampling_temp",
         type=float,
-        default=0.5, #0.7
+        default=1, #0.7
         help="Sampling temperature to use when generating using multinomial sampling.",
     )
     parser.add_argument(
@@ -230,6 +236,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     watermark_processor = WatermarkLogitsProcessor_with_preferance(vocab=list(tokenizer.get_vocab().values()),
                                                                    gamma=args.gamma,
                                                                    delta=args.delta,
+                                                                   wm_mode=args.wm_mode,
                                                                    seeding_scheme=args.seeding_scheme,
                                                                    select_green_tokens=args.select_green_tokens,
                                                                    userid=userid
@@ -382,6 +389,7 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
                                                            gamma=args.gamma,
                                                            seeding_scheme=args.seeding_scheme,
                                                            device=device,
+                                                           wm_mode=args.wm_mode,
                                                            tokenizer=tokenizer,
                                                            z_threshold=args.detection_z_threshold,
                                                            normalizers=args.normalizers,
@@ -547,7 +555,7 @@ def main(args):
         print(succ_num,exp_num)
         
         
-        save_file_name=f"data_{args.identify_mode}_{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
+        save_file_name=f"data_wm{args.wm_mode}_id{args.identify_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
         with open(save_file_name, "a+") as f:
             print(f"exp  {i}, if succ: {if_succ} ,time used: {time.time() - start_time}",file=f)
             print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
