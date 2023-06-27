@@ -30,6 +30,7 @@ from nltk.util import ngrams
 
 from normalizers import normalization_strategy_lookup
 import copy
+import sys
 
 class WatermarkBase:
     def __init__(
@@ -55,7 +56,7 @@ class WatermarkBase:
         self.idx_t = 0
         self.userid = userid
         self.hit = 0
-        self.max_logit = np.zeros(200)
+        # self.max_logit = np.zeros(200)
         self.green_list=[]
 
     def _seed_rng(self, input_ids: torch.LongTensor, seeding_scheme: str = None) -> None:
@@ -199,7 +200,13 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # print("inputids",input_ids)
         n = len(self.userid)
         # print("in processor, userid= ",self.userid)
-        preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
+        # print(input_ids)
+        # print(input_ids.shape)
+        # print(input_ids)
+        # print(input_ids[0])
+        # sys.exit()
+        # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
+        preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
         self.idx_t += 1
         # this is lazy to allow us to colocate on the watermarked model's device
         if self.rng is None:
@@ -234,7 +241,7 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         ##for debugging
         # print(self.idx_t-1,self.hit,scores.mean())
         # print(scores.max(),scores_withnomask.max())
-        self.max_logit[self.idx_t-1]=scores.max()
+        # self.max_logit[self.idx_t-1]=scores.max()
 
         return scores
 
@@ -247,7 +254,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             tokenizer: Tokenizer = None,
             z_threshold: float = 4.0,
             # normalizers: list[str] = ["unicode"],
-            normalizers: list[str] = [],  # or also: ["unicode", "homoglyphs", "truecase"]
+            normalizers: list[str] = ["unicode"],  # or also: ["unicode", "homoglyphs", "truecase"]
             ignore_repeated_bigrams: bool = False,
             # userid,
             **kwargs,
@@ -336,13 +343,13 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     # print(input_ids[idx])
                 curr_token = input_ids[idx]
                 n = len(self.userid)
-                preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
+                preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
+                # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
                 # print(preferance,end="")
                 if preferance == '1':
                     greenlist_ids, _ = self._get_greenlist_ids(input_ids[:idx])
                 else:
                     _, greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
-                print(idx,len(input_ids))
                 self.green_list.append(greenlist_ids)
                 # if (idx < 20):
                 #     print(idx, curr_token in greenlist_ids)

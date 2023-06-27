@@ -59,7 +59,7 @@ def parse_args():
     parser.add_argument(
         "--user_dist",
         type=str,
-        default="dense",
+        default="sparse",
         help="sparse or dense",
     )
     parser.add_argument(
@@ -107,7 +107,7 @@ def parse_args():
     parser.add_argument(
         "--sampling_temp",
         type=float,
-        default=0.5, #0.7
+        default=1, #0.7
         help="Sampling temperature to use when generating using multinomial sampling.",
     )
     parser.add_argument(
@@ -271,16 +271,23 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     else:
         args.prompt_max_length = 2048 - args.max_new_tokens
 
-    tokd_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=True, truncation=True,
+
+    prompt2=""
+    for p in prompt:
+        prompt2+=p
+    tokd_input = tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=True, truncation=True,
                            max_length=args.prompt_max_length).to(device)
 
-    truncation_warning = True if tokd_input["input_ids"].shape[-1] == args.prompt_max_length else False
-    redecoded_input = tokenizer.batch_decode(tokd_input["input_ids"], skip_special_tokens=True)[0]
+    tokd_input2 = tokenizer.encode(prompt2, return_tensors="pt", add_special_tokens=True, truncation=True,
+                           max_length=args.prompt_max_length).to(device)
+
+    # truncation_warning = True if tokd_input["input_ids"].shape[-1] == args.prompt_max_length else False
+    # redecoded_input = tokenizer.batch_decode(tokd_input["input_ids"], skip_special_tokens=True)[0]
     # print(redecoded_input)
     # sys.exit()
 
     torch.manual_seed(args.generation_seed)
-    output_without_watermark = generate_without_watermark(**tokd_input)
+    # output_without_watermark = generate_without_watermark(**tokd_input)
     # print(output_without_watermark.shape)
     # sys.exit()
 
@@ -288,29 +295,16 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     if args.seed_separately:
         torch.manual_seed(args.generation_seed)
     
-    # generate_with_watermark = partial(
-    #     model.generate,
-    #     logits_processor=LogitsProcessorList([watermark_processor]),
-    #     # output_scores=True,
-    #     **gen_kwargs
 
-    #just for test
-    # generate_logit_with_watermark = partial(
-    #     model.generate,
-    #     logits_processor=LogitsProcessorList([watermark_processor]),
-    #     return_dict_in_generate=True, 
-    #     output_scores=True,
-    #     **gen_kwargs
-    # )
     special_tokens = tokenizer.all_special_ids
 
-    out=generate_with_watermark(**tokd_input)                                                                                               
+    out=generate_with_watermark(tokd_input2)                                                                                               
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
-    # out_max_logit=np.zeros(200)
-    # out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
-    # for k in range(len(out[1])):
-    #     out_max_idx[k]=out[1][k].argmax().cpu()
-    #     out_max_logit[k]=out[1][k].max().cpu()
+    out_max_logit=np.zeros(200)
+    out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
+    for k in range(len(out[1])):
+        out_max_idx[k]=out[1][k].argmax().cpu()
+        out_max_logit[k]=out[1][k].max().cpu()
     # print("gap between sequence and out.score.argmax()",(out_max_idx-out_se[0].cpu().numpy()).mean())
     # print("gap between out.score.max and logit.max()",(out_max_logit-watermark_processor.max_logit).mean())
     # logits = model(**tokd_input)[0]
@@ -324,7 +318,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     
     redecoded_output = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
     reencoded_output = tokenizer.encode(redecoded_output, return_tensors='pt',add_special_tokens=False)
-    # print(reencoded_output.shape,out_se.shape)
+    print(reencoded_output.shape,out_se.shape)
     # sys.exit()
 
     decoded_output_without_watermark = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
@@ -429,7 +423,7 @@ def main(args):
         # gen_id=127
         # gen_id=2
         userid = usr_list[gen_id]
-        # userid = usr_list[3]
+        userid = usr_list[3]
         
         # sys.exit()
         # if not args.skip_model_load:
@@ -464,7 +458,7 @@ def main(args):
         # print("#"*term_width)
         # print("Prompt:")
         # print(input_text)
-
+        print()
         input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
             input_text,
             args,
@@ -481,12 +475,12 @@ def main(args):
         #                                                                 device=device,
         #                                                                 tokenizer=tokenizer,
         #                                                          userid=loop_usr_id)
-        # res=0
-        # for k in range(len(watermark_detector.green_list)):
-        #     wp=watermark_processor.green_list[k]
-        #     wd=watermark_detector.green_list[k]
-        #     res+=((wp.cpu().numpy()-wd.cpu().numpy())**2).mean()
-        # print("green list gap:",res)
+        # # res=0
+        # # for k in range(len(watermark_detector.green_list)):
+        # #     wp=watermark_processor.green_list[k]
+        # #     wd=watermark_detector.green_list[k]
+        # #     res+=((wp.cpu().numpy()-wd.cpu().numpy())**2).mean()
+        # # print("green list gap:",res)
         # print(confidence)
         # sys.exit()
 
@@ -498,7 +492,7 @@ def main(args):
         for j in range(usr_list.shape[-1]):
 
             loop_usr_id = usr_list[j]
-            with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+            with_watermark_detection_result, confidence, mark,watermark_detector, _ = detect(decoded_output_with_watermark,
                                                                             args,
                                                                             device=device,
                                                                             tokenizer=tokenizer,
@@ -545,10 +539,7 @@ def main(args):
         print(f"gen id {userid}, mapped sim {mapped_sim}")
         print(DataFrame(result_dic).T)
         print(succ_num,exp_num)
-        
-        
-        save_file_name=f"data_{args.identify_mode}_{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
-        with open(save_file_name, "a+") as f:
+        with open(f"data_{args.identify_mode}_{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}.txt", "a+") as f:
             print(f"exp  {i}, if succ: {if_succ} ,time used: {time.time() - start_time}",file=f)
             print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
             print(DataFrame(result_dic).T,file=f)
@@ -557,7 +548,7 @@ def main(args):
             # f.write(f"max sim: {max_sim}, mapped sim: {mapped_sim}")
             # f.write(str(max_number) + '\n')
             # f.write(str(max_index) + '\n\n')
-            print(f"data saved in {save_file_name}")
+            print(f"data saved in {args.identify_mode}_{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}.txt")
             f.close()
         
 
