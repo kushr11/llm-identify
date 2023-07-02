@@ -489,7 +489,8 @@ if __name__ == "__main__":
         "--dataset_name",
         type=str,
         default="c4",
-        help="The name of the dataset to use (via the datasets library).",
+        help="The name of the dataset to use (via the datasets lib
+        rary).",
     )
     parser.add_argument(
         "--dataset_config_name",

@@ -36,7 +36,7 @@ from transformers import (AutoTokenizer,
 from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector_with_preferance, \
     WatermarkLogitsProcessor_with_preferance
 from utils import *
-
+from datasets import load_dataset, Dataset
 
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
@@ -59,14 +59,38 @@ def parse_args():
     parser.add_argument(
         "--wm_mode",
         type=str,
-        default="single",
-        help="single or combination",
+        default="previous1",
+        help="previous1 or combination",
     )
     parser.add_argument(
         "--user_dist",
         type=str,
         default="dense",
         help="sparse or dense",
+    )
+    parser.add_argument(
+        "--identify_mode",
+        type=str,
+        default="single",
+        help="group or single.",
+    )
+    parser.add_argument(  # change
+        "--delta",
+        type=float,
+        default=7,
+        help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
+    )
+    parser.add_argument(
+        "--max_new_tokens",
+        type=int,
+        default=200,  # 200
+        help="Maximmum number of new tokens to generate.",
+    )
+    parser.add_argument(
+        "--min_new_tokens",
+        type=int,
+        default=100,  
+        help="Maximmum number of new tokens to generate.",
     )
     parser.add_argument(
         "--demo_public",
@@ -80,24 +104,14 @@ def parse_args():
         default="facebook/opt-1.3b",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
-    parser.add_argument(
-        "--identify_mode",
-        type=str,
-        default="single",
-        help="group or single.",
-    )
+    
     parser.add_argument(
         "--prompt_max_length",
         type=int,
-        default=None,
+        default=None, #None
         help="Truncation length for prompt, overrides model config's max length field.",
     )
-    parser.add_argument(
-        "--max_new_tokens",
-        type=int,
-        default=200,  # 200
-        help="Maximmum number of new tokens to generate.",
-    )
+    
     parser.add_argument(
         "--generation_seed",
         type=int,
@@ -107,13 +121,13 @@ def parse_args():
     parser.add_argument(
         "--use_sampling",
         type=str2bool,
-        default=False, #True
+        default=True, 
         help="Whether to generate using multinomial sampling.",
     )
     parser.add_argument(
         "--sampling_temp",
         type=float,
-        default=1, #0.7
+        default=0.7, #0.7
         help="Sampling temperature to use when generating using multinomial sampling.",
     )
     parser.add_argument(
@@ -140,12 +154,7 @@ def parse_args():
         default=0.5,
         help="The fraction of the vocabulary to partition into the greenlist at each generation and verification step.",
     )
-    parser.add_argument(  # change
-        "--delta",
-        type=float,
-        default=6,
-        help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
-    )
+    
     parser.add_argument(
         "--normalizers",
         type=str,
@@ -230,9 +239,6 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
        and generate watermarked text by passing it to the generate method of the model
        as a logits processor. """
 
-    # print(f"Generating with {args}")
-    # user_id="1001001"
-
     watermark_processor = WatermarkLogitsProcessor_with_preferance(vocab=list(tokenizer.get_vocab().values()),
                                                                    gamma=args.gamma,
                                                                    delta=args.delta,
@@ -242,11 +248,11 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
                                                                    userid=userid
                                                                    )
 
-    gen_kwargs = dict(max_new_tokens=args.max_new_tokens)
+    gen_kwargs = dict(max_new_tokens=args.max_new_tokens,min_new_tokens=args.min_new_tokens)
 
     if args.use_sampling:
         gen_kwargs.update(dict(
-            do_sample=True,
+            do_sample=True, 
             top_k=0,
             temperature=args.sampling_temp
         ))
@@ -254,11 +260,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
         gen_kwargs.update(dict(
             num_beams=args.n_beams
         ))
-    gen_kwargs.update(dict(
-        # temperature=args.temperature, 
-        repetition_penalty=1.0,
-        # num_return_sequences=1
-    ))
+
     generate_without_watermark = partial(
         model.generate,
         **gen_kwargs
@@ -266,20 +268,20 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     generate_with_watermark = partial(
         model.generate,
         logits_processor=LogitsProcessorList([watermark_processor]),
-        # output_scores=True,
         return_dict_in_generate=True, 
         output_scores=True,
         **gen_kwargs
     )
     if args.prompt_max_length:
         pass
-    elif hasattr(model.config, "max_position_embedding"):
-        args.prompt_max_length = model.config.max_position_embeddings - args.max_new_tokens
+    elif hasattr(model.config,"max_position_embedding"):
+        args.prompt_max_length = model.config.max_position_embeddings-args.max_new_tokens
     else:
-        args.prompt_max_length = 2048 - args.max_new_tokens
+        args.prompt_max_length = 2048-args.max_new_tokens
 
     tokd_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=True, truncation=True,
                            max_length=args.prompt_max_length).to(device)
+    print(len(tokd_input[0]))
 
     truncation_warning = True if tokd_input["input_ids"].shape[-1] == args.prompt_max_length else False
     redecoded_input = tokenizer.batch_decode(tokd_input["input_ids"], skip_special_tokens=True)[0]
@@ -288,8 +290,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     torch.manual_seed(args.generation_seed)
     output_without_watermark = generate_without_watermark(**tokd_input)
-    # print(output_without_watermark.shape)
-    # sys.exit()
+
 
     # optional to seed before second generation, but will not be the same again generally, unless delta==0.0, no-op watermark
     if args.seed_separately:
@@ -309,7 +310,6 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     #     output_scores=True,
     #     **gen_kwargs
     # )
-    special_tokens = tokenizer.all_special_ids
 
     out=generate_with_watermark(**tokd_input)                                                                                               
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
@@ -323,19 +323,23 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     # logits = model(**tokd_input)[0]
 
     output_with_watermark = out[0]
+    print("tokdid:",tokd_input["input_ids"].shape)
+    print("before minus:",output_with_watermark.shape)
     if args.is_decoder_only_model:
         # need to isolate the newly generated tokens
         output_without_watermark = output_without_watermark[:, tokd_input["input_ids"].shape[-1]:] #取input_len后的
         output_with_watermark = output_with_watermark[:, tokd_input["input_ids"].shape[-1]:]
     
     
-    redecoded_output = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
-    reencoded_output = tokenizer.encode(redecoded_output, return_tensors='pt',add_special_tokens=False)
+    # redecoded_output = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
+    # reencoded_output = tokenizer.encode(redecoded_output, return_tensors='pt',add_special_tokens=False)
     # print(reencoded_output.shape,out_se.shape)
     # sys.exit()
-
+    print("len in gen:",(output_with_watermark.shape))
     decoded_output_without_watermark = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
     decoded_output_with_watermark = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
+
+    
     # print(tokd_input["input_ids"].shape[-1])
     return (tokd_input["input_ids"].shape[-1],
             output_with_watermark.shape[-1],
@@ -383,6 +387,7 @@ def list_format_scores(score_dict, detection_threshold):
 
 
 def detect(input_text, args, device=None, tokenizer=None, userid=None):
+
     """Instantiate the WatermarkDetection object and call detect on
         the input text returning the scores and outcome of the test"""
     watermark_detector = WatermarkDetector_with_preferance(vocab=list(tokenizer.get_vocab().values()),
@@ -401,6 +406,7 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
         # output = str_format_scores(score_dict, watermark_detector.z_threshold)
         output = list_format_scores(score_dict, watermark_detector.z_threshold)
     else:
+        print("debug in else")
         # output = (f"Error: string not long enough to compute watermark presence.")
         output = [["Error", "string too short to compute metrics"]]
         output += [["", ""] for _ in range(6)]
@@ -410,63 +416,71 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
 
 
 def main(args):
+    #load dataset
+    dataset_name, dataset_config_name = "c4", "realnewslike"
+    dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
+    ds_iterator = iter(dataset)
+    
     start_time = time.time()
     """Run a command line version of the generation and detection operations
         and optionally launch and serve the gradio demo"""
     # Initial arg processing and log
     args.normalizers = (args.normalizers.split(",") if args.normalizers else [])
-    # print(args)
-    # gen_usr_list_sparse()
     usr_list = read_usr_list(args.user_dist)
     model, tokenizer, device = load_model(args)
 
     # Generate and detect, report to stdout
-    if args.user_dist =='sparse':
-        exp_num=32
-    else:
-        exp_num=50
+    # if args.user_dist =='sparse':
+    #     exp_num=32
+    # else:
+    #     exp_num=50
+    
+    exp_num=100
+
     succ_num=0
+    # for t in range(17):
+    #         input_text=next(ds_iterator)
     for i in range(exp_num):
         print(f"{i}th exp: ")
         if args.user_dist =='dense':
-            gen_id=i
-            # gen_id=random.randint(0, 127)
+            # gen_id=i
+            gen_id=random.randint(0, 127)
         else:
-            # gen_id=random.randint(0, 31)
-            gen_id=i
+            gen_id=random.randint(0, 31)
+            # gen_id=i
         # gen_id=127
         # gen_id=2
         userid = usr_list[gen_id]
-        # userid = usr_list[3]
+        # userid= usr_list[89]
         
-        # sys.exit()
-        # if not args.skip_model_load:
-        input_text = (
-            "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
-            "species of turtle native to the brackish coastal tidal marshes of the "
-            "Northeastern and southern United States, and in Bermuda.[6] It belongs "
-            "to the monotypic genus Malaclemys. It has one of the largest ranges of "
-            "all turtles in North America, stretching as far south as the Florida Keys "
-            "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
-            "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
-            "British English and American English. The name originally was used by "
-            "early European settlers in North America to describe these brackish-water "
-            "turtles that inhabited neither freshwater habitats nor the sea. It retains "
-            "this primary meaning in American English.[8] In British English, however, "
-            "other semi-aquatic turtle species, such as the red-eared slider, might "
-            "also be called terrapins. The common name refers to the diamond pattern "
-            "on top of its shell (carapace), but the overall pattern and coloration "
-            "vary greatly. The shell is usually wider at the back than in the front, "
-            "and from above it appears wedge-shaped. The shell coloring can vary "
-            "from brown to grey, and its body color can be grey, brown, yellow, "
-            "or white. All have a unique pattern of wiggly, black markings or spots "
-            "on their body and head. The diamondback terrapin has large webbed "
-            "feet.[9] The species is"
-            # "Hello! my name is Haggle."
-            # "How's your day?"
-        )
-
+        # input_text = (
+        #     "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
+        #     "species of turtle native to the brackish coastal tidal marshes of the "
+        #     "Northeastern and southern United States, and in Bermuda.[6] It belongs "
+        #     "to the monotypic genus Malaclemys. It has one of the largest ranges of "
+        #     "all turtles in North America, stretching as far south as the Florida Keys "
+        #     "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
+        #     "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
+        #     "British English and American English. The name originally was used by "
+        #     "early European settlers in North America to describe these brackish-water "
+        #     "turtles that inhabited neither freshwater habitats nor the sea. It retains "
+        #     "this primary meaning in American English.[8] In British English, however, "
+        #     "other semi-aquatic turtle species, such as the red-eared slider, might "
+        #     "also be called terrapins. The common name refers to the diamond pattern "
+        #     "on top of its shell (carapace), but the overall pattern and coloration "
+        #     "vary greatly. The shell is usually wider at the back than in the front, "
+        #     "and from above it appears wedge-shaped. The shell coloring can vary "
+        #     "from brown to grey, and its body color can be grey, brown, yellow, "
+        #     "or white. All have a unique pattern of wiggly, black markings or spots "
+        #     "on their body and head. The diamondback terrapin has large webbed "
+        #     "feet.[9] The species is"
+        #     # "Hello! my name is Haggle."
+        #     # "How's your day?"
+        # )
+        print("args.prompt max l",args.prompt_max_length)
+        input_text=next(ds_iterator)['text'][:args.prompt_max_length]
         args.default_prompt = input_text
+        print("len of input:",len(input_text))
 
         term_width = 80
         # print("#"*term_width)
@@ -498,14 +512,15 @@ def main(args):
         # print(confidence)
         # sys.exit()
 
-
-        # start exp
+        del(watermark_processor)
+        #start detect
         sim_list = []
         max_sim = 0
         max_sim_idx = -1
         for j in range(usr_list.shape[-1]):
 
             loop_usr_id = usr_list[j]
+
             with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                             args,
                                                                             device=device,
@@ -516,8 +531,6 @@ def main(args):
             if confidence> max_sim:
                 max_sim = confidence
                 max_sim_idx = j
-        max_number = []
-        max_index = []
         mapped_sim=sim_list[gen_id]
         if args.identify_mode == "group":
             detect_range=3
@@ -527,25 +540,24 @@ def main(args):
         # sim_result=np.zeros([2,detect_range])
         sim_result=[]
         id_result=[]
+        id_index=[]
         for r in range(detect_range):
             sim = max(sim_list)
             index = sim_list.index(sim)
             sim_list[index] = -1
             sim_result.append(sim)
             id_result.append(usr_list[index])
-            # max_number.append(number)
-            # max_index.append(usr_list[index])
+            id_index.append(index)
         result_dic={"sim_score":sim_result, "id":id_result}
         if_succ=0
         if args.identify_mode == "group":
-            if gen_id in max_index:
+            if gen_id in id_index:
                 succ_num += 1
                 if_succ=1
         else:
             if max_sim_idx == gen_id:
                 succ_num+=1
                 if_succ=1
-
         pd.get_option('display.width')
         pd.set_option('display.width', 500)
         pd.set_option('display.max_columns', None)
@@ -570,52 +582,7 @@ def main(args):
         
 
 
-            # comment ppl here
-            # sys.path.append("/ssddata1/user03/identification/lm-watermarking/experiments")
-            # import watermark
-            # from watermark import evaluate_generation_fluency_from_output
-            # from datasets import load_dataset, Dataset
-            # from io_utils import write_jsonlines, write_json, read_jsonlines, read_json
-
-            # if model is not None:
-            #     model = model.to(torch.device("cpu"))
-            # del model
-
-            # oracle_model_name = 'facebook/opt-1.3b'
-            # print(f"Loading oracle model: {oracle_model_name}")
-
-            # oracle_tokenizer = AutoTokenizer.from_pretrained(oracle_model_name)
-            # oracle_model = AutoModelForCausalLM.from_pretrained(oracle_model_name).to(device)
-            # oracle_model.eval()
-
-            # input_p_output = f"{input_text}{decoded_output_without_watermark}"
-            # baseline_output = decoded_output_without_watermark
-
-            # loss_no_wm, ppl_no_wm = evaluate_generation_fluency_from_output(input_p_output,
-            #                                                                 baseline_output,
-            #                                                                 # idx: int,
-            #                                                                 oracle_model_name,
-            #                                                                 oracle_model,
-            #                                                                 oracle_tokenizer)
-
-            # input_p_output = f"{input_text}{decoded_output_with_watermark}"
-            # baseline_output = decoded_output_with_watermark
-
-            # # construct fluency/ppl partial
-            # loss_wm, ppl_wm = evaluate_generation_fluency_from_output(input_p_output,
-            #                                                           baseline_output,
-            #                                                           # idx: int,
-            #                                                           oracle_model_name,
-            #                                                           oracle_model,
-            #                                                           oracle_tokenizer)
-
-            # with_watermark_detection_result, confidence, _ = detect(decoded_output_with_watermark,
-            #                                                         args,
-            #                                                         device=device,
-            #                                                         tokenizer=tokenizer)
-            # with open("result.csv", "a+") as csvfile:
-            #     writer = csv.writer(csvfile)
-            #     writer.writerow([input_token_num, output_token_num, loss_no_wm, ppl_no_wm, loss_wm, ppl_wm, confidence])
+            
 
     return
 
@@ -678,7 +645,7 @@ def testppl(args):
 
         term_width = 80
 
-        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, _ = generate(
+        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark,_, _ = generate(
             input_text,
             args,
             model=model,
@@ -724,7 +691,9 @@ def testppl(args):
         
         result_wm[i]=ppl_wm
         result_bl[i]=ppl_bl
+        # print(baseline_output_wm)
         print(ppl_bl,ppl_wm ,args.delta,args.max_new_tokens)
+        
     
         # sys.exit()
     print("wm: ", result_wm.mean(),"baseline: ",result_bl.mean(),args.delta)

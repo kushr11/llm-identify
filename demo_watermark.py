@@ -262,6 +262,9 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
     decoded_output_without_watermark = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
     decoded_output_with_watermark = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
 
+    print("origin:",decoded_output_without_watermark)
+    import sys
+    sys.exit()
     return (redecoded_input,
             int(truncation_warning),
             decoded_output_without_watermark, 

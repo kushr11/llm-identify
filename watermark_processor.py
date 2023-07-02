@@ -208,7 +208,7 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # print(input_ids[0])
         # sys.exit()
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
-        if self.wm_mode =='single':
+        if self.wm_mode =='previous1':
             preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
         else:
             preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]) % n]  # 1->green ; 0-> red
@@ -275,7 +275,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
         self.z_threshold = z_threshold
         self.rng = torch.Generator(device=self.device)
 
-        if self.seeding_scheme == "simple_1" and self.wm_mode == 'single':
+        if self.seeding_scheme == "simple_1" and self.wm_mode == 'previous1':
             self.min_prefix_len = 1
         elif self.wm_mode == 'combination':
             self.min_prefix_len = 2 
@@ -351,7 +351,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     # print(input_ids[idx])
                 curr_token = input_ids[idx]
                 n = len(self.userid)
-                if self.wm_mode == 'single':
+                if self.wm_mode == 'previous1':
                     preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
                 else:
                     preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]) % n]  # 1->green ; 0-> red
