@@ -1,0 +1,700 @@
+exp  0, if succ: 1 ,time used: 93.5557336807251
+gen id 1110001, mapped sim 0.9118236472945892
+                  0         1         2
+sim_score  0.911824  0.824649  0.819639
+id          1110001   1110101   1110000
+succ rate: 1/100
+
+exp  1, if succ: 1 ,time used: 143.09440779685974
+gen id 0111011, mapped sim 0.8589065255731922
+                  0         1         2
+sim_score  0.858907  0.795414  0.793651
+id          0111011   0111111   0011011
+succ rate: 2/100
+
+exp  2, if succ: 1 ,time used: 221.33914136886597
+gen id 0100011, mapped sim 0.9644779332615716
+                  0         1         2
+sim_score  0.964478  0.858988  0.855759
+id          0100011   0000011   0101011
+succ rate: 3/100
+
+exp  3, if succ: 1 ,time used: 252.08035564422607
+gen id 0000111, mapped sim 0.8795986622073578
+                  0         1         2
+sim_score  0.879599  0.802676  0.799331
+id          0000111   0010111   0000110
+succ rate: 4/100
+
+exp  4, if succ: 1 ,time used: 306.3315227031708
+gen id 1101011, mapped sim 0.9101382488479263
+                  0         1         2
+sim_score  0.910138  0.822581  0.815668
+id          1101011   1111011   1100011
+succ rate: 5/100
+
+exp  5, if succ: 1 ,time used: 324.1620547771454
+gen id 0101110, mapped sim 0.8013245033112583
+                  0         1         2
+sim_score  0.801325  0.754967  0.735099
+id          0101110   0001110   0111110
+succ rate: 6/100
+
+exp  6, if succ: 1 ,time used: 424.2369952201843
+gen id 1101000, mapped sim 0.9749498997995992
+                 0         1         2
+sim_score  0.97495  0.946894  0.906814
+id         1101000   1111000   1100000
+succ rate: 7/100
+
+exp  7, if succ: 1 ,time used: 495.04222989082336
+gen id 0111111, mapped sim 0.9190535491905355
+                  0        1         2
+sim_score  0.919054  0.82939  0.823163
+id          0111111  0101111   0111110
+succ rate: 8/100
+
+exp  8, if succ: 1 ,time used: 591.1650943756104
+gen id 1011111, mapped sim 0.996993987975952
+                  0         1         2
+sim_score  0.996994  0.990982  0.866733
+id          1011111   0011111   1111111
+succ rate: 9/100
+
+exp  9, if succ: 1 ,time used: 682.6167750358582
+gen id 0110101, mapped sim 0.9448897795591182
+                 0         1         2
+sim_score  0.94489  0.896794  0.859719
+id         0110101   0110001   0010101
+succ rate: 10/100
+
+exp  10, if succ: 1 ,time used: 700.8113555908203
+gen id 0111101, mapped sim 0.9517241379310345
+                  0         1         2
+sim_score  0.951724  0.882759  0.848276
+id          0111101   0111111   0101101
+succ rate: 11/100
+
+exp  11, if succ: 1 ,time used: 751.1843252182007
+gen id 1110101, mapped sim 0.9086538461538461
+                  0         1         2
+sim_score  0.908654  0.833333  0.822115
+id          1110101   1100101   1010101
+succ rate: 12/100
+
+exp  12, if succ: 1 ,time used: 815.3861134052277
+gen id 0011000, mapped sim 0.9537037037037037
+                  0         1         2
+sim_score  0.953704  0.876543  0.867284
+id          0011000   0111000   0011100
+succ rate: 13/100
+
+exp  13, if succ: 1 ,time used: 905.7085785865784
+gen id 1001101, mapped sim 0.9438877755511023
+                  0         1         2
+sim_score  0.943888  0.861723  0.845691
+id          1001101   1101101   1011101
+succ rate: 14/100
+
+exp  14, if succ: 1 ,time used: 991.1970937252045
+gen id 0010011, mapped sim 0.9539078156312625
+                  0         1        2
+sim_score  0.953908  0.945892  0.94489
+id          0010011   0010111  1010011
+succ rate: 15/100
+
+exp  15, if succ: 1 ,time used: 1090.2361109256744
+gen id 1011011, mapped sim 0.8847695390781564
+                 0         1         2
+sim_score  0.88477  0.827655  0.823647
+id         1011011   1011111   1011010
+succ rate: 16/100
+
+exp  16, if succ: 1 ,time used: 1175.3533864021301
+gen id 1010010, mapped sim 0.9248496993987976
+                 0         1         2
+sim_score  0.92485  0.863727  0.856713
+id         1010010   1000010   1010110
+succ rate: 17/100
+
+exp  17, if succ: 0 ,time used: 1198.5262520313263
+gen id 0001000, mapped sim 0.6028368794326241
+                  0         1         2
+sim_score  0.617021  0.609929  0.609929
+id          0100000   0000000   0100001
+succ rate: 17/100
+
+exp  18, if succ: 1 ,time used: 1237.1198859214783
+gen id 1111100, mapped sim 0.9492753623188406
+                  0         1         2
+sim_score  0.949275  0.869565  0.855072
+id          1111100   1110100   1011100
+succ rate: 18/100
+
+exp  19, if succ: 1 ,time used: 1305.8772852420807
+gen id 1101110, mapped sim 0.9307432432432432
+                  0         1         2
+sim_score  0.930743  0.841216  0.834459
+id          1101110   1101111   1100110
+succ rate: 19/100
+
+exp  20, if succ: 1 ,time used: 1331.0591719150543
+gen id 1111000, mapped sim 0.8704663212435233
+                  0         1         2
+sim_score  0.870466  0.818653  0.777202
+id          1111000   1101000   1011000
+succ rate: 20/100
+
+exp  21, if succ: 1 ,time used: 1356.926424741745
+gen id 1110111, mapped sim 0.8984615384615384
+                  0         1         2
+sim_score  0.898462  0.815385  0.812308
+id          1110111   1010111   1110011
+succ rate: 21/100
+
+exp  22, if succ: 1 ,time used: 1454.5515024662018
+gen id 0001010, mapped sim 0.9148296593186372
+                 0         1         2
+sim_score  0.91483  0.829659  0.827655
+id         0001010   0101010   0001110
+succ rate: 22/100
+
+exp  23, if succ: 1 ,time used: 1471.570720911026
+gen id 1100100, mapped sim 0.9539473684210527
+                  0         1         2
+sim_score  0.953947  0.901316  0.855263
+id          1100100   1110100   1100101
+succ rate: 23/100
+
+exp  24, if succ: 1 ,time used: 1503.0963926315308
+gen id 0010001, mapped sim 0.9530685920577617
+                  0         1         2
+sim_score  0.953069  0.870036  0.851986
+id          0010001   0011001   0010011
+succ rate: 24/100
+
+exp  25, if succ: 1 ,time used: 1596.2278699874878
+gen id 0101011, mapped sim 0.903420523138833
+                  0         1         2
+sim_score  0.903421  0.821932  0.816901
+id          0101011   0100011   0101001
+succ rate: 25/100
+
+exp  26, if succ: 1 ,time used: 1607.397381067276
+gen id 1101000, mapped sim 0.8584070796460177
+                  0         1         2
+sim_score  0.858407  0.769912  0.769912
+id          1101000   1101100   1111000
+succ rate: 26/100
+
+exp  27, if succ: 1 ,time used: 1643.7990412712097
+gen id 0000110, mapped sim 0.8653295128939829
+                 0         1        2
+sim_score  0.86533  0.796562  0.77937
+id         0000110   0000111  0000100
+succ rate: 27/100
+
+exp  28, if succ: 1 ,time used: 1725.178475856781
+gen id 1101111, mapped sim 0.8877755511022044
+                  0         1         2
+sim_score  0.910822  0.887776  0.867735
+id          1111111   1101111   1110111
+succ rate: 28/100
+
+exp  29, if succ: 1 ,time used: 1752.5896909236908
+gen id 0101100, mapped sim 0.9315960912052117
+                  0         1         2
+sim_score  0.931596  0.827362  0.827362
+id          0101100   0001100   0100100
+succ rate: 29/100
+
+exp  30, if succ: 1 ,time used: 1787.5069308280945
+gen id 0110110, mapped sim 0.9295454545454546
+                  0         1         2
+sim_score  0.929545  0.845455  0.840909
+id          0110110   0010110   0100110
+succ rate: 30/100
+
+exp  31, if succ: 1 ,time used: 1868.871699810028
+gen id 0100011, mapped sim 0.8867735470941884
+                  0         1         2
+sim_score  0.886774  0.818637  0.808617
+id          0100011   0110011   0100001
+succ rate: 31/100
+
+exp  32, if succ: 1 ,time used: 1882.2819006443024
+gen id 1101101, mapped sim 0.7425742574257426
+                  0         1         2
+sim_score  0.742574  0.712871  0.712871
+id          1101101   1100101   1101111
+succ rate: 32/100
+
+exp  33, if succ: 1 ,time used: 1972.1203246116638
+gen id 1101000, mapped sim 0.8707414829659319
+                  0         1         2
+sim_score  0.870741  0.833667  0.829659
+id          1101000   1111000   1001000
+succ rate: 33/100
+
+exp  34, if succ: 1 ,time used: 1991.5185582637787
+gen id 0010111, mapped sim 0.8970588235294118
+                  0         1         2
+sim_score  0.897059  0.838235  0.830882
+id          0010111   0010101   0011111
+succ rate: 34/100
+
+exp  35, if succ: 1 ,time used: 2002.3103935718536
+gen id 0101000, mapped sim 0.9553571428571429
+                  0         1        2
+sim_score  0.955357  0.919643    0.875
+id          0101000   0001000  0111000
+succ rate: 35/100
+
+exp  36, if succ: 1 ,time used: 2095.328402519226
+gen id 1000111, mapped sim 0.906813627254509
+                  0         1         2
+sim_score  0.906814  0.836673  0.822645
+id          1000111   1010111   1000011
+succ rate: 36/100
+
+exp  37, if succ: 1 ,time used: 2146.823226451874
+gen id 0100010, mapped sim 0.882943143812709
+                  0         1         2
+sim_score  0.882943  0.802676  0.801003
+id          0100010   0000010   0101010
+succ rate: 37/100
+
+exp  38, if succ: 1 ,time used: 2168.520012617111
+gen id 1101001, mapped sim 0.940677966101695
+                  0         1         2
+sim_score  0.940678  0.864407  0.855932
+id          1101001   1101000   1101011
+succ rate: 38/100
+
+exp  39, if succ: 1 ,time used: 2246.7329053878784
+gen id 0011101, mapped sim 0.9556400506970849
+                 0         1         2
+sim_score  0.95564  0.869455  0.852978
+id         0011101   0111101   0011001
+succ rate: 39/100
+
+exp  40, if succ: 1 ,time used: 2348.8789598941803
+gen id 0100001, mapped sim 0.9218436873747495
+                  0         1         2
+sim_score  0.921844  0.846693  0.838677
+id          0100001   0000001   0100011
+succ rate: 40/100
+
+exp  41, if succ: 1 ,time used: 2452.420883655548
+gen id 1111000, mapped sim 0.9629258517034068
+                  0         1         2
+sim_score  0.962926  0.907816  0.866733
+id          1111000   1111010   1110000
+succ rate: 41/100
+
+exp  42, if succ: 1 ,time used: 2462.9003405570984
+gen id 1000100, mapped sim 0.8952380952380953
+                  0         1         2
+sim_score  0.895238  0.838095  0.838095
+id          1000100   1000000   1010100
+succ rate: 42/100
+
+exp  43, if succ: 1 ,time used: 2545.4682190418243
+gen id 1011110, mapped sim 0.9659318637274549
+                  0         1         2
+sim_score  0.965932  0.920842  0.916834
+id          1011110   1111110   1011100
+succ rate: 43/100
+
+exp  44, if succ: 1 ,time used: 2642.122072696686
+gen id 1111111, mapped sim 0.9178356713426854
+                  0         1         2
+sim_score  0.917836  0.841683  0.833667
+id          1111111   1011111   1111110
+succ rate: 44/100
+
+exp  45, if succ: 1 ,time used: 2691.650418996811
+gen id 0000001, mapped sim 0.9405099150141643
+                 0         1         2
+sim_score  0.94051  0.847025  0.844193
+id         0000001   0100001   0010001
+succ rate: 45/100
+
+exp  46, if succ: 1 ,time used: 2783.2160880565643
+gen id 1011111, mapped sim 0.9096385542168675
+                  0         1         2
+sim_score  0.909639  0.830321  0.828313
+id          1011111   1011011   1111111
+succ rate: 46/100
+
+exp  47, if succ: 1 ,time used: 2815.4328615665436
+gen id 1101101, mapped sim 0.910394265232975
+                  0        1         2
+sim_score  0.910394  0.90681  0.888889
+id          1101101  1001101   1100101
+succ rate: 47/100
+
+exp  48, if succ: 1 ,time used: 2829.9592051506042
+gen id 0000000, mapped sim 0.7676767676767676
+                  0         1         2
+sim_score  0.787879  0.767677  0.757576
+id          0100000   0000000   0100010
+succ rate: 48/100
+
+exp  49, if succ: 1 ,time used: 2871.5864753723145
+gen id 1000100, mapped sim 0.8940092165898618
+                  0         1         2
+sim_score  0.894009  0.831797  0.827189
+id          1000100   1001100   1010100
+succ rate: 49/100
+
+exp  50, if succ: 1 ,time used: 2913.928238630295
+gen id 1010110, mapped sim 0.9644970414201184
+                  0         1         2
+sim_score  0.964497  0.879684  0.877712
+id          1010110   1010100   1000110
+succ rate: 50/100
+
+exp  51, if succ: 1 ,time used: 2948.447261095047
+gen id 1111010, mapped sim 0.9019607843137255
+                  0         1         2
+sim_score  0.901961  0.836601  0.830065
+id          1111010   1011010   1111000
+succ rate: 51/100
+
+exp  52, if succ: 1 ,time used: 3027.3668580055237
+gen id 1000110, mapped sim 0.9208416833667334
+                  0         1         2
+sim_score  0.920842  0.863727  0.841683
+id          1000110   1000010   1000100
+succ rate: 52/100
+
+exp  53, if succ: 1 ,time used: 3060.4352412223816
+gen id 0111110, mapped sim 0.9157894736842105
+                  0        1         2
+sim_score  0.915789  0.85614  0.842105
+id          0111110  0111100   0111010
+succ rate: 53/100
+
+exp  54, if succ: 1 ,time used: 3084.5902359485626
+gen id 1101010, mapped sim 0.9240924092409241
+                  0         1         2
+sim_score  0.924092  0.838284  0.838284
+id          1101010   1101110   1111010
+succ rate: 54/100
+
+exp  55, if succ: 1 ,time used: 3175.4170475006104
+gen id 0010001, mapped sim 0.9438877755511023
+                  0        1         2
+sim_score  0.943888  0.88477  0.865731
+id          0010001  0010101   0110001
+succ rate: 55/100
+
+exp  56, if succ: 1 ,time used: 3266.618725299835
+gen id 0000010, mapped sim 0.8767535070140281
+                  0         1         2
+sim_score  0.876754  0.828657  0.824649
+id          0000010   0001010   0010010
+succ rate: 56/100
+
+exp  57, if succ: 1 ,time used: 3359.602485895157
+gen id 1011111, mapped sim 0.9092741935483871
+                  0         1         2
+sim_score  0.909274  0.822581  0.818548
+id          1011111   1011110   1111111
+succ rate: 57/100
+
+exp  58, if succ: 1 ,time used: 3380.7126095294952
+gen id 1110000, mapped sim 0.9383259911894273
+                  0         1         2
+sim_score  0.938326  0.872247  0.859031
+id          1110000   1110010   1110100
+succ rate: 58/100
+
+exp  59, if succ: 1 ,time used: 3421.6105160713196
+gen id 1100100, mapped sim 0.9222797927461139
+                 0         1         2
+sim_score  0.92228  0.839378  0.821244
+id         1100100   1110100   1101100
+succ rate: 59/100
+
+exp  60, if succ: 1 ,time used: 3437.9068574905396
+gen id 0001001, mapped sim 0.9328859060402684
+                  0        1         2
+sim_score  0.932886  0.85906  0.845638
+id          0001001  0001101   0101001
+succ rate: 60/100
+
+exp  61, if succ: 0 ,time used: 3530.16198015213
+gen id 0001011, mapped sim 0.7114228456913828
+                  0         1        2
+sim_score  0.942886  0.932866  0.92986
+id          1011011   1011111  1010011
+succ rate: 60/100
+
+exp  62, if succ: 1 ,time used: 3622.4272162914276
+gen id 1000000, mapped sim 0.9529058116232465
+                  0         1         2
+sim_score  0.952906  0.890782  0.877756
+id          1000000   1010000   1001000
+succ rate: 61/100
+
+exp  63, if succ: 1 ,time used: 3665.1455562114716
+gen id 1001001, mapped sim 0.8567335243553008
+                  0         1        2
+sim_score  0.856734  0.830946   0.7851
+id          1001001   1001101  1101001
+succ rate: 62/100
+
+exp  64, if succ: 1 ,time used: 3691.4731760025024
+gen id 0011111, mapped sim 0.8511904761904762
+                 0         1        2
+sim_score  0.85119  0.779762  0.77381
+id         0011111   0011101  0111111
+succ rate: 63/100
+
+exp  65, if succ: 1 ,time used: 3772.553025007248
+gen id 0101011, mapped sim 0.9338677354709419
+                  0         1         2
+sim_score  0.933868  0.849699  0.837675
+id          0101011   0101010   0111011
+succ rate: 64/100
+
+exp  66, if succ: 1 ,time used: 3869.4838950634003
+gen id 0110011, mapped sim 0.9328657314629258
+                  0         1         2
+sim_score  0.932866  0.862725  0.848697
+id          0110011   0111011   0110111
+succ rate: 65/100
+
+exp  67, if succ: 1 ,time used: 3956.237076997757
+gen id 0000101, mapped sim 0.9268537074148296
+                  0         1         2
+sim_score  0.926854  0.873747  0.847695
+id          0000101   0000001   0010101
+succ rate: 66/100
+
+exp  68, if succ: 1 ,time used: 3978.007117986679
+gen id 1000001, mapped sim 0.9596774193548387
+                  0         1         2
+sim_score  0.959677  0.887097  0.879032
+id          1000001   1100001   1000011
+succ rate: 67/100
+
+exp  69, if succ: 1 ,time used: 4070.094264984131
+gen id 1100100, mapped sim 0.9038076152304609
+                  0         1         2
+sim_score  0.903808  0.817635  0.814629
+id          1100100   1101100   1000100
+succ rate: 68/100
+
+exp  70, if succ: 1 ,time used: 4135.014455318451
+gen id 0110111, mapped sim 0.8853211009174312
+                  0         1         2
+sim_score  0.885321  0.818807  0.803899
+id          0110111   0100111   0110101
+succ rate: 69/100
+
+exp  71, if succ: 1 ,time used: 4220.533962011337
+gen id 1001100, mapped sim 0.9388164493480441
+                  0        1         2
+sim_score  0.938816   0.8666  0.845537
+id          1001100  1001000   1000100
+succ rate: 70/100
+
+exp  72, if succ: 1 ,time used: 4240.168992996216
+gen id 1110011, mapped sim 0.83
+                 0        1        2
+sim_score     0.83     0.81     0.77
+id         1110011  1111011  1110111
+succ rate: 71/100
+
+exp  73, if succ: 1 ,time used: 4293.317866563797
+gen id 0001001, mapped sim 0.929701230228471
+                  0         1         2
+sim_score  0.929701  0.843585  0.818981
+id          0001001   0000001   0101001
+succ rate: 72/100
+
+exp  74, if succ: 1 ,time used: 4305.8895099163055
+gen id 1100010, mapped sim 0.911504424778761
+                  0         1         2
+sim_score  0.911504  0.840708  0.823009
+id          1100010   1100110   1100000
+succ rate: 73/100
+
+exp  75, if succ: 1 ,time used: 4403.50469493866
+gen id 1011011, mapped sim 0.8667334669338678
+                  0         1         2
+sim_score  0.866733  0.804609  0.801603
+id          1011011   1011010   1111011
+succ rate: 74/100
+
+exp  76, if succ: 1 ,time used: 4497.957267284393
+gen id 1001010, mapped sim 0.9588353413654619
+                  0         1         2
+sim_score  0.958835  0.880522  0.880522
+id          1001010   1001110   1011010
+succ rate: 75/100
+
+exp  77, if succ: 1 ,time used: 4517.140548467636
+gen id 0100000, mapped sim 0.9225806451612903
+                  0         1         2
+sim_score  0.922581  0.845161  0.832258
+id          0100000   0000000   0101000
+succ rate: 76/100
+
+exp  78, if succ: 1 ,time used: 4601.565446138382
+gen id 1110001, mapped sim 0.9559118236472945
+                  0         1         2
+sim_score  0.955912  0.905812  0.892786
+id          1110001   1111001   1110101
+succ rate: 77/100
+
+exp  79, if succ: 1 ,time used: 4689.568848371506
+gen id 1100111, mapped sim 0.9609218436873748
+                  0        1         2
+sim_score  0.960922  0.89479  0.891784
+id          1100111  1000111   1100101
+succ rate: 78/100
+
+exp  80, if succ: 1 ,time used: 4782.39284992218
+gen id 1011011, mapped sim 0.9488977955911824
+                  0         1         2
+sim_score  0.948898  0.936874  0.917836
+id          1011011   1011010   1111011
+succ rate: 79/100
+
+exp  81, if succ: 1 ,time used: 4822.220936059952
+gen id 1001001, mapped sim 0.7783251231527094
+                  0         1         2
+sim_score  0.778325  0.748768  0.724138
+id          1001001   1101001   1001000
+succ rate: 80/100
+
+exp  82, if succ: 1 ,time used: 4886.623745918274
+gen id 0110000, mapped sim 0.9198055893074119
+                  0         1         2
+sim_score  0.919806  0.831106  0.829891
+id          0110000   0110010   0110100
+succ rate: 81/100
+
+exp  83, if succ: 1 ,time used: 4974.22599196434
+gen id 0100010, mapped sim 0.905811623246493
+                  0         1         2
+sim_score  0.905812  0.826653  0.816633
+id          0100010   0110010   0100110
+succ rate: 82/100
+
+exp  84, if succ: 1 ,time used: 4994.478498697281
+gen id 1100101, mapped sim 0.8709677419354839
+                  0        1         2
+sim_score  0.870968  0.83871  0.822581
+id          1100101  1100001   1000101
+succ rate: 83/100
+
+exp  85, if succ: 1 ,time used: 5031.7233872413635
+gen id 0011000, mapped sim 0.8407494145199064
+                  0         1         2
+sim_score  0.840749  0.800937  0.786885
+id          0011000   0011001   0011010
+succ rate: 84/100
+
+exp  86, if succ: 1 ,time used: 5044.373497962952
+gen id 0001101, mapped sim 0.8970588235294118
+                  0         1         2
+sim_score  0.897059  0.845588  0.838235
+id          0001101   0101101   0001001
+succ rate: 85/100
+
+exp  87, if succ: 1 ,time used: 5058.75248503685
+gen id 1011001, mapped sim 0.9389312977099237
+                  0         1         2
+sim_score  0.938931  0.847328  0.832061
+id          1011001   1011000   1010001
+succ rate: 86/100
+
+exp  88, if succ: 1 ,time used: 5105.63089132309
+gen id 1101100, mapped sim 0.9416058394160584
+                  0         1         2
+sim_score  0.941606  0.872263  0.850365
+id          1101100   1111100   1101000
+succ rate: 87/100
+
+exp  89, if succ: 1 ,time used: 5131.910256147385
+gen id 0111111, mapped sim 0.8636363636363636
+                  0         1         2
+sim_score  0.863636  0.795455  0.789773
+id          0111111   0111101   0101111
+succ rate: 88/100
+
+exp  90, if succ: 1 ,time used: 5142.192898750305
+gen id 0100010, mapped sim 0.7904761904761904
+                  0         1         2
+sim_score  0.790476  0.742857  0.742857
+id          0100010   0100110   0110010
+succ rate: 89/100
+
+exp  91, if succ: 1 ,time used: 5170.204018354416
+gen id 0111011, mapped sim 0.9228070175438596
+                  0         1         2
+sim_score  0.922807  0.870175  0.835088
+id          0111011   0101011   0110011
+succ rate: 90/100
+
+exp  92, if succ: 1 ,time used: 5270.0536143779755
+gen id 1100000, mapped sim 0.9428857715430862
+                  0         1         2
+sim_score  0.942886  0.846693  0.845691
+id          1100000   1101000   1000000
+succ rate: 91/100
+
+exp  93, if succ: 1 ,time used: 5360.800669431686
+gen id 0110010, mapped sim 0.8967935871743486
+                  0         1         2
+sim_score  0.896794  0.875752  0.807615
+id          0110010   0110011   0100010
+succ rate: 92/100
+
+exp  94, if succ: 1 ,time used: 5449.685672044754
+gen id 0101101, mapped sim 0.9228456913827655
+                  0         1         2
+sim_score  0.922846  0.854709  0.833667
+id          0101101   0100101   0101001
+succ rate: 93/100
+
+exp  95, if succ: 1 ,time used: 5529.880964279175
+gen id 1111110, mapped sim 0.9849699398797596
+                 0         1        2
+sim_score  0.98497  0.956914  0.90982
+id         1111110   1110110  1111010
+succ rate: 94/100
+
+exp  96, if succ: 1 ,time used: 5545.3001046180725
+gen id 0100000, mapped sim 0.8425925925925926
+                  0         1         2
+sim_score  0.842593  0.787037  0.787037
+id          0100000   0000000   0100001
+succ rate: 95/100
+
+exp  97, if succ: 1 ,time used: 5612.549129009247
+gen id 1000100, mapped sim 0.933806146572104
+                  0         1         2
+sim_score  0.933806  0.849882  0.838061
+id          1000100   1100100   1010100
+succ rate: 96/100
+
+exp  98, if succ: 1 ,time used: 5653.122570514679
+gen id 1100110, mapped sim 0.9362416107382551
+                  0         1         2
+sim_score  0.936242  0.848993  0.842282
+id          1100110   1101110   1110110
+succ rate: 97/100
+
+exp  99, if succ: 1 ,time used: 5687.581688642502
+gen id 0100010, mapped sim 0.9193154034229829
+                  0         1         2
+sim_score  0.919315  0.836186  0.826406
+id          0100010   0101010   0110010
+succ rate: 98/100
+

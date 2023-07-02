@@ -36,17 +36,12 @@ def gen_usr_list_sparse():
     pickle.dump(usr_list, open("usr_list_sparse.pkl", 'wb'))
 # gen_usr_list_sparse()
 
-
-
 def read_usr_list(user_dist):
     with open(f"usr_list_{user_dist}.pkl", 'rb') as fo:
         usr_list = pickle.load(fo, encoding='bytes')
         # print(usr_list)
     # print(usr_list[19])
     return usr_list
-
-
-
 
 
 def compute_similarity(wm,id):

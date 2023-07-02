@@ -1,85 +1,49 @@
-# 💧 [A Watermark for Large Language Models](https://arxiv.org/abs/2301.10226) 🔍
-
-### [Demo](https://huggingface.co/spaces/tomg-group-umd/lm-watermarking) | [Paper](https://arxiv.org/abs/2301.10226)
-
-Official implementation of the watermarking and detection algorithms presented in the paper:
-
-"A Watermark for Large language Models" by _John Kirchenbauer*, Jonas Geiping*, Yuxin Wen, Jonathan Katz, Ian Miers, Tom Goldstein_  
-
-### (6/7/23) We're thrilled to announce the release of ["On the Reliability of Watermarks for Large Language Models"](https://arxiv.org/abs/2306.04634), a new preprint documenting our deep dive into the robustness properties of more advanced watermarks.
-#### (6/9/23) Initial code release implementing the alternate watermark and detector variants in the new work can be found in this subdirectory: [`watermark_reliability_release`](watermark_reliability_release).
+# User guide for llm identification
 
 ---
 
-Implementation is based on the "logit processor" abstraction provided by the [huggingface/transformers 🤗](https://github.com/huggingface/transformers) library.
 
-The `WatermarkLogitsProcessor` is designed to be readily compatible with any model that supports the `generate` API.
-Any model that can be constructed using the `AutoModelForCausalLM` or `AutoModelForSeq2SeqLM` factories _should_ be compatible.
-
-### Repo contents
-
-The core implementation is defined by the `WatermarkBase`, `WatermarkLogitsProcessor`, and `WatermarkDetector` classes in the file `watermark_processor.py`.
-The `demo_watermark.py` script implements a gradio demo interface as well as minimum working example in the `main` function.
-
-Details about the parameters and the detection outputs are provided in the gradio app markdown blocks as well as the argparse definition.
-
-The `homoglyphs.py` and `normalizers.py` modules implement algorithms used by the `WatermarkDetector`. `homoglyphs.py` (and its raw data in `homoglyph_data`) is an updated version of the homoglyph code from the deprecated package described here: https://github.com/life4/homoglyphs.
-The `experiments` directory contains pipeline code that we used to run the original experiments in the paper. However this is stale/deprecated
-in favor of the implementation in `watermark_processor.py`.
 
 ### Demo Usage
 
-As a quickstart, the app can be launched with default args (or deployed to a [huggingface Space](https://huggingface.co/spaces)) using `app.py`
-which is just a thin wrapper around the demo script.
+Firstly setup the environment : python 3.9 is recommended
+
 ```sh
-python app.py
-gradio app.py # for hot reloading
-# or
-python demo_watermark.py --model_name_or_path facebook/opt-6.7b
+pip install -r requirments.txt
 ```
 
-### Abstract Usage of the `WatermarkLogitsProcessor` and `WatermarkDetector`
+To generate userlist, please run `gen_usr_list_dense()` or `gen_usr_list_sparse()` in utils.py, before run `test.py` depends on your need
 
-Generate watermarked text:
-```python
-watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
-                                               gamma=0.25,
-                                               delta=2.0,
-                                               seeding_scheme="simple_1")
 
-tokenized_input = tokenizer(input_text).to(model.device)
-# note that if the model is on cuda, then the input is on cuda
-# and thus the watermarking rng is cuda-based.
-# This is a different generator than the cpu-based rng in pytorch!
-
-output_tokens = model.generate(**tokenized_input,
-                               logits_processor=LogitsProcessorList([watermark_processor]))
-
-# if decoder only model, then we need to isolate the
-# newly generated tokens as only those are watermarked, the input/prompt is not
-output_tokens = output_tokens[:,tokenized_input["input_ids"].shape[-1]:]
-
-output_text = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
+To generate and detect watermark:
+```sh
+CUDA_VISIBLE_DEVICES=0 python test.py --model_name_or_path facebook/opt-1.3b --user_dist dense --wm_mode combination --identify_mode single --max_new_tokens 200 --delta 2
 ```
 
-Detect watermarked text:
-```python
-watermark_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
-                                        gamma=0.25, # should match original setting
-                                        seeding_scheme="simple_1", # should match original setting
-                                        device=model.device, # must match the original rng device type
-                                        tokenizer=tokenizer,
-                                        z_threshold=4.0,
-                                        normalizers=[],
-                                        ignore_repeated_bigrams=False)
-
-score_dict = watermark_detector.detect(output_text) # or any other text of interest to analyze
+To evaluate perplexity:
+```sh
+CUDA_VISIBLE_DEVICES=0 python test.py --model_name_or_path facebook/opt-1.3b --user_dist dense --wm_mode combination --identify_mode single --max_new_tokens 200 --delta 2 --ppl 1
 ```
-
-### Pending Items
-
-- More advanced hashing/seeding schemes beyond `simple_1` as detailed in paper
-- Attack experiment code
+note: the above settings depends on RTX3090, if you use other smaller devices, please modify `load_model()` in `test.py`.
 
 
-Suggestions and PR's welcome 🙂
+### Arguments
+delta：logit的增加量，delta=0时没有水印效果
+
+samping_temp：softmax公式的温度设置
+
+user_distribution:  
+    sparse时用户总量=32，即dense/4
+    dense时用户总量为128
+
+identify_mode:
+    single：confidence最大的用户=实际生成用户表示实验成功；
+    group：实际生成的用户属于confidence最大的三个用户表示实验成功
+
+watermark mode(wm_mode):
+
+    previous1: 计算watermark bit的时候只用该token的前一位token  **preferance=watermark的第 x位，x=[token[t-1] mod 7]**
+
+    combination: 计算watermark bit的时候用该token的前两位token  **preferance=watermark的第 x位，x=[token[t-1]*token[t-2] mod 7] ，采用这种设置是因为有的token出现的频率高，会导致错误的用户用该token偶然算出正确的水印的频率也增加**
+
+

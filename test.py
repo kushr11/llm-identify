@@ -31,12 +31,15 @@ import csv
 from transformers import (AutoTokenizer,
                           AutoModelForSeq2SeqLM,
                           AutoModelForCausalLM,
+                          OPTForCausalLM,
                           LogitsProcessorList)
 
 from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector_with_preferance, \
     WatermarkLogitsProcessor_with_preferance
 from utils import *
 from datasets import load_dataset, Dataset
+from torch.nn.parallel import DataParallel
+
 
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
@@ -57,9 +60,15 @@ def parse_args():
         description="A minimum working example of applying the watermark to any LLM that supports the huggingface 🤗 `generate` API")
 
     parser.add_argument(
+        "--ppl",
+        type=str2bool,
+        default=False,
+        help="To evaluate ppl instead of run generating and detecting",
+    )
+    parser.add_argument(
         "--wm_mode",
         type=str,
-        default="previous1",
+        default="combination",
         help="previous1 or combination",
     )
     parser.add_argument(
@@ -101,7 +110,7 @@ def parse_args():
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        default="facebook/opt-1.3b",
+        default="facebook/opt-13b",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     
@@ -221,10 +230,17 @@ def load_model(args):
 
     if args.use_gpu:
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        if args.load_fp16:
-            pass
+        if any([(model_type in args.model_name_or_path) for model_type in ["125m", "1.3b","2.7b"]]):
+            if args.load_fp16:
+                pass
+            else:
+                model = model.to(device)
         else:
-            model = model.to(device)
+            # model=model.cuda()
+            # model = DataParallel(model, device_ids=[2, 5, 6])
+            # model = model.module
+            model = OPTForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto",  torch_dtype=torch.float16)
+            print(model.hf_device_map)
     else:
         device = "cpu"
     model.eval()
@@ -281,7 +297,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     tokd_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=True, truncation=True,
                            max_length=args.prompt_max_length).to(device)
-    print(len(tokd_input[0]))
+    # print(len(tokd_input[0]))
 
     truncation_warning = True if tokd_input["input_ids"].shape[-1] == args.prompt_max_length else False
     redecoded_input = tokenizer.batch_decode(tokd_input["input_ids"], skip_special_tokens=True)[0]
@@ -323,8 +339,8 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     # logits = model(**tokd_input)[0]
 
     output_with_watermark = out[0]
-    print("tokdid:",tokd_input["input_ids"].shape)
-    print("before minus:",output_with_watermark.shape)
+    # print("tokdid:",tokd_input["input_ids"].shape)
+    # print("before minus:",output_with_watermark.shape)
     if args.is_decoder_only_model:
         # need to isolate the newly generated tokens
         output_without_watermark = output_without_watermark[:, tokd_input["input_ids"].shape[-1]:] #取input_len后的
@@ -335,7 +351,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     # reencoded_output = tokenizer.encode(redecoded_output, return_tensors='pt',add_special_tokens=False)
     # print(reencoded_output.shape,out_se.shape)
     # sys.exit()
-    print("len in gen:",(output_with_watermark.shape))
+    # print("len in gen:",(output_with_watermark.shape))
     decoded_output_without_watermark = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
     decoded_output_with_watermark = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
 
@@ -406,7 +422,7 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
         # output = str_format_scores(score_dict, watermark_detector.z_threshold)
         output = list_format_scores(score_dict, watermark_detector.z_threshold)
     else:
-        print("debug in else")
+        # print("debug in else")
         # output = (f"Error: string not long enough to compute watermark presence.")
         output = [["Error", "string too short to compute metrics"]]
         output += [["", ""] for _ in range(6)]
@@ -477,10 +493,10 @@ def main(args):
         #     # "Hello! my name is Haggle."
         #     # "How's your day?"
         # )
-        print("args.prompt max l",args.prompt_max_length)
+        # print("args.prompt max l",args.prompt_max_length)
         input_text=next(ds_iterator)['text'][:args.prompt_max_length]
         args.default_prompt = input_text
-        print("len of input:",len(input_text))
+        # print("len of input:",len(input_text))
 
         term_width = 80
         # print("#"*term_width)
@@ -587,6 +603,9 @@ def main(args):
     return
 
 def testppl(args):
+    dataset_name, dataset_config_name = "c4", "realnewslike"
+    dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
+    ds_iterator = iter(dataset)
     start_time = time.time()
     """Run a command line version of the generation and detection operations
         and optionally launch and serve the gradio demo"""
@@ -599,47 +618,46 @@ def testppl(args):
 
     # Generate and detect, report to stdout
     exp_num=10
-    succ_num=0
-    result_wm=np.zeros(10)
-    result_bl=np.zeros(10)
+    result_wm=np.zeros(exp_num)
+    result_bl=np.zeros(exp_num)
     for i in range(exp_num):
         print(f"{i+1}th exp: ")
         if args.user_dist =='dense':
-            gen_id=i*10
-            # gen_id=random.randint(0, 127)
+            # gen_id=i*10
+            gen_id=random.randint(0, 127)
         else:
-            # gen_id=random.randint(0, 31)
-            gen_id=i
+            gen_id=random.randint(0, 31)
+            # gen_id=i
         # gen_id=127
         # gen_id=2
         userid = usr_list[gen_id]
-        
+        input_text=next(ds_iterator)['text'][:args.prompt_max_length]
         # sys.exit()
         # if not args.skip_model_load:
-        input_text = (
-            "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
-            "species of turtle native to the brackish coastal tidal marshes of the "
-            "Northeastern and southern United States, and in Bermuda.[6] It belongs "
-            "to the monotypic genus Malaclemys. It has one of the largest ranges of "
-            "all turtles in North America, stretching as far south as the Florida Keys "
-            "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
-            "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
-            "British English and American English. The name originally was used by "
-            "early European settlers in North America to describe these brackish-water "
-            "turtles that inhabited neither freshwater habitats nor the sea. It retains "
-            "this primary meaning in American English.[8] In British English, however, "
-            "other semi-aquatic turtle species, such as the red-eared slider, might "
-            "also be called terrapins. The common name refers to the diamond pattern "
-            "on top of its shell (carapace), but the overall pattern and coloration "
-            "vary greatly. The shell is usually wider at the back than in the front, "
-            "and from above it appears wedge-shaped. The shell coloring can vary "
-            "from brown to grey, and its body color can be grey, brown, yellow, "
-            "or white. All have a unique pattern of wiggly, black markings or spots "
-            "on their body and head. The diamondback terrapin has large webbed "
-            "feet.[9] The species is"
-            # "Hello! my name is Haggle."
-            # "How's your day?"
-        )
+        # input_text = (
+        #     "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
+        #     "species of turtle native to the brackish coastal tidal marshes of the "
+        #     "Northeastern and southern United States, and in Bermuda.[6] It belongs "
+        #     "to the monotypic genus Malaclemys. It has one of the largest ranges of "
+        #     "all turtles in North America, stretching as far south as the Florida Keys "
+        #     "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
+        #     "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
+        #     "British English and American English. The name originally was used by "
+        #     "early European settlers in North America to describe these brackish-water "
+        #     "turtles that inhabited neither freshwater habitats nor the sea. It retains "
+        #     "this primary meaning in American English.[8] In British English, however, "
+        #     "other semi-aquatic turtle species, such as the red-eared slider, might "
+        #     "also be called terrapins. The common name refers to the diamond pattern "
+        #     "on top of its shell (carapace), but the overall pattern and coloration "
+        #     "vary greatly. The shell is usually wider at the back than in the front, "
+        #     "and from above it appears wedge-shaped. The shell coloring can vary "
+        #     "from brown to grey, and its body color can be grey, brown, yellow, "
+        #     "or white. All have a unique pattern of wiggly, black markings or spots "
+        #     "on their body and head. The diamondback terrapin has large webbed "
+        #     "feet.[9] The species is"
+        #     # "Hello! my name is Haggle."
+        #     # "How's your day?"
+        # )
 
         args.default_prompt = input_text
 
@@ -691,12 +709,13 @@ def testppl(args):
         
         result_wm[i]=ppl_wm
         result_bl[i]=ppl_bl
-        # print(baseline_output_wm)
+        print(baseline_output_wm)
         print(ppl_bl,ppl_wm ,args.delta,args.max_new_tokens)
         
     
         # sys.exit()
     print("wm: ", result_wm.mean(),"baseline: ",result_bl.mean(),args.delta)
+    # print(baseline_output_wm)
 if __name__ == "__main__":
     args = parse_args()
     # print(args)
