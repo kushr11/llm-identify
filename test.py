@@ -240,7 +240,7 @@ def load_model(args):
             # model = DataParallel(model, device_ids=[2, 5, 6])
             # model = model.module
             model = OPTForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto",  torch_dtype=torch.float16)
-            print(model.hf_device_map)
+            # print(model.hf_device_map)
     else:
         device = "cpu"
     model.eval()
