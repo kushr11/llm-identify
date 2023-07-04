@@ -110,7 +110,7 @@ def parse_args():
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        default="facebook/opt-13b",
+        default="facebook/opt-1.3b",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     
@@ -451,7 +451,7 @@ def main(args):
     # else:
     #     exp_num=50
     
-    exp_num=100
+    exp_num=1000
 
     succ_num=0
     # for t in range(17):
