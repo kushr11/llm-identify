@@ -12,7 +12,7 @@ Firstly setup the environment : python 3.9 is recommended
 pip install -r requirments.txt
 ```
 
-To generate userlist, please run `gen_usr_list_dense()` or `gen_usr_list_sparse()` in utils.py, before run `test.py` depends on your need
+To generate userlist, please run `gen_usr_list_dense()` or `gen_usr_list_sparse()` in utils.py, which generates user_list_dense(sparse).pkl before run `test.py` depends on your need
 
 
 To generate and detect watermark:
