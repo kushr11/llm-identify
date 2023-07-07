@@ -26,7 +26,7 @@ CUDA_VISIBLE_DEVICES=0,1 python test.py --model_name_or_path facebook/opt-13b --
 
 To evaluate perplexity:
 ```sh
-CUDA_VISIBLE_DEVICES=0 python test.py --model_name_or_path facebook/opt-1.3b --user_dist dense --wm_mode combination --identify_mode single --max_new_tokens 200 --delta 2 --ppl 1
+CUDA_VISIBLE_DEVICES=0 python test.py --model_name_or_path facebook/opt-1.3b --user_dist dense --wm_mode combination --max_new_tokens 200 --delta 2 --ppl 1
 ```
 
 
