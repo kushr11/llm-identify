@@ -22,8 +22,9 @@ from transformers import (AutoTokenizer,
 from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector_with_preferance, \
     WatermarkLogitsProcessor_with_preferance
 from utils import *
-from datasets import load_dataset, Dataset
-from torch.nn.parallel import DataParallel
+# from datasets import load_dataset, Dataset
+from datasets import load_dataset
+# from torch.nn.parallel import DataParallel
 
 
 def str2bool(v):
@@ -62,12 +63,12 @@ def parse_args():
         default="dense",
         help="sparse or dense",
     )
-    parser.add_argument(
-        "--identify_mode",
-        type=str,
-        default="single",
-        help="group or single.",
-    )
+    # parser.add_argument(
+    #     "--identify_mode",
+    #     type=str,
+    #     default="single",
+    #     help="group or single.",
+    # )
     parser.add_argument(  # change
         "--delta",
         type=float,
@@ -436,9 +437,10 @@ def main(args):
     # else:
     #     exp_num=50
     
-    exp_num=1000
+    exp_num=200
 
-    succ_num=0
+    succ_num_top1=0
+    succ_num_top3=0
     # for t in range(17):
     #         input_text=next(ds_iterator)
     for i in range(exp_num):
@@ -533,10 +535,11 @@ def main(args):
                 max_sim = confidence
                 max_sim_idx = j
         mapped_sim=sim_list[gen_id]
-        if args.identify_mode == "group":
-            detect_range=3
-        else:
-            detect_range=10
+        # if args.identify_mode == "group":
+        #     detect_range=3
+        # else:
+        #     detect_range=10
+        detect_range=10
         
         # sim_result=np.zeros([2,detect_range])
         sim_result=[]
@@ -550,34 +553,32 @@ def main(args):
             id_result.append(usr_list[index])
             id_index.append(index)
         result_dic={"sim_score":sim_result, "id":id_result}
-        if_succ=0
-        if args.identify_mode == "group":
-            if gen_id in id_index:
-                succ_num += 1
-                if_succ=1
-        else:
-            if max_sim_idx == gen_id:
-                succ_num+=1
-                if_succ=1
+        if_succ_top1=0
+        if_succ_top3=0
+
+        if gen_id in id_index[:3]:
+            succ_num_top3 += 1
+            if_succ_top3=1
+
+        if max_sim_idx == gen_id:
+            succ_num_top1+=1
+            if_succ_top1=1
         pd.get_option('display.width')
         pd.set_option('display.width', 500)
         pd.set_option('display.max_columns', None)
-        print(f"exp  {i}, if succ: {if_succ} ,time used: {time.time() - start_time}")
+        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, time used: {time.time() - start_time}")
         print(f"gen id {userid}, mapped sim {mapped_sim}")
         print(DataFrame(result_dic).T)
-        print(succ_num,exp_num)
+        print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n")
         
         
-        save_file_name=f"data_wm{args.wm_mode}_id{args.identify_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
+        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
         with open(save_file_name, "a+") as f:
-            print(f"exp  {i}, if succ: {if_succ} ,time used: {time.time() - start_time}",file=f)
+            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} ,time used: {time.time() - start_time}",file=f)
             print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
             print(DataFrame(result_dic).T,file=f)
-            print(f"succ rate: {succ_num}/{exp_num}\n",file=f)
-            # f.write(f"{time.time() - start_time}   exp  {i}: {if_succ}\n")
-            # f.write(f"max sim: {max_sim}, mapped sim: {mapped_sim}")
-            # f.write(str(max_number) + '\n')
-            # f.write(str(max_index) + '\n\n')
+            print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n",file=f)
+
             print(f"data saved in {save_file_name}")
             f.close()
         
