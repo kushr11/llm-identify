@@ -705,6 +705,8 @@ def testppl(args):
 if __name__ == "__main__":
     args = parse_args()
     # print(args)
-
-    main(args)
-    # testppl(args)
+    if args.ppl:
+        testppl(args)
+    else:
+        main(args)
+    # 
