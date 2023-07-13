@@ -19,7 +19,7 @@ from transformers import (AutoTokenizer,
                           OPTForCausalLM,
                           LogitsProcessorList)
 
-from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector_with_preferance, \
+from watermark_processor import  WatermarkDetector_with_preferance, \
     WatermarkLogitsProcessor_with_preferance
 from utils import *
 # from datasets import load_dataset, Dataset
@@ -69,11 +69,18 @@ def parse_args():
     #     default="single",
     #     help="group or single.",
     # )
-    parser.add_argument(  # change
+    parser.add_argument(  
         "--delta",
         type=float,
-        default=7,
+        default=2,
         help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
+    )
+    parser.add_argument(
+        "--decrease_delta",
+        type=str2bool,
+        default=True,
+        help="Modify delta according to output length.",
+        
     )
     parser.add_argument(
         "--max_new_tokens",
@@ -240,6 +247,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     watermark_processor = WatermarkLogitsProcessor_with_preferance(vocab=list(tokenizer.get_vocab().values()),
                                                                    gamma=args.gamma,
+                                                                   decrease_delta=args.decrease_delta,
                                                                    delta=args.delta,
                                                                    wm_mode=args.wm_mode,
                                                                    seeding_scheme=args.seeding_scheme,
