@@ -189,7 +189,7 @@ def parse_args():
     parser.add_argument(
         "--load_fp16",
         type=str2bool,
-        default=False,
+        default=True,
         help="Whether to run model in float16 precsion.",
     )
 
@@ -216,17 +216,14 @@ def load_model(args):
 
     if args.use_gpu:
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        if any([(model_type in args.model_name_or_path) for model_type in ["125m", "1.3b","2.7b"]]):
-            if args.load_fp16:
-                pass
-            else:
-                model = model.to(device)
-        else:
-            # model=model.cuda()
-            # model = DataParallel(model, device_ids=[2, 5, 6])
-            # model = model.module
-            model = OPTForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto",  torch_dtype=torch.float16)
-            # print(model.hf_device_map)
+        # if any([(model_type in args.model_name_or_path) for model_type in ["125m", "1.3b","2.7b"]]):
+        #     if args.load_fp16:
+        #         pass
+        #     else:
+        #         model = model.to(device)
+        # else:
+        #     model = OPTForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto",  torch_dtype=torch.float16)
+        #     # print(model.hf_device_map)
     else:
         device = "cpu"
     model.eval()
@@ -618,32 +615,7 @@ def testppl(args):
         # gen_id=2
         userid = usr_list[gen_id]
         input_text=next(ds_iterator)['text'][:args.prompt_max_length]
-        # sys.exit()
-        # if not args.skip_model_load:
-        # input_text = (
-        #     "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
-        #     "species of turtle native to the brackish coastal tidal marshes of the "
-        #     "Northeastern and southern United States, and in Bermuda.[6] It belongs "
-        #     "to the monotypic genus Malaclemys. It has one of the largest ranges of "
-        #     "all turtles in North America, stretching as far south as the Florida Keys "
-        #     "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
-        #     "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
-        #     "British English and American English. The name originally was used by "
-        #     "early European settlers in North America to describe these brackish-water "
-        #     "turtles that inhabited neither freshwater habitats nor the sea. It retains "
-        #     "this primary meaning in American English.[8] In British English, however, "
-        #     "other semi-aquatic turtle species, such as the red-eared slider, might "
-        #     "also be called terrapins. The common name refers to the diamond pattern "
-        #     "on top of its shell (carapace), but the overall pattern and coloration "
-        #     "vary greatly. The shell is usually wider at the back than in the front, "
-        #     "and from above it appears wedge-shaped. The shell coloring can vary "
-        #     "from brown to grey, and its body color can be grey, brown, yellow, "
-        #     "or white. All have a unique pattern of wiggly, black markings or spots "
-        #     "on their body and head. The diamondback terrapin has large webbed "
-        #     "feet.[9] The species is"
-        #     # "Hello! my name is Haggle."
-        #     # "How's your day?"
-        # )
+
 
         args.default_prompt = input_text
 
@@ -669,7 +641,9 @@ def testppl(args):
         print(f"Loading oracle model: {oracle_model_name}")
 
         oracle_tokenizer = AutoTokenizer.from_pretrained(oracle_model_name)
-        oracle_model = AutoModelForCausalLM.from_pretrained(oracle_model_name).to(device)
+        oracle_model = AutoModelForCausalLM.from_pretrained(oracle_model_name, torch_dtype=torch.float16,
+                                                         device_map='auto')
+        # oracle_model = AutoModelForCausalLM.from_pretrained(oracle_model_name).to(device)
         oracle_model.eval()
 
         input_p_output_wm = f"{input_text}{decoded_output_with_watermark}"
