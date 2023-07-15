@@ -133,8 +133,13 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
         if self.wm_mode =='previous1':
             preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
-        else:
+        elif self.self.wm_mode =='previous2':
             preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]) % n]  # 1->green ; 0-> red
+        # below modified by Gordon, changing wm_mode arg s.t. it accepts previous 1,2,3,4
+        elif self.self.wm_mode =='previous3':
+            preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]*input_ids[-1][-3]) % n]  # 1->green ; 0-> red
+        elif self.self.wm_mode =='previous4':
+            preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]*input_ids[-1][-3]*input_ids[-1][-4]) % n]  # 1->green ; 0-> red
         self.idx_t += 1
         # this is lazy to allow us to colocate on the watermarked model's device
         if self.rng is None:
