@@ -26,6 +26,10 @@ from utils import *
 from datasets import load_dataset
 # from torch.nn.parallel import DataParallel
 
+# below added by Gordon, because i came across 
+# 'RuntimeError: "LayerNormKernelImpl" not implemented for 'Half''
+commandline_args = os.environ.get('COMMANDLINE_ARGS', "--skip-torch-cuda-test --no-half")
+
 
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
@@ -69,18 +73,11 @@ def parse_args():
     #     default="single",
     #     help="group or single.",
     # )
-    parser.add_argument(  
+    parser.add_argument(  # change
         "--delta",
         type=float,
-        default=2,
+        default=7,
         help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
-    )
-    parser.add_argument(
-        "--decrease_delta",
-        type=str2bool,
-        default=True,
-        help="Modify delta according to output length.",
-        
     )
     parser.add_argument(
         "--max_new_tokens",
@@ -247,7 +244,6 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     watermark_processor = WatermarkLogitsProcessor_with_preferance(vocab=list(tokenizer.get_vocab().values()),
                                                                    gamma=args.gamma,
-                                                                   decrease_delta=args.decrease_delta,
                                                                    delta=args.delta,
                                                                    wm_mode=args.wm_mode,
                                                                    seeding_scheme=args.seeding_scheme,

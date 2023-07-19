@@ -40,7 +40,7 @@ class WatermarkBase:
             gamma: float = 0.5,
             decrease_delta: bool = True,
             delta: float = 2.0,
-            wm_mode = "combination",
+            wm_mode = "previous1",
             seeding_scheme: str = "simple_1",  # mostly unused/always default
             hash_key: int = 15485863,  # just a large prime number to create a rng seed with sufficient bit width
             select_green_tokens: bool = True,
@@ -205,8 +205,12 @@ class WatermarkDetector_with_preferance(WatermarkBase):
 
         if self.seeding_scheme == "simple_1" and self.wm_mode == 'previous1':
             self.min_prefix_len = 1
-        elif self.wm_mode == 'combination':
+        elif self.wm_mode == 'previous2':
             self.min_prefix_len = 2 
+        elif self.wm_mode == 'previous3':
+            self.min_prefix_len = 3
+        elif self.wm_mode == 'previous4':
+            self.min_prefix_len = 4
         else:
             raise NotImplementedError(f"Unexpected seeding_scheme: {self.seeding_scheme}")
 
@@ -281,8 +285,12 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                 n = len(self.userid)
                 if self.wm_mode == 'previous1':
                     preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
-                else:
+                elif self.wm_mode == 'previous2':
                     preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]) % n]  # 1->green ; 0-> red
+                elif self.wm_mode == 'previous3':
+                    preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]*input_ids[idx-3]) % n]  # 1->green ; 0-> red
+                elif self.wm_mode == 'previous4':
+                    preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]*input_ids[idx-3]*input_ids[idx-4]) % n]  # 1->green ; 0-> red
                 # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
                 # print(preferance,end="")
                 if preferance == '1':
