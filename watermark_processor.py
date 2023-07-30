@@ -117,7 +117,7 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         if decrease_delta:
             greenlist_bias=4.84*(math.e)**(-1*0.001*self.idx_t)
         scores[greenlist_mask] = scores[greenlist_mask] + greenlist_bias
-        print(greenlist_bias,self.idx_t)
+        # print(greenlist_bias,self.idx_t)
         return scores
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
@@ -195,6 +195,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
 
         self.tokenizer = tokenizer
         self.device = device
+
         self.z_threshold = z_threshold
         self.rng = torch.Generator(device=self.device)
 

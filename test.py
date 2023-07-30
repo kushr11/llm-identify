@@ -58,6 +58,12 @@ def parse_args():
         help="previous1 or combination",
     )
     parser.add_argument(
+        "--detect_mode",
+        type=str,
+        default="accumulate",
+        help="normal or iterative or accumulate",
+    )
+    parser.add_argument(
         "--user_dist",
         type=str,
         default="dense",
@@ -72,13 +78,13 @@ def parse_args():
     parser.add_argument(  
         "--delta",
         type=float,
-        default=2,
+        default=3,
         help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
     )
     parser.add_argument(
         "--decrease_delta",
         type=str2bool,
-        default=True,
+        default=False,
         help="Modify delta according to output length.",
         
     )
@@ -92,7 +98,7 @@ def parse_args():
         "--min_new_tokens",
         type=int,
         default=100,  
-        help="Maximmum number of new tokens to generate.",
+        help="Minimum number of new tokens to generate.",
     )
     parser.add_argument(
         "--demo_public",
@@ -236,7 +242,7 @@ def load_model(args):
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
-
+    
     return model, tokenizer, device
 
 
@@ -435,6 +441,7 @@ def main(args):
     args.normalizers = (args.normalizers.split(",") if args.normalizers else [])
     usr_list = read_usr_list(args.user_dist)
     model, tokenizer, device = load_model(args)
+    print(device)
 
     # Generate and detect, report to stdout
     # if args.user_dist =='sparse':
@@ -443,7 +450,8 @@ def main(args):
     #     exp_num=50
     
     exp_num=200
-
+    
+    total_detect_len=0 #for detect mode: iterative
     succ_num_top1=0
     succ_num_top3=0
     # for t in range(17):
@@ -522,52 +530,142 @@ def main(args):
 
         del(watermark_processor)
         #start detect
-        sim_list = []
-        max_sim = 0
-        max_sim_idx = -1
-        for j in range(usr_list.shape[-1]):
-
-            loop_usr_id = usr_list[j]
-
-            with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
-                                                                            args,
-                                                                            device=device,
-                                                                            tokenizer=tokenizer,
-                                                                            userid=loop_usr_id)
-            # sim = compute_similarity(mark, loop_usr_id)
-            sim_list.append((confidence))
-            if confidence> max_sim:
-                max_sim = confidence
-                max_sim_idx = j
-        mapped_sim=sim_list[gen_id]
-        # if args.identify_mode == "group":
-        #     detect_range=3
-        # else:
-        #     detect_range=10
-        detect_range=10
         
-        # sim_result=np.zeros([2,detect_range])
-        sim_result=[]
-        id_result=[]
-        id_index=[]
-        for r in range(detect_range):
-            sim = max(sim_list)
-            index = sim_list.index(sim)
-            sim_list[index] = -1
-            sim_result.append(sim)
-            id_result.append(usr_list[index])
-            id_index.append(index)
-        result_dic={"sim_score":sim_result, "id":id_result}
-        if_succ_top1=0
-        if_succ_top3=0
+        if args.detect_mode == 'normal':
+        
+            sim_list = []
+            max_sim = 0
+            max_sim_idx = -1
+            
+            for j in range(usr_list.shape[-1]):
 
-        if gen_id in id_index[:3]:
-            succ_num_top3 += 1
-            if_succ_top3=1
+                loop_usr_id = usr_list[j]
 
-        if max_sim_idx == gen_id:
-            succ_num_top1+=1
-            if_succ_top1=1
+                with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                args,
+                                                                                device=device,
+                                                                                tokenizer=tokenizer,
+                                                                                userid=loop_usr_id)
+                # sim = compute_similarity(mark, loop_usr_id)
+                sim_list.append((confidence))
+                if confidence> max_sim:
+                    max_sim = confidence
+                    max_sim_idx = j
+            
+            # if args.identify_mode == "group":
+            #     detect_range=3
+            # else:
+            #     detect_range=10
+            detect_range=10
+            mapped_sim=sim_list[gen_id]
+            # sim_result=np.zeros([2,detect_range])
+            sim_result=[]
+            id_result=[]
+            id_index=[]
+            for r in range(detect_range):
+                sim = max(sim_list)
+                index = sim_list.index(sim)
+                sim_list[index] = -1
+                sim_result.append(sim)
+                id_result.append(usr_list[index])
+                id_index.append(index)
+            result_dic={"sim_score":sim_result, "id":id_result}
+            if_succ_top1=0
+            if_succ_top3=0
+
+            if gen_id in id_index[:3]:
+                succ_num_top3 += 1
+                if_succ_top3=1
+
+            if max_sim_idx == gen_id:
+                succ_num_top1+=1
+                if_succ_top1=1
+        if args.detect_mode == 'iterative':
+            
+            max_sim=-1
+            init_num=3
+            sim_list=[]
+            code_list=[]
+            ## append initial code
+            code_list.append(usr_list[0])
+            for j in range (init_num-1):
+                code_list.append(usr_list[(usr_list.shape[-1]//init_num)*(j+1)])
+            code_list.append(usr_list[-1])
+            for loop_usr_id in code_list:
+                with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                    args,
+                                                                                    device=device,
+                                                                                    tokenizer=tokenizer,
+                                                                                    userid=loop_usr_id)
+                sim_list.append((confidence))
+            max_sim=max(sim_list)
+            best_code = code_list[sim_list.index(max_sim)]
+            # change loop_usr_id 1 by 1
+            
+            stop=False
+            while (not stop):
+                previous_max_sim=max_sim
+                for j in range(len(best_code)):
+                    if j==0:
+                        loop_usr_id=str(1-int(best_code[j]))+best_code[j+1:]
+                    elif j==len(best_code)-1:
+                        loop_usr_id=best_code[:-1]+str(1-int(best_code[j]))
+                    else:
+                        loop_usr_id=best_code[:j]+str(1-int(best_code[j]))+best_code[j+1:]
+                    if loop_usr_id in code_list:
+                        continue
+                    else:
+                        code_list.append(loop_usr_id)
+                    with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                    args,
+                                                                                    device=device,
+                                                                                    tokenizer=tokenizer,
+                                                                                    userid=loop_usr_id)
+                    sim_list.append((confidence))
+                    if confidence>max_sim:
+                        max_sim=confidence
+                        best_code = code_list[sim_list.index(max_sim)]
+                if previous_max_sim==max_sim:
+                    stop=True
+                previous_max_sim=max_sim
+            
+            #calculate mapped sim
+            if userid in code_list:
+                mapped_sim=sim_list[code_list.index(userid)]
+            else:
+                with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                    args,
+                                                                                    device=device,
+                                                                                    tokenizer=tokenizer,
+                                                                                    userid=userid)
+                mapped_sim=confidence
+            
+            #calculate top10
+            detect_range=10
+            sim_result=[]
+            id_result=[]
+            id_index=[]
+            for r in range(detect_range):
+                sim = max(sim_list)
+                index = sim_list.index(sim)
+                sim_list[index] = -1
+                sim_result.append(sim)
+                id_result.append(code_list[index])
+            result_dic={"sim_score":sim_result, "id":id_result}
+            if_succ_top1=0
+            if_succ_top3=0
+
+            if userid in id_result[:3]:
+                succ_num_top3 += 1
+                if_succ_top3=1
+
+            if userid == id_result[0]:
+                succ_num_top1+=1
+                if_succ_top1=1
+
+            total_detect_len+=len(sim_list)
+        
+
         pd.get_option('display.width')
         pd.set_option('display.width', 500)
         pd.set_option('display.max_columns', None)
@@ -575,15 +673,17 @@ def main(args):
         print(f"gen id {userid}, mapped sim {mapped_sim}")
         print(DataFrame(result_dic).T)
         print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n")
+        if args.detect_mode=='iterative':
+            print("userlist len:",usr_list.shape[-1],"detect list len:",len(sim_list),'average detect list len:',total_detect_len/(i+1))
         
-        
-        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}.txt"
+        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}_d{args.detect_mode}.txt"
         with open(save_file_name, "a+") as f:
             print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} ,time used: {time.time() - start_time}",file=f)
             print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
             print(DataFrame(result_dic).T,file=f)
             print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n",file=f)
-
+            if args.detect_mode=='iterative':
+                print(f"userlist len:{usr_list.shape[-1]}, detect list len:,{len(sim_list)}, average detect list len: {total_detect_len/(i+1)}\n",file=f)
             print(f"data saved in {save_file_name}")
             f.close()
         
