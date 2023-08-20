@@ -1,0 +1,1800 @@
+exp  0, if top1 succ: 1 ,if top3 succ: 1 ,time used: 23.340295791625977
+gen id 0011010, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.828283  0.787879  0.782828  0.757576  0.717172  0.707071  0.70202  0.686869  0.661616  0.540404
+id          0011010   0010010   0111010   0011110   0011011   0001010  0011000   1011010   0101010   0000000
+top1 succ rate: 1/200,top3 succ rate: 1/200 
+
+userlist len:128, detect list len:,13, average detect list len: 13.0
+
+exp  1, if top1 succ: 0 ,if top3 succ: 1 ,time used: 33.40193200111389
+gen id 0110001, mapped sim 0.7076023391812866
+                 0         1         2         3         4         5         6         7        8         9
+sim_score  0.71345  0.707602  0.701754  0.695906  0.684211  0.649123  0.643275  0.625731  0.54386  0.538012
+id         0110000   0110001   0010000   0100000   0000000   0110100   0111000   0110010  1110000   0101010
+top1 succ rate: 1/200,top3 succ rate: 2/200 
+
+userlist len:128, detect list len:,13, average detect list len: 13.0
+
+exp  2, if top1 succ: 1 ,if top3 succ: 1 ,time used: 44.72340154647827
+gen id 0011111, mapped sim 0.803030303030303
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.80303  0.772727  0.732323  0.722222  0.722222  0.712121  0.691919  0.661616  0.621212  0.479798
+id         0011111   0011011   0111111   0001111   0011101   0010111   1011111   0011110   1111111   0101010
+top1 succ rate: 2/200,top3 succ rate: 3/200 
+
+userlist len:128, detect list len:,12, average detect list len: 12.666666666666666
+
+exp  3, if top1 succ: 1 ,if top3 succ: 1 ,time used: 53.26154637336731
+gen id 0011110, mapped sim 0.7709923664122137
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.770992  0.763359  0.732824  0.717557  0.709924  0.70229  0.679389  0.679389  0.679389  0.587786
+id          0011110   0010110   0001110   0011010   0010010  0011111   0001010   0011100   0111110   0101010
+top1 succ rate: 3/200,top3 succ rate: 4/200 
+
+userlist len:128, detect list len:,15, average detect list len: 13.25
+
+exp  4, if top1 succ: 1 ,if top3 succ: 1 ,time used: 64.66510605812073
+gen id 1001000, mapped sim 0.7424242424242424
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.742424  0.742424  0.686869  0.686869  0.676768  0.676768  0.636364  0.621212  0.606061  0.565657
+id          1001000   1101000   1001100   1011000   1001010   1000000   1001001   1000100   0001000   1010100
+top1 succ rate: 4/200,top3 succ rate: 5/200 
+
+userlist len:128, detect list len:,15, average detect list len: 13.6
+
+exp  5, if top1 succ: 0 ,if top3 succ: 1 ,time used: 73.70859599113464
+gen id 0101100, mapped sim 0.652542372881356
+                  0         1         2         3         4         5        6        7         8         9
+sim_score  0.661017  0.652542  0.635593  0.635593  0.610169  0.601695  0.59322  0.59322  0.576271  0.567797
+id          0101101   0101100   0001101   0101001   0111101   0101111  0101110  1101101   0100101   0101010
+top1 succ rate: 4/200,top3 succ rate: 6/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.166666666666666
+
+exp  6, if top1 succ: 1 ,if top3 succ: 1 ,time used: 84.8115873336792
+gen id 1010000, mapped sim 0.8434343434343434
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.843434  0.80303  0.767677  0.762626  0.747475  0.747475  0.732323  0.707071  0.666667  0.656566
+id          1010000  1110000   1010010   1000000   1010100   1011000   1010001   1110100   1000100   0010000
+top1 succ rate: 5/200,top3 succ rate: 7/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.285714285714286
+
+exp  7, if top1 succ: 1 ,if top3 succ: 1 ,time used: 93.45669031143188
+gen id 0001011, mapped sim 0.7547169811320755
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.754717  0.726415  0.698113  0.698113  0.669811  0.669811  0.660377  0.650943  0.622642  0.59434
+id          0001011   0000011   0101011   0001111   1001011   0001001   0011011   0001010   0000010  0101010
+top1 succ rate: 6/200,top3 succ rate: 8/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.625
+
+exp  8, if top1 succ: 1 ,if top3 succ: 1 ,time used: 104.39638638496399
+gen id 1111100, mapped sim 0.898989898989899
+                 0         1         2        3         4         5         6         7         8         9
+sim_score  0.89899  0.868687  0.828283  0.79798  0.792929  0.757576  0.737374  0.712121  0.681818  0.641414
+id         1111100   1101100   1011100  1111000   0111100   1111101   1111110   1110100   1100100   1010100
+top1 succ rate: 7/200,top3 succ rate: 9/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.555555555555555
+
+exp  9, if top1 succ: 1 ,if top3 succ: 1 ,time used: 115.55625939369202
+gen id 1111010, mapped sim 0.7817258883248731
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.781726  0.771574  0.720812  0.705584  0.685279  0.685279  0.685279  0.654822  0.624365  0.614213
+id          1111010   1011010   1111110   1111000   1111011   1101010   1110010   0111010   1111111   1011111
+top1 succ rate: 8/200,top3 succ rate: 10/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.8
+
+exp  10, if top1 succ: 0 ,if top3 succ: 1 ,time used: 124.6006326675415
+gen id 0010100, mapped sim 0.7567567567567568
+                  0         1         2        3         4         5         6         7         8         9
+sim_score  0.765766  0.756757  0.738739  0.72973  0.702703  0.693694  0.684685  0.675676  0.675676  0.666667
+id          0010110   0010100   0011110  0011100   0110110   0110100   0000110   0000100   0010010   0010000
+top1 succ rate: 8/200,top3 succ rate: 11/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.909090909090908
+
+exp  11, if top1 succ: 1 ,if top3 succ: 1 ,time used: 133.10460758209229
+gen id 1111101, mapped sim 0.8220338983050848
+                  0        1         2         3         4        5         6         7         8         9
+sim_score  0.822034  0.79661  0.771186  0.754237  0.754237  0.70339  0.686441  0.661017  0.644068  0.635593
+id          1111101  1011101   1111001   1101101   1110101  0111101   1111111   1011111   1111100   1111011
+top1 succ rate: 9/200,top3 succ rate: 12/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.0
+
+exp  12, if top1 succ: 1 ,if top3 succ: 1 ,time used: 143.63544821739197
+gen id 1111011, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5        6        7        8         9
+sim_score  0.808081  0.757576  0.757576  0.747475  0.727273  0.707071  0.69697  0.69697  0.69697  0.666667
+id          1111011   1011011   1101011   1111111   1110011   1111001  1011111  1101111  1111010   1110111
+top1 succ rate: 10/200,top3 succ rate: 13/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.0
+
+exp  13, if top1 succ: 1 ,if top3 succ: 1 ,time used: 152.22507882118225
+gen id 0110111, mapped sim 0.7727272727272727
+                  0         1         2        3         4         5         6         7         8         9
+sim_score  0.772727  0.762626  0.717172  0.70202  0.691919  0.671717  0.661616  0.656566  0.585859  0.575758
+id          0110111   0110101   0110011  1110111   0100111   0010111   0110110   0111111   1111111   0101111
+top1 succ rate: 11/200,top3 succ rate: 14/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.928571428571429
+
+exp  14, if top1 succ: 1 ,if top3 succ: 1 ,time used: 163.30348014831543
+gen id 1100010, mapped sim 0.7433155080213903
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.743316  0.716578  0.705882  0.700535  0.679144  0.673797  0.673797  0.668449  0.657754  0.641711
+id          1100010   1100000   1000010   1100110   1000000   1100100   0100010   1101010   1110010   1101000
+top1 succ rate: 12/200,top3 succ rate: 15/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.0
+
+exp  15, if top1 succ: 0 ,if top3 succ: 1 ,time used: 170.93600630760193
+gen id 0011011, mapped sim 0.7619047619047619
+                 0         1         2         3        4        5         6         7         8         9
+sim_score  0.77551  0.761905  0.707483  0.707483  0.70068  0.70068  0.693878  0.687075  0.632653  0.632653
+id         0001011   0011011   0000011   0001001  0001010  0001111   0101011   0011010   0000010   0001000
+top1 succ rate: 12/200,top3 succ rate: 16/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.125
+
+exp  16, if top1 succ: 1 ,if top3 succ: 1 ,time used: 181.55252504348755
+gen id 1110011, mapped sim 0.7929292929292929
+                  0         1         2         3         4         5        6         7         8        9
+sim_score  0.792929  0.732323  0.727273  0.722222  0.717172  0.707071  0.69697  0.666667  0.661616  0.59596
+id          1110011   1111011   1110111   1010011   1110001   1110010  1100011   1111111   0110011  1011111
+top1 succ rate: 13/200,top3 succ rate: 17/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.117647058823529
+
+exp  17, if top1 succ: 1 ,if top3 succ: 1 ,time used: 191.1004559993744
+gen id 1000001, mapped sim 0.5858585858585859
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.585859  0.575758  0.575758  0.565657  0.565657  0.560606  0.555556  0.550505  0.550505  0.540404
+id          1000001   1100001   1010001   0000001   1001001   1000000   1000011   1100000   1010000   0000000
+top1 succ rate: 14/200,top3 succ rate: 18/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.222222222222221
+
+exp  18, if top1 succ: 0 ,if top3 succ: 0 ,time used: 198.35105347633362
+gen id 1001001, mapped sim 0.5784313725490197
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.617647  0.598039  0.598039  0.598039  0.598039  0.588235  0.568627  0.568627  0.568627  0.558824
+id          1101000   1101001   1001000   1111000   1100000   1101010   1001010   1111010   1100010   0101000
+top1 succ rate: 14/200,top3 succ rate: 18/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.263157894736842
+
+exp  19, if top1 succ: 1 ,if top3 succ: 1 ,time used: 208.96608996391296
+gen id 0111000, mapped sim 0.7424242424242424
+                  0         1        2         3         4         5         6         7         8         9
+sim_score  0.742424  0.707071  0.70202  0.691919  0.691919  0.686869  0.666667  0.626263  0.616162  0.611111
+id          0111000   0111001  0101000   0011000   0110000   0111100   0111010   0101010   0110010   0111110
+top1 succ rate: 15/200,top3 succ rate: 19/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.3
+
+exp  20, if top1 succ: 1 ,if top3 succ: 1 ,time used: 219.6117866039276
+gen id 1010010, mapped sim 0.7878787878787878
+                  0         1         2         3         4         5         6         7        8        9
+sim_score  0.787879  0.747475  0.747475  0.717172  0.712121  0.707071  0.707071  0.641414  0.60101  0.60101
+id          1010010   1010011   1000010   1010110   1010000   1110010   1011010   1010100  1000100  0010010
+top1 succ rate: 16/200,top3 succ rate: 20/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.333333333333334
+
+exp  21, if top1 succ: 0 ,if top3 succ: 0 ,time used: 228.62102675437927
+gen id 0100101, mapped sim 0.6929824561403509
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.692982  0.692982  0.692982  0.675439  0.666667  0.640351  0.640351  0.640351  0.631579  0.622807
+id          0000001   0100001   0000101   0001001   0010001   0000000   0100000   0000100   0000011   0001000
+top1 succ rate: 16/200,top3 succ rate: 20/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.409090909090908
+
+exp  22, if top1 succ: 1 ,if top3 succ: 1 ,time used: 240.3317563533783
+gen id 1101111, mapped sim 0.7929292929292929
+                  0         1         2         3        4        5        6         7         8         9
+sim_score  0.792929  0.762626  0.742424  0.707071  0.70202  0.69697  0.69697  0.656566  0.646465  0.606061
+id          1101111   1101101   1111111   1100111  1101011  1101110  1001111   0101111   1011111   0111111
+top1 succ rate: 17/200,top3 succ rate: 21/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.304347826086957
+
+exp  23, if top1 succ: 1 ,if top3 succ: 1 ,time used: 248.47068095207214
+gen id 1001011, mapped sim 0.8923076923076924
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.892308  0.869231  0.861538  0.846154  0.823077  0.815385      0.8  0.769231  0.761538  0.753846
+id          1001011   1011011   1101011   1001010   1011010   1101010  1001001   1000011   0001011   1001000
+top1 succ rate: 18/200,top3 succ rate: 22/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.375
+
+exp  24, if top1 succ: 1 ,if top3 succ: 1 ,time used: 261.0105857849121
+gen id 0111110, mapped sim 0.8608247422680413
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.860825  0.793814  0.778351  0.768041  0.757732  0.747423  0.742268  0.716495  0.71134  0.675258
+id          0111110   0101110   0111010   0011110   0110110   0111100   1111110   0111111  0101010   0110010
+top1 succ rate: 19/200,top3 succ rate: 23/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.36
+
+exp  25, if top1 succ: 1 ,if top3 succ: 1 ,time used: 273.695595741272
+gen id 0101000, mapped sim 0.7222222222222222
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.722222  0.70202  0.681818  0.661616  0.661616  0.661616  0.641414  0.641414  0.626263  0.621212
+id          0101000  0100000   0101100   0101010   0001000   0111000   0000000   0100010   1101000   0101110
+top1 succ rate: 20/200,top3 succ rate: 24/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.384615384615385
+
+exp  26, if top1 succ: 0 ,if top3 succ: 1 ,time used: 284.1856391429901
+gen id 1101001, mapped sim 0.6767676767676768
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.681818  0.676768  0.671717  0.661616  0.651515  0.641414  0.611111  0.60101  0.575758  0.570707
+id          1101000   1101001   1100000   1001000   1000000   1101010   1111000  1110000   1101100   0101000
+top1 succ rate: 20/200,top3 succ rate: 25/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.333333333333334
+
+exp  27, if top1 succ: 1 ,if top3 succ: 1 ,time used: 293.3652756214142
+gen id 1110011, mapped sim 0.803030303030303
+                 0         1         2         3         4        5        6         7         8         9
+sim_score  0.80303  0.772727  0.757576  0.737374  0.732323  0.70202  0.70202  0.671717  0.611111  0.606061
+id         1110011   1111011   1110001   1010011   1100011  1110111  1110010   1111111   0110011   1011111
+top1 succ rate: 21/200,top3 succ rate: 26/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.321428571428571
+
+exp  28, if top1 succ: 1 ,if top3 succ: 1 ,time used: 301.89005517959595
+gen id 0001111, mapped sim 0.7929292929292929
+                  0         1         2         3         4        5        6         7         8         9
+sim_score  0.792929  0.782828  0.767677  0.762626  0.712121  0.70202  0.70202  0.676768  0.666667  0.646465
+id          0001111   0011111   0001011   0000111   0101111  0001110  0001101   0001010   0011010   0000010
+top1 succ rate: 22/200,top3 succ rate: 27/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.379310344827585
+
+exp  29, if top1 succ: 1 ,if top3 succ: 1 ,time used: 313.72196316719055
+gen id 0101010, mapped sim 0.7727272727272727
+                  0         1         2        3         4         5         6         7         8         9
+sim_score  0.772727  0.732323  0.722222  0.69697  0.691919  0.681818  0.681818  0.656566  0.560606  0.439394
+id          0101010   0001010   0101110  0101011   0101000   0111010   0100010   1101010   0000000   1111111
+top1 succ rate: 23/200,top3 succ rate: 28/200 
+
+userlist len:128, detect list len:,11, average detect list len: 15.233333333333333
+
+exp  30, if top1 succ: 1 ,if top3 succ: 1 ,time used: 324.7796697616577
+gen id 1110000, mapped sim 0.7929292929292929
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.792929  0.757576  0.737374  0.727273  0.712121  0.707071  0.691919  0.656566  0.636364  0.631313
+id          1110000   1111000   1100000   1110001   1010000   1110010   1110100   1111100   1100100   0110000
+top1 succ rate: 24/200,top3 succ rate: 29/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.225806451612904
+
+exp  31, if top1 succ: 0 ,if top3 succ: 1 ,time used: 334.36264419555664
+gen id 1000110, mapped sim 0.6802030456852792
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.680203  0.680203  0.649746  0.634518  0.624365  0.619289  0.609137  0.583756  0.563452  0.563452
+id          1000100   1000110   1001100   1000000   1100100   1010100   0000100   1000101   0000000   1110100
+top1 succ rate: 24/200,top3 succ rate: 30/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.15625
+
+exp  32, if top1 succ: 0 ,if top3 succ: 0 ,time used: 341.3513538837433
+gen id 1101011, mapped sim 0.6509433962264151
+                  0         1         2         3         4         5        6        7         8         9
+sim_score  0.660377  0.650943  0.650943  0.650943  0.641509  0.603774  0.59434  0.59434  0.584906  0.584906
+id          1111011   1111111   1111001   1101011   1101111   1011011  1011111  1110011   1110111   1111010
+top1 succ rate: 24/200,top3 succ rate: 30/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.151515151515152
+
+exp  33, if top1 succ: 1 ,if top3 succ: 1 ,time used: 353.44242000579834
+gen id 1001100, mapped sim 0.7727272727272727
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.772727  0.772727  0.717172  0.712121  0.707071  0.671717  0.651515  0.631313  0.590909  0.535354
+id          1001100   1001000   1101100   1011100   1001110   1001101   1000100   0001100   1010100   1110100
+top1 succ rate: 25/200,top3 succ rate: 31/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.117647058823529
+
+exp  34, if top1 succ: 1 ,if top3 succ: 1 ,time used: 363.0505213737488
+gen id 0000010, mapped sim 0.7445652173913043
+                  0        1         2         3         4         5         6        7        8         9
+sim_score  0.744565  0.73913  0.706522  0.701087  0.690217  0.673913  0.673913  0.63587  0.63587  0.630435
+id          0000010  0010010   0000000   0010000   0000011   0001010   0000110  0001000  0000100   0100010
+top1 succ rate: 26/200,top3 succ rate: 32/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.142857142857142
+
+exp  35, if top1 succ: 1 ,if top3 succ: 1 ,time used: 372.17188453674316
+gen id 1000010, mapped sim 0.7121212121212122
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.712121  0.681818  0.671717  0.671717  0.646465  0.641414  0.641414  0.631313  0.626263  0.621212
+id          1000010   1010010   1000000   1001010   1000110   1010000   1100010   1001000   0000010   1000011
+top1 succ rate: 27/200,top3 succ rate: 33/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.166666666666666
+
+exp  36, if top1 succ: 1 ,if top3 succ: 1 ,time used: 384.1208167076111
+gen id 0100000, mapped sim 0.7828282828282829
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.782828  0.762626  0.722222  0.722222  0.717172  0.69697  0.656566  0.636364  0.636364  0.575758
+id          0100000   0000000   0110000   0101000   0100100  0100001   1100000   1000000   0100010   0101010
+top1 succ rate: 28/200,top3 succ rate: 34/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.08108108108108
+
+exp  37, if top1 succ: 0 ,if top3 succ: 0 ,time used: 394.33465051651
+gen id 1100100, mapped sim 0.5
+                 0         1         2         3        4        5         6         7         8         9
+sim_score  0.59375  0.585938  0.578125  0.578125   0.5625   0.5625  0.554688  0.546875  0.546875  0.546875
+id         1011100   1011110   1010100   1011000  0011100  1111100   1011101   0010100   1110100   1001100
+top1 succ rate: 28/200,top3 succ rate: 34/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.052631578947368
+
+exp  38, if top1 succ: 1 ,if top3 succ: 1 ,time used: 403.24419951438904
+gen id 0101010, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.828283  0.762626  0.757576  0.752525  0.732323  0.727273  0.712121  0.69697  0.580808  0.419192
+id          0101010   0111010   0101000   0100010   0101011   0001010   0101110  1101010   0000000   1111111
+top1 succ rate: 29/200,top3 succ rate: 35/200 
+
+userlist len:128, detect list len:,11, average detect list len: 14.948717948717949
+
+exp  39, if top1 succ: 1 ,if top3 succ: 1 ,time used: 415.54318380355835
+gen id 0111001, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.823232  0.777778  0.752525  0.742424  0.742424  0.717172  0.70202  0.681818  0.671717  0.626263
+id          0111001   0011001   0111011   0110001   0111101   0101001  0111000   1111001   0111111   0011111
+top1 succ rate: 30/200,top3 succ rate: 36/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.975
+
+exp  40, if top1 succ: 1 ,if top3 succ: 1 ,time used: 425.64806842803955
+gen id 1100001, mapped sim 0.8367346938775511
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.836735  0.782313  0.782313  0.755102  0.748299  0.727891  0.70068  0.687075  0.639456  0.585034
+id          1100001   1000001   1101001   1110001   1100101   1100011  0100001   1100000   1100111   1101111
+top1 succ rate: 31/200,top3 succ rate: 37/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.0
+
+exp  41, if top1 succ: 1 ,if top3 succ: 1 ,time used: 437.68892526626587
+gen id 0111011, mapped sim 0.8383838383838383
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.838384  0.787879  0.752525  0.752525  0.742424  0.737374  0.712121  0.707071  0.666667  0.656566
+id          0111011   0011011   0111010   0111111   0101011   0110011   0111001   1111011   0111110   0101010
+top1 succ rate: 32/200,top3 succ rate: 38/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.047619047619047
+
+exp  42, if top1 succ: 1 ,if top3 succ: 1 ,time used: 446.72843194007874
+gen id 0011111, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5        6         7        8         9
+sim_score  0.808081  0.762626  0.757576  0.752525  0.722222  0.707071  0.69697  0.641414  0.59596  0.494949
+id          0011111   0111111   0011101   0011011   0010111   0001111  0011110   1011111  1111111   0101010
+top1 succ rate: 33/200,top3 succ rate: 39/200 
+
+userlist len:128, detect list len:,12, average detect list len: 14.976744186046512
+
+exp  43, if top1 succ: 1 ,if top3 succ: 1 ,time used: 457.54593801498413
+gen id 1001111, mapped sim 0.7626262626262627
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.762626  0.717172  0.717172  0.712121  0.707071  0.69697  0.661616  0.641414  0.621212  0.520202
+id          1001111   1011111   1001101   1000111   1101111  1001011   1111111   1001110   0001111   0111111
+top1 succ rate: 34/200,top3 succ rate: 40/200 
+
+userlist len:128, detect list len:,13, average detect list len: 14.931818181818182
+
+exp  44, if top1 succ: 1 ,if top3 succ: 1 ,time used: 467.89392852783203
+gen id 0110100, mapped sim 0.7727272727272727
+                  0         1         2        3        4         5         6         7         8         9
+sim_score  0.772727  0.742424  0.717172  0.70202  0.69697  0.691919  0.666667  0.646465  0.616162  0.585859
+id          0110100   0010100   0110110  0111100  0100100   0110000   0110101   1110100   1010100   0000000
+top1 succ rate: 35/200,top3 succ rate: 41/200 
+
+userlist len:128, detect list len:,12, average detect list len: 14.866666666666667
+
+exp  45, if top1 succ: 1 ,if top3 succ: 1 ,time used: 478.9385986328125
+gen id 1001110, mapped sim 0.7878787878787878
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.787879  0.737374  0.732323  0.727273  0.717172  0.712121  0.666667  0.661616  0.656566  0.646465
+id          1001110   1101110   1000110   1001010   1001100   1011110   1001111   1000100   1001000   0001110
+top1 succ rate: 36/200,top3 succ rate: 42/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.891304347826088
+
+exp  46, if top1 succ: 1 ,if top3 succ: 1 ,time used: 490.25410175323486
+gen id 1010011, mapped sim 0.7727272727272727
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.772727  0.747475  0.732323  0.712121  0.707071  0.676768  0.676768  0.616162  0.611111  0.590909
+id          1010011   1110011   1000011   1010111   1010001   1010010   1011011   1011111   0010011   1111111
+top1 succ rate: 37/200,top3 succ rate: 43/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.893617021276595
+
+exp  47, if top1 succ: 1 ,if top3 succ: 1 ,time used: 501.53546380996704
+gen id 1011000, mapped sim 0.7777777777777778
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.777778  0.737374  0.732323  0.722222  0.717172  0.717172  0.671717  0.636364  0.631313  0.626263
+id          1011000   1001000   1010000   1011010   1011100   1111000   1010100   1011001   1000100   0011000
+top1 succ rate: 38/200,top3 succ rate: 44/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.895833333333334
+
+exp  48, if top1 succ: 1 ,if top3 succ: 1 ,time used: 511.62820076942444
+gen id 0110010, mapped sim 0.7878787878787878
+                  0         1         2         3         4        5        6         7         8         9
+sim_score  0.787879  0.772727  0.732323  0.707071  0.707071  0.70202  0.70202  0.686869  0.636364  0.631313
+id          0110010   0100010   0010010   0110000   0110011  0111010  0110110   0101010   0000000   0001010
+top1 succ rate: 39/200,top3 succ rate: 45/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.877551020408163
+
+exp  49, if top1 succ: 1 ,if top3 succ: 1 ,time used: 521.0645015239716
+gen id 1010000, mapped sim 0.6666666666666666
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.666667  0.660819  0.643275  0.631579  0.631579  0.596491  0.584795  0.584795  0.549708  0.549708
+id          1010000   1010001   1010010   1110000   1000000   1011000   1010100   0010000   0000000   1110100
+top1 succ rate: 40/200,top3 succ rate: 46/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.88
+
+exp  50, if top1 succ: 1 ,if top3 succ: 1 ,time used: 531.4432904720306
+gen id 0010000, mapped sim 0.8220858895705522
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.822086  0.766871  0.760736  0.754601  0.742331  0.711656  0.711656  0.699387  0.662577  0.656442
+id          0010000   0000000   0010100   0110000   0010010   0011000   1010000   0100000   0010001   1000000
+top1 succ rate: 41/200,top3 succ rate: 47/200 
+
+userlist len:128, detect list len:,13, average detect list len: 14.843137254901961
+
+exp  51, if top1 succ: 1 ,if top3 succ: 1 ,time used: 543.4971923828125
+gen id 0100011, mapped sim 0.803030303030303
+                 0         1         2         3         4         5        6        7         8         9
+sim_score  0.80303  0.772727  0.762626  0.747475  0.737374  0.727273  0.70202  0.69697  0.686869  0.661616
+id         0100011   0101011   0100111   0000011   0100001   0100010  0110011  0101010   0100110   0100000
+top1 succ rate: 42/200,top3 succ rate: 48/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.884615384615385
+
+exp  52, if top1 succ: 1 ,if top3 succ: 1 ,time used: 555.9045822620392
+gen id 0000001, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828283  0.777778  0.757576  0.752525  0.737374  0.737374  0.737374  0.686869  0.666667  0.661616
+id          0000001   0100001   0000011   0000101   0000000   0010001   0001001   0100000   0000010   0000100
+top1 succ rate: 43/200,top3 succ rate: 49/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.924528301886792
+
+exp  53, if top1 succ: 1 ,if top3 succ: 1 ,time used: 565.5325503349304
+gen id 1111001, mapped sim 0.8446601941747572
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.84466  0.834951  0.796117  0.757282  0.728155  0.718447  0.708738  0.679612  0.660194  0.650485
+id         1111001   1011001   1111101   1101001   1111000   1110001   1111011   0111001   1111111   1011111
+top1 succ rate: 44/200,top3 succ rate: 50/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.944444444444445
+
+exp  54, if top1 succ: 0 ,if top3 succ: 0 ,time used: 574.7747340202332
+gen id 0111000, mapped sim 0.7070707070707071
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.818182  0.818182  0.808081  0.777778  0.777778  0.767677  0.747475  0.737374  0.707071  0.69697
+id          0101011   0111011   0100011   0101010   0111010   0100010   0101001   0001011   0101000  0001010
+top1 succ rate: 44/200,top3 succ rate: 50/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.981818181818182
+
+exp  55, if top1 succ: 0 ,if top3 succ: 0 ,time used: 587.452531337738
+gen id 0010011, mapped sim 0.5050505050505051
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.560606  0.560606  0.555556  0.555556  0.550505  0.545455  0.525253  0.525253  0.510101  0.474747
+id          0111111   0111110   0110111   0111101   1111111   0011111   1010100   0111011   0101111   0101010
+top1 succ rate: 44/200,top3 succ rate: 50/200 
+
+userlist len:128, detect list len:,11, average detect list len: 14.910714285714286
+
+exp  56, if top1 succ: 1 ,if top3 succ: 1 ,time used: 600.6861705780029
+gen id 0010011, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.808081  0.772727  0.752525  0.747475  0.732323  0.717172  0.707071  0.646465  0.611111  0.611111
+id          0010011   0000011   0110011   0010001   0010111   0011011   0010010   0010000   0000000   1010011
+top1 succ rate: 45/200,top3 succ rate: 51/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.947368421052632
+
+exp  57, if top1 succ: 1 ,if top3 succ: 1 ,time used: 613.0096900463104
+gen id 0001000, mapped sim 0.7878787878787878
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.787879  0.727273  0.717172  0.717172  0.707071  0.69697  0.691919  0.681818  0.636364  0.611111
+id          0001000   0001001   0001100   0011000   0000000  0001010   0101000   1001000   0010000   0100000
+top1 succ rate: 46/200,top3 succ rate: 52/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.931034482758621
+
+exp  58, if top1 succ: 1 ,if top3 succ: 1 ,time used: 625.386346578598
+gen id 0000100, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.828283  0.782828  0.772727  0.747475  0.747475  0.727273  0.722222  0.69697  0.691919  0.671717
+id          0000100   0100100   0000000   0000110   0010100   0100000   0001100  1000100   0010000   0000101
+top1 succ rate: 47/200,top3 succ rate: 53/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.932203389830509
+
+exp  59, if top1 succ: 1 ,if top3 succ: 1 ,time used: 638.0774416923523
+gen id 1001111, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828283  0.762626  0.757576  0.752525  0.747475  0.737374  0.717172  0.666667  0.666667  0.555556
+id          1001111   1001011   1011111   1001110   1000111   1101111   0001111   1111111   1001101   0111111
+top1 succ rate: 48/200,top3 succ rate: 54/200 
+
+userlist len:128, detect list len:,13, average detect list len: 14.9
+
+exp  60, if top1 succ: 0 ,if top3 succ: 1 ,time used: 648.3554618358612
+gen id 1010001, mapped sim 0.6310679611650486
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.640777  0.631068  0.631068  0.631068  0.621359  0.61165  0.601942  0.592233  0.563107  0.553398
+id          1010000   1010010   1010001   1011000   1110000  1010100   1011100   1110100   1111111   1000000
+top1 succ rate: 48/200,top3 succ rate: 55/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.901639344262295
+
+exp  61, if top1 succ: 1 ,if top3 succ: 1 ,time used: 661.6014032363892
+gen id 0110010, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.828283  0.772727  0.767677  0.757576  0.742424  0.712121  0.69697  0.691919  0.575758  0.535354
+id          0110010   0110110   0110011   0010010   0110000   0111010  1110010   0100010   0101010   0000000
+top1 succ rate: 49/200,top3 succ rate: 56/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.887096774193548
+
+exp  62, if top1 succ: 1 ,if top3 succ: 1 ,time used: 672.9313786029816
+gen id 0101100, mapped sim 0.7878787878787878
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.787879  0.742424  0.742424  0.722222  0.707071  0.691919  0.686869  0.646465  0.646465  0.60101
+id          0101100   0001100   0101000   0111100   0101101   0101110   0100100   0101010   1101100  0001010
+top1 succ rate: 50/200,top3 succ rate: 57/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.904761904761905
+
+exp  63, if top1 succ: 0 ,if top3 succ: 1 ,time used: 680.832291841507
+gen id 1011010, mapped sim 0.7075471698113207
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.707547  0.707547  0.688679  0.660377  0.641509  0.641509  0.622642  0.613208  0.584906  0.575472
+id          1111010   1011010   1111000   1101010   1111011   1111110   1111001   0111010   1110010   1111111
+top1 succ rate: 50/200,top3 succ rate: 58/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.9375
+
+exp  64, if top1 succ: 1 ,if top3 succ: 1 ,time used: 691.9182226657867
+gen id 1011010, mapped sim 0.7070707070707071
+                  0        1         2         3         4         5         6        7         8         9
+sim_score  0.707071  0.70202  0.681818  0.666667  0.651515  0.646465  0.626263  0.59596  0.590909  0.585859
+id          1011010  1001010   1011000   1010010   1011110   1111010   1011100  1011011   0011010   1010100
+top1 succ rate: 51/200,top3 succ rate: 59/200 
+
+userlist len:128, detect list len:,16, average detect list len: 14.953846153846154
+
+exp  65, if top1 succ: 1 ,if top3 succ: 1 ,time used: 704.266340970993
+gen id 0010011, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.808081  0.757576  0.747475  0.722222  0.712121  0.712121  0.707071  0.681818  0.616162  0.555556
+id          0010011   0110011   0000011   0010111   0010010   0010001   0011011   1010011   0010000   0000000
+top1 succ rate: 52/200,top3 succ rate: 60/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.984848484848484
+
+exp  66, if top1 succ: 1 ,if top3 succ: 1 ,time used: 716.0755853652954
+gen id 0111111, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.808081  0.762626  0.742424  0.727273  0.717172  0.707071  0.70202  0.681818  0.590909  0.328283
+id          0111111   0111011   0111101   0111110   0101111   0110111  1111111   0011111   0101010   1010100
+top1 succ rate: 53/200,top3 succ rate: 61/200 
+
+userlist len:128, detect list len:,11, average detect list len: 14.925373134328359
+
+exp  67, if top1 succ: 1 ,if top3 succ: 1 ,time used: 728.8422491550446
+gen id 1011010, mapped sim 0.7575757575757576
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.757576  0.737374  0.727273  0.691919  0.686869  0.671717  0.646465  0.626263  0.606061  0.60101
+id          1011010   1111010   1001010   1011000   1011110   1011011   1010010   0011010   1011001  1011111
+top1 succ rate: 54/200,top3 succ rate: 62/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.955882352941176
+
+exp  68, if top1 succ: 1 ,if top3 succ: 1 ,time used: 739.7444756031036
+gen id 0100010, mapped sim 0.76875
+                 0        1        2        3        4        5        6        7        8        9
+sim_score  0.76875  0.75625  0.73125  0.70625  0.69375  0.68125    0.675  0.65625  0.64375   0.6375
+id         0100010  0100110  0000010  0110010  0100000  0100100  0100011  0000000  0101010  1100010
+top1 succ rate: 55/200,top3 succ rate: 63/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.956521739130435
+
+exp  69, if top1 succ: 1 ,if top3 succ: 1 ,time used: 750.3440108299255
+gen id 0011111, mapped sim 0.8333333333333334
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.833333  0.767677  0.762626  0.762626  0.757576  0.742424  0.732323  0.641414  0.575758  0.505051
+id          0011111   0111111   0001111   0011101   0010111   0011011   0011110   1011111   1111111   0101010
+top1 succ rate: 56/200,top3 succ rate: 64/200 
+
+userlist len:128, detect list len:,12, average detect list len: 14.914285714285715
+
+exp  70, if top1 succ: 1 ,if top3 succ: 1 ,time used: 763.1024425029755
+gen id 0000111, mapped sim 0.7727272727272727
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.772727  0.732323  0.727273  0.722222  0.712121  0.69697  0.691919  0.641414  0.580808  0.580808
+id          0000111   0100111   0001111   0000110   0000011  0010111   0000101   0000100   0000000   1000111
+top1 succ rate: 57/200,top3 succ rate: 65/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.943661971830986
+
+exp  71, if top1 succ: 1 ,if top3 succ: 1 ,time used: 775.6596059799194
+gen id 0110101, mapped sim 0.797979797979798
+                 0         1         2         3         4        5         6         7         8         9
+sim_score  0.79798  0.757576  0.747475  0.742424  0.732323  0.69697  0.686869  0.631313  0.626263  0.590909
+id         0110101   0100101   0010101   0110001   0111101  0110111   0110100   0110000   1110101   0100000
+top1 succ rate: 58/200,top3 succ rate: 66/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.972222222222221
+
+exp  72, if top1 succ: 1 ,if top3 succ: 1 ,time used: 786.1233179569244
+gen id 1110011, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.808081  0.762626  0.747475  0.747475  0.742424  0.742424  0.722222  0.661616  0.616162  0.59596
+id          1110011   1100011   1110010   1111011   1110001   1010011   1110111   1111111   1101111  1011111
+top1 succ rate: 59/200,top3 succ rate: 67/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.972602739726028
+
+exp  73, if top1 succ: 1 ,if top3 succ: 1 ,time used: 798.1762256622314
+gen id 0011011, mapped sim 0.8131313131313131
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.813131  0.752525  0.752525  0.747475  0.737374  0.727273  0.712121  0.676768  0.671717  0.651515
+id          0011011   0111011   0011001   0011111   0011010   0001011   0010011   0011000   0011110   0001010
+top1 succ rate: 60/200,top3 succ rate: 68/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.0
+
+exp  74, if top1 succ: 0 ,if top3 succ: 1 ,time used: 805.7393863201141
+gen id 0001011, mapped sim 0.6699029126213593
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.669903  0.669903  0.669903  0.640777  0.621359  0.621359  0.621359  0.621359  0.592233  0.572816
+id          0101011   0001011   0100011   0101111   0101010   0001010   0100010   0111011   0101110   0111010
+top1 succ rate: 60/200,top3 succ rate: 69/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.026666666666667
+
+exp  75, if top1 succ: 1 ,if top3 succ: 1 ,time used: 818.1908893585205
+gen id 1110101, mapped sim 0.7272727272727273
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.727273  0.70202  0.686869  0.681818  0.671717  0.661616  0.646465  0.631313  0.631313  0.626263
+id          1110101  1110001   1010101   1111101   1110100   1110111   1110000   1010100   1100101   1111100
+top1 succ rate: 61/200,top3 succ rate: 70/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.052631578947368
+
+exp  76, if top1 succ: 1 ,if top3 succ: 1 ,time used: 829.9271204471588
+gen id 1011001, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.823232  0.752525  0.742424  0.727273  0.727273  0.727273  0.722222  0.717172  0.626263  0.555556
+id          1011001   1111001   1011000   1011011   0011001   1010001   1011101   1001001   1011111   1111111
+top1 succ rate: 62/200,top3 succ rate: 71/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.064935064935066
+
+exp  77, if top1 succ: 1 ,if top3 succ: 1 ,time used: 838.8461337089539
+gen id 0011100, mapped sim 0.8125
+                 0         1         2         3         4         5         6         7        8         9
+sim_score   0.8125  0.785714  0.776786  0.767857  0.758929  0.758929  0.741071  0.732143   0.6875  0.633929
+id         0011100   0011000   0011101   0010100   0111100   0001100   0010000   0011110  0000000   0100000
+top1 succ rate: 63/200,top3 succ rate: 72/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.064102564102564
+
+exp  78, if top1 succ: 1 ,if top3 succ: 1 ,time used: 849.9592521190643
+gen id 0100000, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.823232  0.777778  0.772727  0.762626  0.732323  0.732323  0.717172  0.671717  0.621212  0.530303
+id          0100000   0110000   0100100   0101000   0000000   0100010   0100001   0101010   1100000   1000000
+top1 succ rate: 64/200,top3 succ rate: 73/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.025316455696203
+
+exp  79, if top1 succ: 1 ,if top3 succ: 1 ,time used: 863.0626521110535
+gen id 0110101, mapped sim 0.7171717171717171
+                  0        1        2         3         4         5         6         7         8         9
+sim_score  0.717172  0.70202  0.69697  0.671717  0.661616  0.656566  0.631313  0.585859  0.570707  0.565657
+id          0110101  0100101  0010101   0110111   0111101   0110001   0110100   0110110   0110000   1110101
+top1 succ rate: 65/200,top3 succ rate: 74/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.05
+
+exp  80, if top1 succ: 1 ,if top3 succ: 1 ,time used: 874.5333712100983
+gen id 1101111, mapped sim 0.7525252525252525
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.752525  0.732323  0.717172  0.712121  0.69697  0.681818  0.656566  0.631313  0.590909  0.550505
+id          1101111   1101101   1101110   1111111  1001111   1101011   1011111   1100111   0101111   0111111
+top1 succ rate: 66/200,top3 succ rate: 75/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.024691358024691
+
+exp  81, if top1 succ: 1 ,if top3 succ: 1 ,time used: 885.3869574069977
+gen id 0001110, mapped sim 0.8939393939393939
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.893939  0.828283  0.828283  0.818182  0.813131  0.747475  0.737374  0.732323  0.712121  0.671717
+id          0001110   0011110   0001010   0000110   0001100   0001000   0101110   0001111   1001110   0000000
+top1 succ rate: 67/200,top3 succ rate: 76/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.036585365853659
+
+exp  82, if top1 succ: 1 ,if top3 succ: 1 ,time used: 897.8625810146332
+gen id 1001011, mapped sim 0.7929292929292929
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.792929  0.767677  0.747475  0.737374  0.732323  0.707071  0.686869  0.681818  0.646465  0.590909
+id          1001011   1000011   1001001   1101011   1011011   1001111   1001010   1000111   1011111   1111111
+top1 succ rate: 68/200,top3 succ rate: 77/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.036144578313253
+
+exp  83, if top1 succ: 1 ,if top3 succ: 1 ,time used: 909.6296062469482
+gen id 0001111, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.747475  0.737374  0.732323  0.732323  0.727273  0.722222  0.691919  0.656566  0.570707
+id          0001111   0011111   0000111   0001101   1001111   0101111   0001011   0001110   0111111   1111111
+top1 succ rate: 69/200,top3 succ rate: 78/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.011904761904763
+
+exp  84, if top1 succ: 1 ,if top3 succ: 1 ,time used: 915.872358083725
+gen id 1001010, mapped sim 0.7211538461538461
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.721154  0.711538  0.692308  0.682692  0.682692  0.663462  0.653846  0.605769  0.596154  0.567308
+id          1001010   1101010   0001010   0101010   1011010   1000010   1001000   1001110   1001011   0000000
+top1 succ rate: 70/200,top3 succ rate: 79/200 
+
+userlist len:128, detect list len:,12, average detect list len: 14.976470588235294
+
+exp  85, if top1 succ: 1 ,if top3 succ: 1 ,time used: 923.1236436367035
+gen id 1011011, mapped sim 0.8135593220338984
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.813559  0.771186  0.754237  0.745763  0.728814  0.720339  0.711864  0.661017  0.652542  0.635593
+id          1011011   1011001   1001011   1010011   1111011   1011111   1011010   1001111   1010111   1111111
+top1 succ rate: 71/200,top3 succ rate: 80/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.976744186046512
+
+exp  86, if top1 succ: 1 ,if top3 succ: 1 ,time used: 930.6127088069916
+gen id 1001100, mapped sim 0.7735849056603774
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.773585  0.773585  0.745283  0.735849  0.726415  0.716981  0.698113  0.698113  0.660377  0.650943
+id          1001100   1101100   1000100   0001100   1011100   1001000   1010100   1110100   0010100   0000000
+top1 succ rate: 72/200,top3 succ rate: 81/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.96551724137931
+
+exp  87, if top1 succ: 0 ,if top3 succ: 1 ,time used: 941.3796360492706
+gen id 0011001, mapped sim 0.8021978021978022
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.802198  0.802198  0.752747  0.752747  0.736264  0.725275  0.71978  0.675824  0.637363  0.626374
+id          0011000   0011001   0111000   0001000   0011010   0010000  0011100   0000000   0101010   0100000
+top1 succ rate: 72/200,top3 succ rate: 82/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.954545454545455
+
+exp  88, if top1 succ: 1 ,if top3 succ: 1 ,time used: 954.5597038269043
+gen id 0011011, mapped sim 0.8585858585858586
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.858586  0.80303  0.787879  0.787879  0.782828  0.782828  0.767677  0.732323  0.717172  0.712121
+id          0011011  0011111   0011010   0010011   0111011   0011001   0001011   0011110   0010010   0011000
+top1 succ rate: 73/200,top3 succ rate: 83/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.97752808988764
+
+exp  89, if top1 succ: 1 ,if top3 succ: 1 ,time used: 964.535430431366
+gen id 0110110, mapped sim 0.7314814814814815
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.731481  0.731481  0.703704  0.694444  0.685185  0.666667  0.657407  0.62963  0.592593  0.583333
+id          0110110   0110100   0111110   0010110   0110010   0100110   0111010  0110111   0101010   0000000
+top1 succ rate: 74/200,top3 succ rate: 84/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.977777777777778
+
+exp  90, if top1 succ: 1 ,if top3 succ: 1 ,time used: 973.7776188850403
+gen id 1101110, mapped sim 0.7378640776699029
+                  0         1        2         3         4         5         6         7         8        9
+sim_score  0.737864  0.699029  0.68932  0.669903  0.660194  0.660194  0.660194  0.650485  0.621359  0.61165
+id          1101110   1111110  1101100   1100110   1101111   1001110   1101010   0101110   1111111  1101101
+top1 succ rate: 75/200,top3 succ rate: 85/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.0
+
+exp  91, if top1 succ: 0 ,if top3 succ: 1 ,time used: 980.7617528438568
+gen id 1010001, mapped sim 0.6634615384615384
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.663462  0.663462  0.653846  0.644231  0.634615  0.615385  0.615385  0.605769  0.586538  0.576923
+id          1010101   1010001   1011101   1000101   1110101   1010111   1010011   1011111   1001111   1111111
+top1 succ rate: 75/200,top3 succ rate: 86/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.0
+
+exp  92, if top1 succ: 1 ,if top3 succ: 1 ,time used: 993.1052424907684
+gen id 1110000, mapped sim 0.8535353535353535
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.853535  0.818182  0.818182  0.762626  0.752525  0.742424  0.732323  0.707071  0.671717  0.641414
+id          1110000   1100000   0110000   1110001   1111000   1010000   1110100   1000000   0000000   1110010
+top1 succ rate: 76/200,top3 succ rate: 87/200 
+
+userlist len:128, detect list len:,13, average detect list len: 14.978494623655914
+
+exp  93, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1005.4965581893921
+gen id 0000111, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.762626  0.747475  0.732323  0.732323  0.727273  0.722222  0.666667  0.641414  0.570707
+id          0000111   0010111   0000011   0100111   0000101   0000110   0001111   1000111   0000100   0000000
+top1 succ rate: 77/200,top3 succ rate: 88/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.0
+
+exp  94, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1018.3123075962067
+gen id 0101010, mapped sim 0.7121212121212122
+                  0         1        2         3         4         5         6         7         8        9
+sim_score  0.722222  0.712121  0.69697  0.686869  0.686869  0.676768  0.661616  0.656566  0.636364  0.60101
+id          0100010   0101010  0000010   0001010   0110010   0111010   0100000   0100110   0000000  1100010
+top1 succ rate: 77/200,top3 succ rate: 89/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.989473684210527
+
+exp  95, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1030.486304283142
+gen id 1100101, mapped sim 0.8288770053475936
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828877  0.780749  0.770053  0.770053  0.754011  0.727273  0.727273  0.679144  0.668449  0.652406
+id          1100101   1100001   1000101   1110101   1100111   1100100   1101101   1100000   1110100   1100110
+top1 succ rate: 78/200,top3 succ rate: 90/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.010416666666666
+
+exp  96, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1039.1783275604248
+gen id 1101010, mapped sim 0.6337209302325582
+                  0         1         2         3         4         5         6         7        8        9
+sim_score  0.633721  0.627907  0.604651  0.604651  0.598837  0.593023  0.569767  0.569767      0.5      0.5
+id          1101010   1101000   0101010   1101011   1100010   1111010   1001010   1101110  0000000  1111111
+top1 succ rate: 79/200,top3 succ rate: 91/200 
+
+userlist len:128, detect list len:,11, average detect list len: 14.969072164948454
+
+exp  97, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1051.8333365917206
+gen id 1000100, mapped sim 0.8186528497409327
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.818653  0.792746  0.756477  0.751295  0.740933  0.735751  0.73057  0.704663  0.611399  0.549223
+id          1000100   1100100   1010100   1000110   1000000   1001100  1110100   1000101   0000100   0010100
+top1 succ rate: 80/200,top3 succ rate: 92/200 
+
+userlist len:128, detect list len:,13, average detect list len: 14.948979591836734
+
+exp  98, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1064.0402297973633
+gen id 1011001, mapped sim 0.8284023668639053
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828402  0.775148  0.769231  0.763314  0.751479  0.733728  0.710059  0.639053  0.615385  0.556213
+id          1011001   1001001   1010001   0011001   1111001   1011101   1011000   1011011   1011100   1010100
+top1 succ rate: 81/200,top3 succ rate: 93/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.969696969696969
+
+exp  99, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1074.7019591331482
+gen id 1010000, mapped sim 0.7829457364341085
+                  0         1        2        3         4         5         6         7         8         9
+sim_score  0.782946  0.775194  0.72093  0.72093  0.713178  0.697674  0.674419  0.666667  0.658915  0.658915
+id          1010000   1000000  1010100  1011000   1000100   1010010   1010001   0010000   0000000   1011100
+top1 succ rate: 82/200,top3 succ rate: 94/200 
+
+userlist len:128, detect list len:,15, average detect list len: 14.97
+
+exp  100, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1084.0958802700043
+gen id 0100111, mapped sim 0.7828282828282829
+                  0         1         2        3        4         5         6         7         8         9
+sim_score  0.782828  0.762626  0.717172  0.69697  0.69697  0.691919  0.686869  0.676768  0.661616  0.611111
+id          0100111   0100011   0101111  0100110  0110111   0000111   0100101   0100010   1100111   0101010
+top1 succ rate: 83/200,top3 succ rate: 95/200 
+
+userlist len:128, detect list len:,17, average detect list len: 14.990099009900991
+
+exp  101, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1096.4214589595795
+gen id 0101100, mapped sim 0.803030303030303
+                 0         1         2         3         4         5        6         7         8         9
+sim_score  0.80303  0.742424  0.737374  0.727273  0.727273  0.727273  0.70202  0.651515  0.626263  0.565657
+id         0101100   0100100   0111100   0101110   0101101   0001100  0101000   1101100   0101010   0000000
+top1 succ rate: 84/200,top3 succ rate: 96/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.0
+
+exp  102, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1106.3130922317505
+gen id 0100010, mapped sim 0.8585858585858586
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.858586  0.79798  0.782828  0.772727  0.757576  0.757576  0.732323  0.691919  0.631313  0.631313
+id          0100010  0100110   0100000   0100011   1100010   0110010   0101010   0000010   1101010   0111010
+top1 succ rate: 85/200,top3 succ rate: 97/200 
+
+userlist len:128, detect list len:,14, average detect list len: 14.990291262135923
+
+exp  103, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1116.6301963329315
+gen id 0101011, mapped sim 0.7477477477477478
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.747748  0.711712  0.684685  0.684685  0.684685  0.666667  0.666667  0.648649  0.63964  0.621622
+id          0101011   0001011   0101010   0111011   0101001   0100011   0101111   0001010  1101011   0111010
+top1 succ rate: 86/200,top3 succ rate: 98/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.009615384615385
+
+exp  104, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1126.197894334793
+gen id 1110110, mapped sim 0.7983193277310925
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.815126  0.798319  0.773109  0.756303  0.756303  0.722689  0.714286  0.705882  0.705882  0.680672
+id          1010110   1110110   1010100   1110100   1000110   1011110   1000100   1010111   1010010   1011100
+top1 succ rate: 86/200,top3 succ rate: 99/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.019047619047619
+
+exp  105, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1138.5796611309052
+gen id 0100000, mapped sim 0.8838383838383839
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.883838  0.838384  0.833333  0.813131  0.80303  0.792929  0.782828  0.767677  0.555556  0.454545
+id          0100000   0100010   0110000   0101000  0100100   0100001   0000000   0101010   1100000   1000000
+top1 succ rate: 87/200,top3 succ rate: 100/200 
+
+userlist len:128, detect list len:,12, average detect list len: 14.99056603773585
+
+exp  106, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1149.5614285469055
+gen id 1000011, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5        6         7         8        9
+sim_score  0.823232  0.757576  0.747475  0.747475  0.742424  0.737374  0.70202  0.681818  0.671717  0.59596
+id          1000011   1000001   0000011   1001011   1100011   1000010  1000111   1010011   1000000  0000000
+top1 succ rate: 88/200,top3 succ rate: 101/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.009345794392523
+
+exp  107, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1162.4721703529358
+gen id 0001101, mapped sim 0.8636363636363636
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.863636  0.80303  0.787879  0.772727  0.767677  0.752525  0.742424  0.712121  0.691919  0.676768
+id          0001101  0001111   0101101   0001100   0001001   0000101   0011101   0001110   1001101   0001000
+top1 succ rate: 89/200,top3 succ rate: 102/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.027777777777779
+
+exp  108, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1175.292626619339
+gen id 1101011, mapped sim 0.7171717171717171
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.853535  0.848485  0.848485  0.823232  0.722222  0.717172  0.712121  0.59596  0.585859  0.580808
+id          1100001   1110001   1101001   0100001   1100011   1100101   1100000  1000001   1100111   1101111
+top1 succ rate: 89/200,top3 succ rate: 102/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.036697247706423
+
+exp  109, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1184.9094161987305
+gen id 1000101, mapped sim 0.7641509433962265
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.764151  0.735849  0.726415  0.726415  0.679245  0.669811  0.641509  0.641509  0.641509  0.641509
+id          1000101   1100101   1010101   1000111   1000100   1000001   1010100   1000110   0000101   1001101
+top1 succ rate: 90/200,top3 succ rate: 103/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.054545454545455
+
+exp  110, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1196.9552114009857
+gen id 0000000, mapped sim 0.7828282828282829
+                 0         1         2         3         4         5        6        7         8         9
+sim_score  0.79798  0.782828  0.752525  0.737374  0.722222  0.717172  0.70202  0.70202  0.691919  0.686869
+id         0000010   0000000   0000011   0010010   0010000   0100010  0100000  0000110   0001010   0000100
+top1 succ rate: 90/200,top3 succ rate: 104/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.063063063063064
+
+exp  111, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1208.5290298461914
+gen id 0011011, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.808081  0.747475  0.732323  0.727273  0.712121  0.707071  0.707071  0.707071  0.666667  0.651515
+id          0011011   0111011   0010011   0011111   0011001   0011010   1011011   0001011   0111111   0010111
+top1 succ rate: 91/200,top3 succ rate: 105/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.0625
+
+exp  112, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1218.6166157722473
+gen id 0100000, mapped sim 0.803680981595092
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.803681  0.779141  0.742331  0.736196  0.736196  0.730061  0.705521  0.705521  0.588957  0.527607
+id          0100000   0100010   0000000   0110000   0100001   0101000   0101010   0100100   1100000   1000000
+top1 succ rate: 92/200,top3 succ rate: 106/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.035398230088495
+
+exp  113, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1228.9071688652039
+gen id 1000011, mapped sim 0.8035714285714286
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.803571  0.785714  0.767857  0.767857  0.714286  0.705357  0.678571  0.651786    0.625  0.580357
+id          1000011   1100011   1010011   1000001   1000010   1000111   1000000   0000011  1001011   1000100
+top1 succ rate: 93/200,top3 succ rate: 107/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.052631578947368
+
+exp  114, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1241.0555901527405
+gen id 0011101, mapped sim 0.7055214723926381
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.705521  0.668712  0.662577  0.650307  0.644172  0.644172  0.638037  0.619632  0.582822  0.576687
+id          0011101   0111101   0011001   1011101   0001101   0010101   0011100   0011111   0111111   0011011
+top1 succ rate: 94/200,top3 succ rate: 108/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.060869565217391
+
+exp  115, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1253.746054649353
+gen id 0000111, mapped sim 0.7424242424242424
+                  0         1         2         3        4         5         6         7        8         9
+sim_score  0.742424  0.732323  0.717172  0.707071  0.69697  0.681818  0.656566  0.636364  0.60101  0.590909
+id          0000111   0010111   0100111   0000011  0000110   0000101   0001111   0000100  0000000   0010000
+top1 succ rate: 95/200,top3 succ rate: 109/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.077586206896552
+
+exp  116, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1266.2570922374725
+gen id 1111101, mapped sim 0.803030303030303
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.80303  0.787879  0.752525  0.737374  0.737374  0.727273  0.722222  0.707071  0.686869  0.676768
+id         1111101   1011101   1111111   1011111   1101101   1110101   1111100   1111001   1101111   1110111
+top1 succ rate: 96/200,top3 succ rate: 110/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.085470085470085
+
+exp  117, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1278.5608639717102
+gen id 1110000, mapped sim 0.8484848484848485
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.848485  0.80303  0.782828  0.757576  0.752525  0.747475  0.727273  0.681818  0.671717  0.656566
+id          1110000  1110010   1100000   1010000   1111000   1110100   1110001   1100100   0110000   1010100
+top1 succ rate: 97/200,top3 succ rate: 111/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.084745762711865
+
+exp  118, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1290.3455238342285
+gen id 0010100, mapped sim 0.8274111675126904
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.827411  0.771574  0.766497  0.756345  0.756345  0.736041  0.700508  0.695431  0.680203  0.670051
+id          0010100   0000100   0011100   0010000   0110100   0010101   0000000   0011000   0010110   1010100
+top1 succ rate: 98/200,top3 succ rate: 112/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.07563025210084
+
+exp  119, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1303.0525476932526
+gen id 1101101, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.777778  0.757576  0.757576  0.732323  0.717172  0.717172  0.717172  0.691919  0.681818
+id          1101101   1101111   1100101   1101001   1111101   1100111   1101011   1001101   1111111   1101100
+top1 succ rate: 99/200,top3 succ rate: 113/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.083333333333334
+
+exp  120, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1315.1560158729553
+gen id 1001111, mapped sim 0.803030303030303
+                 0         1         2         3        4         5         6         7         8         9
+sim_score  0.80303  0.782828  0.767677  0.707071  0.70202  0.691919  0.686869  0.686869  0.676768  0.560606
+id         1001111   1101111   1001011   1011111  1001101   1001110   1111111   1000111   0001111   0111111
+top1 succ rate: 100/200,top3 succ rate: 114/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.066115702479339
+
+exp  121, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1327.5969450473785
+gen id 0110101, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.782828  0.747475  0.732323  0.717172  0.712121  0.707071  0.691919  0.656566  0.621212
+id          0110101   0110001   0111101   0100101   0010101   0110100   1110101   0110111   0110011   0111111
+top1 succ rate: 101/200,top3 succ rate: 115/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.073770491803279
+
+exp  122, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1336.4362285137177
+gen id 1011000, mapped sim 0.5816326530612245
+                  0         1         2         3         4         5         6         7        8        9
+sim_score  0.632653  0.632653  0.612245  0.612245  0.612245  0.602041  0.581633  0.571429  0.55102  0.55102
+id          1001010   1001110   1001000   1001100   0001010   1011010   1001011   1000010  1000000  1101010
+top1 succ rate: 101/200,top3 succ rate: 115/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.08130081300813
+
+exp  123, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1348.658572435379
+gen id 0010111, mapped sim 0.7474747474747475
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.747475  0.747475  0.732323  0.712121  0.712121  0.656566  0.651515  0.616162  0.580808  0.565657
+id          0010111   0110111   0000111   0010011   0010101   0011111   0010110   0010100   0010000   0000000
+top1 succ rate: 102/200,top3 succ rate: 116/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.096774193548388
+
+exp  124, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1361.4547817707062
+gen id 0011010, mapped sim 0.7777777777777778
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.777778  0.732323  0.732323  0.727273  0.722222  0.686869  0.676768  0.661616  0.661616  0.651515
+id          0011010   0011000   0011110   0001010   0010010   0011100   0010000   1011010   0111010   0011011
+top1 succ rate: 103/200,top3 succ rate: 117/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.104
+
+exp  125, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1373.380121231079
+gen id 0111100, mapped sim 0.8535353535353535
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.853535  0.792929  0.772727  0.747475  0.747475  0.742424  0.732323  0.732323  0.661616  0.555556
+id          0111100   0011100   0111110   0111101   0101100   0111000   1111100   0110100   0111010   0101010
+top1 succ rate: 104/200,top3 succ rate: 118/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.11111111111111
+
+exp  126, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1385.6958177089691
+gen id 1101001, mapped sim 0.7676767676767676
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.767677  0.747475  0.722222  0.712121  0.686869  0.676768  0.666667  0.626263  0.575758  0.520202
+id          1101001   1101000   1001001   1111001   1100001   1101101   1101011   0101001   1101111   1111111
+top1 succ rate: 105/200,top3 succ rate: 119/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.118110236220472
+
+exp  127, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1398.4563100337982
+gen id 1111001, mapped sim 0.7908163265306123
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.790816  0.760204  0.744898  0.729592  0.709184  0.69898  0.668367  0.663265  0.647959  0.622449
+id          1111001   1111101   1011001   1110001   1111000  1111011   1111111   1101001   0111001   1011111
+top1 succ rate: 106/200,top3 succ rate: 120/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.125
+
+exp  128, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1408.1892857551575
+gen id 1000100, mapped sim 0.7142857142857143
+                  0         1        2         3         4         5         6         7         8         9
+sim_score  0.714286  0.685714  0.67619  0.666667  0.657143  0.638095  0.638095  0.628571  0.628571  0.619048
+id          1000100   1000000  1000110   1100100   0000100   1100000   1000101   0000000   1010100   1001100
+top1 succ rate: 107/200,top3 succ rate: 121/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.116279069767442
+
+exp  129, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1420.432787179947
+gen id 0010001, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828283  0.772727  0.762626  0.752525  0.747475  0.722222  0.717172  0.666667  0.651515  0.641414
+id          0010001   0110001   0011001   0010101   0010011   0000001   0010000   1010001   0011000   0010100
+top1 succ rate: 108/200,top3 succ rate: 122/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.13076923076923
+
+exp  130, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1432.7982013225555
+gen id 1010011, mapped sim 0.8434343434343434
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.843434  0.833333  0.813131  0.747475  0.732323  0.727273  0.722222  0.691919  0.681818  0.681818
+id          1010011   1010111   1110011   1000011   1011011   1010010   1011111   1111111   1010001   0010011
+top1 succ rate: 109/200,top3 succ rate: 123/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.129770992366412
+
+exp  131, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1445.22993350029
+gen id 1100110, mapped sim 0.7828282828282829
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.782828  0.762626  0.747475  0.742424  0.70202  0.676768  0.666667  0.661616  0.651515  0.631313
+id          1100110   1000110   1100010   1101110  1100100   1110110   1100000   1101100   1100111   0100110
+top1 succ rate: 110/200,top3 succ rate: 124/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.136363636363637
+
+exp  132, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1457.3948757648468
+gen id 1101110, mapped sim 0.7828282828282829
+                  0         1         2         3        4        5         6         7         8         9
+sim_score  0.782828  0.727273  0.707071  0.707071  0.70202  0.70202  0.691919  0.676768  0.651515  0.651515
+id          1101110   1101010   1001110   1100110  1101100  1101111   0101110   1111110   1001010   1100010
+top1 succ rate: 111/200,top3 succ rate: 125/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.135338345864662
+
+exp  133, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1470.1131188869476
+gen id 0010001, mapped sim 0.8131313131313131
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.813131  0.782828  0.767677  0.752525  0.732323  0.69697  0.681818  0.651515  0.651515  0.636364
+id          0010001   0010101   0000001   0110001   0011001  0010011   0010000   0010100   1010001   0000000
+top1 succ rate: 112/200,top3 succ rate: 126/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.149253731343284
+
+exp  134, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1482.7567162513733
+gen id 0101110, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.772727  0.762626  0.742424  0.727273  0.717172  0.712121  0.691919  0.681818  0.681818
+id          0101110   0101010   0001110   0101100   0111110   0001010   0100110   1101110   0111010   0101111
+top1 succ rate: 113/200,top3 succ rate: 127/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.148148148148149
+
+exp  135, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1493.750336408615
+gen id 1100101, mapped sim 0.8131313131313131
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.813131  0.752525  0.747475  0.742424  0.727273  0.722222  0.69697  0.676768  0.656566  0.651515
+id          1100101   1000101   1100111   1100001   1110101   1100100  0100101   1101101   1100110   1100000
+top1 succ rate: 114/200,top3 succ rate: 128/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.161764705882353
+
+exp  136, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1502.363754749298
+gen id 0001100, mapped sim 0.7230769230769231
+                  0         1        2         3         4         5         6         7         8         9
+sim_score  0.723077  0.715385      0.7  0.692308  0.669231  0.623077  0.623077  0.615385  0.592308  0.584615
+id          0001100   0000100  0001110   0011100   0101100   0001000   0001101   0000000   1001100   0010000
+top1 succ rate: 115/200,top3 succ rate: 129/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.16058394160584
+
+exp  137, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1514.220510482788
+gen id 0101001, mapped sim 0.7878787878787878
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.787879  0.752525  0.742424  0.732323  0.717172  0.707071  0.681818  0.606061  0.60101  0.575758
+id          0101001   0001001   0101101   0111001   0100001   0101011   0101000   1101001  0101010   0000000
+top1 succ rate: 116/200,top3 succ rate: 130/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.173913043478262
+
+exp  138, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1527.1212589740753
+gen id 0010010, mapped sim 0.6868686868686869
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.686869  0.676768  0.671717  0.666667  0.651515  0.641414  0.636364  0.631313  0.626263  0.626263
+id          0010010   0000010   0011010   0010110   0010000   0000000   0011000   0010100   0010011   0110010
+top1 succ rate: 117/200,top3 succ rate: 131/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.179856115107913
+
+exp  139, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1540.1457433700562
+gen id 1101001, mapped sim 0.7727272727272727
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.772727  0.747475  0.727273  0.707071  0.707071  0.666667  0.661616  0.646465  0.621212  0.59596
+id          1101001   1111001   1101101   1101000   1001001   1101011   1100001   0101001   1101111  1111111
+top1 succ rate: 118/200,top3 succ rate: 132/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.185714285714285
+
+exp  140, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1547.7854046821594
+gen id 0000011, mapped sim 0.7920792079207921
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.792079  0.742574  0.732673  0.732673  0.712871  0.683168  0.683168  0.673267  0.633663  0.574257
+id          0000011   0000001   0010011   0001011   0100011   0000010   0000111   1000011   0000000   0010000
+top1 succ rate: 119/200,top3 succ rate: 133/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.198581560283689
+
+exp  141, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1560.5277044773102
+gen id 0011101, mapped sim 0.7575757575757576
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.757576  0.737374  0.722222  0.717172  0.691919  0.676768  0.651515  0.641414  0.60101  0.590909
+id          0011101   0111101   0011001   0010101   0001101   0011100   0011111   0011000  0010000   1011101
+top1 succ rate: 120/200,top3 succ rate: 134/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.211267605633802
+
+exp  142, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1571.609631061554
+gen id 0000101, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828283  0.787879  0.772727  0.752525  0.747475  0.717172  0.717172  0.707071  0.676768  0.646465
+id          0000101   0000100   0100101   0010101   0000111   0001101   0000001   0000110   0000000   1000101
+top1 succ rate: 121/200,top3 succ rate: 135/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.223776223776223
+
+exp  143, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1581.026962518692
+gen id 0011101, mapped sim 0.8091603053435115
+                 0         1         2         3         4         5        6         7         8         9
+sim_score  0.80916  0.770992  0.748092  0.740458  0.740458  0.717557  0.70229  0.664122  0.633588  0.625954
+id         0011101   0011111   0010101   0001101   0011001   0111101  0011100   0011110   0011000   1011101
+top1 succ rate: 122/200,top3 succ rate: 136/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.23611111111111
+
+exp  144, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1592.6126959323883
+gen id 0010001, mapped sim 0.7575757575757576
+                  0         1        2        3         4         5         6         7         8         9
+sim_score  0.757576  0.712121  0.70202  0.70202  0.676768  0.676768  0.666667  0.651515  0.611111  0.585859
+id          0010001   0110001  1010001  0000001   0011001   0010101   0010000   0010011   0000000   0011000
+top1 succ rate: 123/200,top3 succ rate: 137/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.248275862068965
+
+exp  145, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1602.1642134189606
+gen id 1100101, mapped sim 0.5789473684210527
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.62406  0.616541  0.616541  0.593985  0.586466  0.578947  0.571429  0.556391  0.556391  0.526316
+id         1100100   1101100   1100000   1110100   1000100   1100101   0100100   1010100   1100110   0000000
+top1 succ rate: 123/200,top3 succ rate: 137/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.232876712328768
+
+exp  146, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1614.1170797348022
+gen id 0110010, mapped sim 0.7777777777777778
+                  0         1         2        3         4         5         6         7         8         9
+sim_score  0.777778  0.747475  0.722222  0.70202  0.686869  0.681818  0.676768  0.671717  0.606061  0.580808
+id          0110010   0010010   0110110  0100010   0110000   0111010   0110011   1110010   0101010   0000000
+top1 succ rate: 124/200,top3 succ rate: 138/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.224489795918368
+
+exp  147, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1624.144019126892
+gen id 1011011, mapped sim 0.7404580152671756
+                  0         1        2         3         4         5         6         7         8         9
+sim_score  0.740458  0.725191  0.70229  0.679389  0.679389  0.664122  0.664122  0.664122  0.641221  0.618321
+id          1011011   1111011  1010011   1011111   1001011   1111111   1011001   1011010   1010111   1001111
+top1 succ rate: 125/200,top3 succ rate: 139/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.222972972972974
+
+exp  148, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1631.276142835617
+gen id 1101011, mapped sim 0.8571428571428571
+                  0         1         2         3         4        5         6         7         8         9
+sim_score  0.857143  0.821429  0.785714  0.785714  0.758929     0.75  0.741071  0.723214  0.669643  0.669643
+id          1101011   1100011   1101111   1101001   1101010  1100111   1111011   1001011   1111111   0101011
+top1 succ rate: 126/200,top3 succ rate: 140/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.221476510067115
+
+exp  149, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1643.1609363555908
+gen id 0001000, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6        7        8         9
+sim_score  0.808081  0.782828  0.777778  0.752525  0.747475  0.727273  0.717172  0.69697  0.69697  0.671717
+id          0001000   0101000   0000000   0100000   0011000   1001000   0010000  1000000  0001010   0101010
+top1 succ rate: 127/200,top3 succ rate: 141/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.213333333333333
+
+exp  150, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1656.3037815093994
+gen id 1010000, mapped sim 0.8324873096446701
+                  0        1         2         3         4         5         6         7         8         9
+sim_score  0.832487  0.77665  0.766497  0.761421  0.741117  0.730964  0.700508  0.685279  0.659898  0.639594
+id          1010000  1010010   1010001   1000000   1110000   1010100   0010000   1011000   1000100   1110100
+top1 succ rate: 128/200,top3 succ rate: 142/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.211920529801324
+
+exp  151, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1669.719284772873
+gen id 1101001, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.808081  0.767677  0.767677  0.727273  0.722222  0.717172  0.691919  0.681818  0.646465  0.590909
+id          1101001   1001001   1101101   1101000   1101011   1111001   1100001   1101111   0101001   1111111
+top1 succ rate: 129/200,top3 succ rate: 143/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.217105263157896
+
+exp  152, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1681.150221824646
+gen id 1010100, mapped sim 0.8169934640522876
+                  0         1        2         3         4        5         6         7         8         9
+sim_score  0.816993  0.797386  0.79085  0.764706  0.738562  0.72549  0.699346  0.568627  0.522876  0.477124
+id          1010100   1000100  1010000   1110100   1010110  1011100   1010101   0010100   0000000   1111111
+top1 succ rate: 130/200,top3 succ rate: 144/200 
+
+userlist len:128, detect list len:,11, average detect list len: 15.18954248366013
+
+exp  153, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1691.175733089447
+gen id 1110011, mapped sim 0.8333333333333334
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.833333  0.772727  0.762626  0.762626  0.757576  0.742424  0.732323  0.671717  0.636364  0.60101
+id          1110011   1110111   1110010   1010011   1100011   1110001   1111011   1111111   0110011  1011111
+top1 succ rate: 131/200,top3 succ rate: 145/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.188311688311689
+
+exp  154, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1701.3036034107208
+gen id 0011010, mapped sim 0.8383838383838383
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.838384  0.782828  0.777778  0.762626  0.752525  0.747475  0.737374  0.691919  0.631313  0.60101
+id          0011010   0111010   0011000   0011110   0010010   0001010   0011011   0101010   1011010  0000000
+top1 succ rate: 132/200,top3 succ rate: 146/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.174193548387096
+
+exp  155, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1712.2382957935333
+gen id 0111010, mapped sim 0.8486842105263158
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.848684  0.782895  0.782895  0.776316  0.763158  0.743421  0.710526  0.703947  0.690789    0.625
+id          0111010   0101010   0111000   0011010   0110010   0111011   0001010   0111110   1111010  1101010
+top1 succ rate: 133/200,top3 succ rate: 147/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.16025641025641
+
+exp  156, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1719.0868082046509
+gen id 0111110, mapped sim 0.5742574257425742
+                 0        1         2         3         4         5         6         7         8        9
+sim_score  0.80198  0.80198  0.772277  0.772277  0.742574  0.712871  0.663366  0.653465  0.633663  0.60396
+id         1111100  1111000   1110100   1011100   1010100   1111110   0111100   1111101   1101100  0010100
+top1 succ rate: 133/200,top3 succ rate: 147/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.152866242038217
+
+exp  157, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1731.7375667095184
+gen id 0011010, mapped sim 0.6616161616161617
+                  0         1         2         3         4         5         6        7        8        9
+sim_score  0.661616  0.661616  0.656566  0.636364  0.631313  0.626263  0.606061  0.60101  0.59596  0.59596
+id          0011000   0011010   0010000   0001000   0000000   0111000   0011100  0101010  0100000  0011001
+top1 succ rate: 133/200,top3 succ rate: 148/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.145569620253164
+
+exp  158, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1741.9950325489044
+gen id 0101010, mapped sim 0.7121212121212122
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.747475  0.712121  0.712121  0.712121  0.686869  0.681818  0.676768  0.676768  0.646465  0.636364
+id          0101110   0101010   0111110   0100110   0101100   0001110   0111010   0100010   0001010   0101111
+top1 succ rate: 133/200,top3 succ rate: 149/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.144654088050315
+
+exp  159, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1755.3894345760345
+gen id 1111000, mapped sim 0.8333333333333334
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.833333  0.767677  0.752525  0.752525  0.742424  0.742424  0.722222  0.686869  0.671717  0.580808
+id          1111000   1111001   1111100   1110000   1011000   1101000   0111000   1111010   1110100   1010100
+top1 succ rate: 134/200,top3 succ rate: 150/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.14375
+
+exp  160, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1763.9424431324005
+gen id 0101001, mapped sim 0.7906976744186046
+                  0         1        2         3         4         5         6         7         8         9
+sim_score  0.790698  0.767442  0.72093  0.713178  0.705426  0.689922  0.689922  0.666667  0.612403  0.589147
+id          0101001   1101001  0001001   0101000   0100001   0101101   0101011   0111001   0101010   1101010
+top1 succ rate: 135/200,top3 succ rate: 151/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.15527950310559
+
+exp  161, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1776.6789298057556
+gen id 1001111, mapped sim 0.797979797979798
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.79798  0.767677  0.752525  0.717172  0.712121  0.691919  0.686869  0.681818  0.661616  0.545455
+id         1001111   1011111   1001011   1000111   1101111   1001101   1001110   1111111   0001111   0111111
+top1 succ rate: 136/200,top3 succ rate: 152/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.141975308641975
+
+exp  162, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1784.319058895111
+gen id 0011110, mapped sim 0.6634615384615384
+                  0         1         2         3         4        5        6         7         8         9
+sim_score  0.673077  0.663462  0.653846  0.644231  0.634615    0.625    0.625  0.605769  0.596154  0.596154
+id          0011111   0011110   0011101   0011100   0010111  0001111  0011011   0010100   0011000   1011111
+top1 succ rate: 136/200,top3 succ rate: 153/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.153374233128835
+
+exp  163, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1796.1419909000397
+gen id 1000001, mapped sim 0.8434343434343434
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.843434  0.787879  0.782828  0.772727  0.767677  0.742424  0.691919  0.671717  0.636364  0.631313
+id          1000001   1000011   1100001   1010001   1001001   1000101   1000000   0000001   1000010   1100000
+top1 succ rate: 137/200,top3 succ rate: 154/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.164634146341463
+
+exp  164, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1807.5152204036713
+gen id 1010000, mapped sim 0.7071823204419889
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.707182  0.674033  0.657459  0.651934  0.651934  0.646409  0.635359  0.618785  0.618785  0.60221
+id          1010000   1110000   0010000   1010100   1000000   1010010   1011000   1110100   1010001  0000000
+top1 succ rate: 138/200,top3 succ rate: 155/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.163636363636364
+
+exp  165, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1818.399166584015
+gen id 0100001, mapped sim 0.8484848484848485
+                  0         1         2         3         4         5         6        7         8         9
+sim_score  0.848485  0.792929  0.777778  0.772727  0.742424  0.732323  0.727273  0.69697  0.686869  0.671717
+id          0100001   0100101   0000001   0110001   0100000   0100011   0101001  1100001   0100100   0000000
+top1 succ rate: 139/200,top3 succ rate: 156/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.174698795180722
+
+exp  166, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1831.8949666023254
+gen id 1100001, mapped sim 0.8131313131313131
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.813131  0.752525  0.747475  0.737374  0.727273  0.722222  0.69697  0.681818  0.676768  0.671717
+id          1100001   1000001   1101001   1100000   1100011   1100101  1110001   0100001   1000000   1101000
+top1 succ rate: 140/200,top3 succ rate: 157/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.18562874251497
+
+exp  167, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1845.7705514431
+gen id 0000101, mapped sim 0.803030303030303
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.80303  0.752525  0.747475  0.732323  0.727273  0.727273  0.717172  0.661616  0.641414  0.611111
+id         0000101   0100101   0000001   0001101   0010101   0000111   0000100   0000000   0000110   0100000
+top1 succ rate: 141/200,top3 succ rate: 158/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.196428571428571
+
+exp  168, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1857.56906914711
+gen id 0011111, mapped sim 0.8838383838383839
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.883838  0.848485  0.808081  0.782828  0.772727  0.772727  0.727273  0.707071  0.616162  0.449495
+id          0011111   0001111   0010111   0011101   0111111   0011011   1011111   0011110   1111111   0101010
+top1 succ rate: 142/200,top3 succ rate: 159/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.177514792899409
+
+exp  169, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1868.9785432815552
+gen id 1101010, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5         6        7        8        9
+sim_score  0.808081  0.752525  0.742424  0.722222  0.712121  0.707071  0.707071  0.69697      0.5      0.5
+id          1101010   1001010   1101000   1100010   1101011   0101010   1111010  1101110  0000000  1111111
+top1 succ rate: 143/200,top3 succ rate: 160/200 
+
+userlist len:128, detect list len:,11, average detect list len: 15.152941176470588
+
+exp  170, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1881.887438774109
+gen id 1101011, mapped sim 0.7323232323232324
+                  0        1        2         3         4         5         6         7         8        9
+sim_score  0.732323  0.70202  0.69697  0.686869  0.681818  0.666667  0.661616  0.626263  0.611111  0.59596
+id          1101011  1001011  1111011   1101010   1100011   1101001   1101111   1111111   1100111  1011111
+top1 succ rate: 144/200,top3 succ rate: 161/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.152046783625732
+
+exp  171, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1889.690399646759
+gen id 0111110, mapped sim 0.6190476190476191
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.619048  0.619048  0.609524  0.609524  0.609524  0.571429  0.561905  0.552381  0.52381  0.514286
+id          0111010   0111110   0110010   0111011   0011010   0101010   0001010   0111000  1111010   1111111
+top1 succ rate: 144/200,top3 succ rate: 162/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.13953488372093
+
+exp  172, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1896.2578163146973
+gen id 1001000, mapped sim 0.6826923076923077
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.682692  0.653846  0.644231  0.634615  0.634615  0.615385  0.615385  0.615385  0.605769  0.586538
+id          1001000   0001000   1001010   1000000   1101000   1001100   1001001   1011000   0000000   1100000
+top1 succ rate: 145/200,top3 succ rate: 163/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.132947976878613
+
+exp  173, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1907.7953088283539
+gen id 1001010, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.828283  0.782828  0.767677  0.757576  0.732323  0.712121  0.707071  0.681818  0.621212  0.555556
+id          1001010   1011010   1101010   1001011   1001110   1000010   1001000   0001010   0101010   1111111
+top1 succ rate: 146/200,top3 succ rate: 164/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.114942528735632
+
+exp  174, if top1 succ: 0 ,if top3 succ: 1 ,time used: 1916.6971852779388
+gen id 0110100, mapped sim 0.7387387387387387
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.747748  0.738739  0.720721  0.693694  0.684685  0.684685  0.675676  0.675676  0.630631  0.621622
+id          0100100   0110100   0100101   0100000   0110000   0000100   0100110   0101100   0000000   0101000
+top1 succ rate: 146/200,top3 succ rate: 165/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.114285714285714
+
+exp  175, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1928.9886872768402
+gen id 0100001, mapped sim 0.8080808080808081
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.808081  0.752525  0.742424  0.737374  0.717172  0.707071  0.70202  0.681818  0.626263  0.616162
+id          0100001   0100011   0000001   0110001   0101001   0100101  1100001   0100000   0100010   0000000
+top1 succ rate: 147/200,top3 succ rate: 166/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.125
+
+exp  176, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1941.8103649616241
+gen id 0111101, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.772727  0.742424  0.737374  0.727273  0.727273  0.722222  0.676768  0.661616  0.646465
+id          0111101   0110101   0111001   0111100   0011101   0101101   0111111   0110111   1111101   0111011
+top1 succ rate: 148/200,top3 succ rate: 167/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.129943502824858
+
+exp  177, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1956.5211760997772
+gen id 1011101, mapped sim 0.803030303030303
+                 0         1         2         3         4         5        6         7         8         9
+sim_score  0.80303  0.752525  0.727273  0.722222  0.717172  0.712121  0.69697  0.686869  0.676768  0.671717
+id         1011101   1011111   1011001   1111101   1001101   1010101  1011100   0011101   1011011   1111111
+top1 succ rate: 149/200,top3 succ rate: 168/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.134831460674157
+
+exp  178, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1965.8926103115082
+gen id 0110001, mapped sim 0.6601941747572816
+                 0        1         2         3         4         5         6         7         8         9
+sim_score  0.68932  0.68932  0.679612  0.679612  0.679612  0.660194  0.650485  0.640777  0.601942  0.592233
+id         0110101  0110111   0110100   0110110   0010101   0110001   0110000   0111101   0111000   0100101
+top1 succ rate: 149/200,top3 succ rate: 168/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.145251396648044
+
+exp  179, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1974.4115960597992
+gen id 0101010, mapped sim 0.7547169811320755
+                  0         1         2         3         4         5         6         7        8         9
+sim_score  0.754717  0.726415  0.707547  0.698113  0.688679  0.679245  0.679245  0.603774  0.59434  0.396226
+id          0101010   0100010   0111010   0101000   0001010   0101110   0101011   0000000  1101010   1111111
+top1 succ rate: 150/200,top3 succ rate: 169/200 
+
+userlist len:128, detect list len:,11, average detect list len: 15.122222222222222
+
+exp  180, if top1 succ: 0 ,if top3 succ: 0 ,time used: 1983.2991750240326
+gen id 1111111, mapped sim 0.5847457627118644
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.610169  0.610169  0.601695  0.601695  0.59322  0.584746  0.584746  0.584746  0.576271  0.576271
+id          1111100   1101100   1111101   1110100  1111110   1111111   1101111   1011100   1010100   1110111
+top1 succ rate: 150/200,top3 succ rate: 169/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.132596685082873
+
+exp  181, if top1 succ: 1 ,if top3 succ: 1 ,time used: 1996.1916608810425
+gen id 1101011, mapped sim 0.7474747474747475
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.747475  0.717172  0.681818  0.681818  0.676768  0.671717  0.671717  0.646465  0.636364  0.611111
+id          1101011   1101001   1001011   1111011   1101010   0101011   1100011   1101000   1101111   1001010
+top1 succ rate: 151/200,top3 succ rate: 170/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.142857142857142
+
+exp  182, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2009.052780866623
+gen id 1011011, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.818182  0.777778  0.742424  0.737374  0.732323  0.712121  0.70202  0.691919  0.686869  0.656566
+id          1011011   1001011   1010011   1111011   1011111   1011001  0011011   1001111   1011010   1010111
+top1 succ rate: 152/200,top3 succ rate: 171/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.142076502732241
+
+exp  183, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2020.8721613883972
+gen id 0010100, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5         6         7         8        9
+sim_score  0.823232  0.767677  0.757576  0.747475  0.727273  0.722222  0.717172  0.676768  0.626263  0.39899
+id          0010100   0010110   0011100   0010101   0010000   0000100   0110100   1010100   0000000  0101010
+top1 succ rate: 153/200,top3 succ rate: 172/200 
+
+userlist len:128, detect list len:,11, average detect list len: 15.119565217391305
+
+exp  184, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2033.3059167861938
+gen id 0010001, mapped sim 0.7878787878787878
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.787879  0.757576  0.747475  0.747475  0.69697  0.676768  0.666667  0.661616  0.656566  0.656566
+id          0010001   0010011   0011001   0010101  0010000   0000001   0010010   0110001   0011000   0010100
+top1 succ rate: 154/200,top3 succ rate: 173/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.12972972972973
+
+exp  185, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2046.7303030490875
+gen id 1001101, mapped sim 0.7878787878787878
+                  0         1         2         3         4        5        6         7         8         9
+sim_score  0.787879  0.752525  0.737374  0.732323  0.722222  0.70202  0.70202  0.681818  0.651515  0.651515
+id          1001101   1011101   1001100   1001001   1101101  1000101  1001111   1001000   1000100   1001110
+top1 succ rate: 155/200,top3 succ rate: 174/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.13978494623656
+
+exp  186, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2059.5514426231384
+gen id 0010101, mapped sim 0.8242424242424242
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.824242  0.781818  0.775758  0.751515  0.751515  0.739394  0.69697  0.624242  0.624242  0.624242
+id          0010101   0110101   0011101   0010001   0010111   0000101  0010100   0010000   0010110   1010101
+top1 succ rate: 156/200,top3 succ rate: 175/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.149732620320856
+
+exp  187, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2069.47069644928
+gen id 0100001, mapped sim 0.72
+                 0        1        2        3        4        5        6        7        8        9
+sim_score     0.72     0.69     0.69     0.66     0.66     0.65     0.63     0.63     0.63     0.62
+id         0100001  0100101  0100011  0100000  0101001  0000001  0100100  0100010  1100001  0110001
+top1 succ rate: 157/200,top3 succ rate: 176/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.159574468085106
+
+exp  188, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2081.5302600860596
+gen id 0000111, mapped sim 0.8232323232323232
+                  0         1         2         3         4         5        6         7         8         9
+sim_score  0.823232  0.762626  0.762626  0.757576  0.752525  0.722222  0.69697  0.691919  0.661616  0.626263
+id          0000111   0100111   0000101   0000011   0000110   0001111  0010111   0000100   1000111   0000000
+top1 succ rate: 158/200,top3 succ rate: 177/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.16931216931217
+
+exp  189, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2093.3868522644043
+gen id 1001100, mapped sim 0.7878787878787878
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.787879  0.742424  0.732323  0.712121  0.707071  0.691919  0.676768  0.676768  0.565657  0.515152
+id          1001100   1001110   1101100   0001100   1001101   1001000   1000100   1011100   1010100   0101010
+top1 succ rate: 159/200,top3 succ rate: 178/200 
+
+userlist len:128, detect list len:,14, average detect list len: 15.163157894736843
+
+exp  190, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2103.1292243003845
+gen id 1110010, mapped sim 0.8181818181818182
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.818182  0.777778  0.777778  0.767677  0.767677  0.727273  0.722222  0.686869  0.686869  0.676768
+id          1110010   1010010   1110110   1110000   1100010   1110100   1111010   1010100   1110011   1100100
+top1 succ rate: 160/200,top3 succ rate: 179/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.167539267015707
+
+exp  191, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2114.802754640579
+gen id 0001010, mapped sim 0.8939393939393939
+                  0         1         2         3        4         5         6         7         8         9
+sim_score  0.893939  0.818182  0.808081  0.808081  0.80303  0.777778  0.742424  0.717172  0.712121  0.636364
+id          0001010   0001000   0001011   1001010  0101010   0011010   0001110   1101010   0000010   0000000
+top1 succ rate: 161/200,top3 succ rate: 180/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.151041666666666
+
+exp  192, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2126.7826166152954
+gen id 1110011, mapped sim 0.797979797979798
+                 0         1         2         3         4         5         6         7         8         9
+sim_score  0.79798  0.767677  0.752525  0.747475  0.712121  0.686869  0.661616  0.661616  0.656566  0.611111
+id         1110011   1110111   1100011   1010011   1110010   1111011   1110001   0110011   1111111   1101111
+top1 succ rate: 162/200,top3 succ rate: 181/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.150259067357513
+
+exp  193, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2139.0591747760773
+gen id 1111001, mapped sim 0.8383838383838383
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.838384  0.782828  0.782828  0.757576  0.757576  0.752525  0.717172  0.671717  0.641414  0.616162
+id          1111001   1111000   1011001   1111011   1101001   1111101   1110001   1111111   0111001   1011111
+top1 succ rate: 163/200,top3 succ rate: 182/200 
+
+userlist len:128, detect list len:,16, average detect list len: 15.154639175257731
+
+exp  194, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2148.195347070694
+gen id 1011101, mapped sim 0.8099173553719008
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.809917  0.793388  0.735537  0.727273  0.727273  0.719008  0.719008  0.719008  0.652893  0.644628
+id          1011101   1010101   1011100   1111101   1011001   1010100   1001101   1011111   1011000   1011110
+top1 succ rate: 164/200,top3 succ rate: 183/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.164102564102564
+
+exp  195, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2154.0190482139587
+gen id 1000100, mapped sim 0.6698113207547169
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.669811  0.669811  0.650943  0.632075  0.632075  0.622642  0.603774  0.584906  0.537736  0.518868
+id          1000100   1001100   1000000   1000110   1100100   1010100   1000101   1110100   0000100   0000000
+top1 succ rate: 165/200,top3 succ rate: 184/200 
+
+userlist len:128, detect list len:,13, average detect list len: 15.153061224489797
+
+exp  196, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2165.681718111038
+gen id 0010001, mapped sim 0.8282828282828283
+                  0         1         2         3         4         5        6        7         8         9
+sim_score  0.828283  0.767677  0.752525  0.747475  0.742424  0.732323  0.70202  0.69697  0.641414  0.616162
+id          0010001   0010101   1010001   0110001   0011001   0010011  0010000  0000001   0010100   0011000
+top1 succ rate: 166/200,top3 succ rate: 185/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.16243654822335
+
+exp  197, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2178.187537431717
+gen id 1111000, mapped sim 0.8787878787878788
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.878788  0.787879  0.777778  0.772727  0.772727  0.762626  0.762626  0.757576  0.681818  0.575758
+id          1111000   1111100   1111010   1011000   1110000   1111001   0111000   1101000   1110100   1010100
+top1 succ rate: 167/200,top3 succ rate: 186/200 
+
+userlist len:128, detect list len:,15, average detect list len: 15.16161616161616
+
+exp  198, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2187.9244022369385
+gen id 0011011, mapped sim 0.8245614035087719
+                  0         1         2        3         4         5         6         7         8         9
+sim_score  0.824561  0.798246  0.789474  0.77193  0.763158  0.754386  0.719298  0.710526  0.692982  0.657895
+id          0011011   0001011   0011010  0111011   0001010   0011111   0011110   0101010   0010011   0010010
+top1 succ rate: 168/200,top3 succ rate: 187/200 
+
+userlist len:128, detect list len:,17, average detect list len: 15.170854271356784
+
+exp  199, if top1 succ: 1 ,if top3 succ: 1 ,time used: 2197.3244671821594
+gen id 1011111, mapped sim 0.6931216931216931
+                  0         1         2         3         4         5         6         7         8         9
+sim_score  0.693122  0.656085  0.650794  0.645503  0.645503  0.634921  0.634921  0.597884  0.560847  0.539683
+id          1011111   1010111   1011011   1011101   1011110   1111111   1001111   0011111   1010100   0111111
+top1 succ rate: 169/200,top3 succ rate: 188/200 
+
+userlist len:128, detect list len:,12, average detect list len: 15.155
+

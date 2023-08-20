@@ -32,7 +32,9 @@ from normalizers import normalization_strategy_lookup
 import copy
 import sys
 import math
-
+import random
+import time
+import ipdb
 class WatermarkBase:
     def __init__(
             self,
@@ -41,14 +43,16 @@ class WatermarkBase:
             decrease_delta: bool = True,
             delta: float = 2.0,
             wm_mode = "combination",
+            detect_mode= "accumulate",
             seeding_scheme: str = "simple_1",  # mostly unused/always default
             hash_key: int = 15485863,  # just a large prime number to create a rng seed with sufficient bit width
             select_green_tokens: bool = True,
-            userid="10000100"
+            userid=""
     ):
 
         # watermarking parameters
         self.wm_mode=wm_mode
+        self.detect_mode=detect_mode
         self.vocab = vocab
         self.vocab_size = len(vocab)
         self.gamma = gamma
@@ -279,8 +283,6 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     preferance = self.userid[input_ids[idx-1] % n]  # 1->green ; 0-> red
                 else:
                     preferance = self.userid[(input_ids[idx-1]*input_ids[idx-2]) % n]  # 1->green ; 0-> red
-                # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
-                # print(preferance,end="")
                 if preferance == '1':
                     greenlist_ids, _ = self._get_greenlist_ids(input_ids[:idx])
                 else:
@@ -302,6 +304,11 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     else:
                         mark += '0'
                     green_token_mask.append(False)
+                if self.detect_mode=='accumulate':
+                    if len(input_ids)>30 and idx==len(input_ids)//10:
+                        if green_token_count/idx <0.5:
+                            return -1, -1, -1
+                    
 
         score_dict = dict()
         if return_num_tokens_scored:
@@ -375,3 +382,255 @@ class WatermarkDetector_with_preferance(WatermarkBase):
 
         return output_dict, confidence, mark
 
+class UnbiasedWatermarkGenerator:
+    def __init__(
+            self,
+            # vocab: list[int] = None,
+            pd: Tensor = None,
+            # device = None
+            userid =None,
+            # args=None
+
+    ):
+
+        
+        self.pd=pd #(M,V)
+        self.V=pd.shape[-1] # size of vocabulary
+        self.M=pd.shape[0] # length of output
+        self.device=pd.device
+        self.hash_key= 15485863
+        self.lgV=None
+        self.userid=userid
+        self.start_time=time.time()
+        # self.args=args
+        # self.rng=None
+
+    def _seed_u(self, b_out, seeding_scheme,x) :
+        # can optionally override the seeding scheme,
+        # but uses the instance attr by default
+
+        if seeding_scheme == "simple_1":
+            # assert len(b_out) >= lgV, f"seeding_scheme={seeding_scheme} requires at least {lgV} token prefix sequence to seed rng"
+            prev_token = int(b_out[-x:],2)
+            # self.rng.manual_seed(self.hash_key * prev_token)
+            random.seed(self.hash_key * prev_token)
+            u=random.random()
+        else:
+            raise NotImplementedError(f"Unexpected seeding_scheme: {seeding_scheme}")
+        return u
+    def gen_samp_binary_alphabet(self,tokd_input,args) :
+        print('---generating binary alphabet')
+        # generate binary alphbet:(V,lgV)->(lgV,V)
+        lgV=math.ceil(math.log2(self.V)) # length of binary representation for a token
+        self.lgV=lgV
+        b_a=torch.zeros([self.V,lgV]).to(self.device) #(V,lgV)
+        for i in range(self.V):
+            s_bin=bin(i)
+            s_bin=s_bin.split('b')[1]
+            while len(s_bin)<lgV:
+                s_bin='0'+s_bin
+            for j in range(lgV):
+                if s_bin[j]=='1':
+                    b_a[i][j]=1
+                    
+        Tb_a=b_a.transpose(0,1) #(lgV,V)
+        # generate binary pd:(M,2,lgV)
+        # pi(2,lgV)
+        b_pd=torch.zeros([self.M,2,lgV]).to(self.device)
+        b_out=''
+        out=[]
+        lenid=len(self.userid)
+        x=self.lgV # the key to select preference and cal u
+        
+        for i in range (self.M):
+            print(f'--calculating {i}-th token, time used: {time.time()-self.start_time}')
+            sampled_tk=''
+            sampled_tkl=[]
+            for j in range(lgV):
+                condition_p=0
+                if j==0:
+                        b_pd[i][1][j]=(self.pd[i]*Tb_a[j]).sum()
+                        b_pd[i][0][j]=(self.pd[i]*(1-Tb_a[j])).sum()
+                        # print(b_pd[i][1][j],b_pd[i][0][j])
+                        # continue
+                else:
+                    for k in range(self.pd.shape[-1]): #k goes over |V|
+                        # print(f"i:{i}, k: {k}, condition:{condition_p}, j: {j},time used:{time.time()-self.start_time}")
+                        # print(b_a[k][:j],sampled_tkl,b_a[k][:j]==sampled_tkl)
+                        # if(j==2):
+                        #     ipdb.set_trace()
+                        if (b_a[k][:j]==torch.tensor(sampled_tkl).to(self.device)).sum()==j:  #problem
+                            condition_p+=self.pd[i][k]
+                        # condition_p=1
+                        # for n in range(j):
+                        #     current_b=int(b_a[n][k])
+                        #     # ipdb.set_trace()
+                        #     condition_p*=b_pd[i][current_b][n]
+
+                        # for n in range(j):
+                        #     current_b=int(b_a[n][k])
+                        #     # ipdb.set_trace()
+                        #     condition_p*=b_pd[i][current_b][n]
+                        # condition_bits=b_a[k][:j]
+                        # for l in range(self.pd.shape[-1]):
+                        #     # ipdb.set_trace()
+                        #     print(f"i:{i}, k: {k}, l:{l}, condition:{condition_p}, j: {j},time used:{time.time()-self.start_time}")
+                        #     if b_a[l][:j]==condition_bits:
+                        #         condition_p+=self.pd[i][l]
+                        
+                            
+                        if Tb_a[j][k]==0:
+                            b_pd[i][0][j]+=self.pd[i][k]*condition_p
+                        else:
+                            b_pd[i][1][j]+=self.pd[i][k]*condition_p
+                #softtmax
+                temp_sum=torch.exp(b_pd[i][0][j])+torch.exp(b_pd[i][1][j])
+                b_pd[i][0][j]=torch.exp(b_pd[i][0][j])/temp_sum
+                b_pd[i][1][j]=torch.exp(b_pd[i][1][j])/temp_sum
+                # b_pd[i][1][j]=sum(self.pd[i]*b_a[j])
+                # b_pd[i][0][j]=sum(self.pd[i]*(1-b_a[j]))
+                # b_pd[i][1][j]=s_1
+                # b_pd[i][0][j]=s_0
+                
+                
+                # print('---sampling result')
+                bad_sample=0
+                # cur_input=copy.deepcopy(tokd_input)
+                #u=[] #ui \in [0,1]
+                
+                # b_pd=self._gen_binary_alphabet() #(M,2,lgV)
+                # out=[]
+                
+                if i <x:
+                        prev_token = tokd_input[-1-i].item()
+                        random.seed(self.hash_key * prev_token)
+                        u=random.random()
+                        preference=self.userid[tokd_input[-1-i].item() % lenid]
+                else:
+                    u=self._seed_u(b_out,args.seeding_scheme,x)
+                    preference=self.userid[int(b_out[-x:],2) % lenid]
+                if preference =='0': #u<p[0]->0,else 1
+                    if u<=b_pd[i][0][j]:
+                        b_out+='0'
+                        sampled_tk+='0'
+                        sampled_tkl.append(0)
+                    else:
+                        b_out+='1'
+                        sampled_tk+='1'
+                        sampled_tkl.append(1)
+                elif preference == '1':
+                    if u<=b_pd[i][1][j]:
+                        b_out+='1'
+                        sampled_tk+='1'
+                        sampled_tkl.append(1)
+                    else:
+                        b_out+='0'
+                        sampled_tk+='0'
+                        sampled_tkl.append(0)
+
+            print("b_pd[i][1]",b_pd[i][1])
+            print("b_pd[i][0]",b_pd[i][0])
+            sampled_tk_id=int(sampled_tk,2)
+            if sampled_tk_id >50271:  # to find out a better way
+                sampled_tk_id = 50271
+                bad_sample+=1
+            out.append(sampled_tk_id)
+        print("bad sample:",bad_sample)
+        out= torch.Tensor(out).to(self.device)
+        return b_out,out
+    
+    def sample_b_result(self,tokd_input,args):
+        print('---sampling result')
+        bad_sample=0
+        cur_input=copy.deepcopy(tokd_input)
+        #u=[] #ui \in [0,1]
+        b_out=''
+        # b_pd=self._gen_binary_alphabet() #(M,2,lgV)
+        out=[]
+        k=len(self.userid)
+        x=self.lgV # the key to select preference and cal u
+        for i in range(self.M):
+            sampled_tk=''
+            for j in range(self.lgV):
+                if i <x:
+                    prev_token = tokd_input[-1-i].item()
+                    random.seed(self.hash_key * prev_token)
+                    u=random.random()
+                    preference=self.userid[tokd_input[-1-i].item() % k]
+                else:
+                    u=self._seed_u(b_out,args.seeding_scheme,x)
+                    preference=self.userid[int(b_out[-x:],2) % k]
+                if preference =='0': #u<p[0]->0,else 1
+                    if u<=b_pd[i][0][j]:
+                        b_out+='0'
+                        sampled_tk+='0'
+                    else:
+                        b_out+='1'
+                        sampled_tk+='1'
+                elif preference == '1':
+                    if u<=b_pd[i][1][j]:
+                        b_out+='1'
+                        sampled_tk+='1'
+                    else:
+                        b_out+='0'
+                        sampled_tk+='0'
+            sampled_tk_id=int(sampled_tk,2)
+            if sampled_tk_id >50271:  # to find out a better way
+                sampled_tk_id = 50271
+                bad_sample+=1
+            out.append(sampled_tk_id)
+        print("bad sample:",bad_sample)
+        out= torch.Tensor(out).to(self.device)
+        return b_out,out
+            
+            
+class UnbiasedWatermarkDetector:
+    def __init__(
+            self,
+            b_out: str = None,
+            device = None,
+            userid =None,
+            x=None
+
+    ):
+
+        self.b_out=b_out
+        self.userid=userid
+        self.x=x
+        self.device=device
+        self.hash_key= 15485863
+    def _seed_u(self, b_out, seeding_scheme,x) :
+        # can optionally override the seeding scheme,
+        # but uses the instance attr by default
+
+        if seeding_scheme == "simple_1":
+            # assert len(b_out) >= lgV, f"seeding_scheme={seeding_scheme} requires at least {lgV} token prefix sequence to seed rng"
+            prev_token = int(b_out[-x:],2)
+            # self.rng.manual_seed(self.hash_key * prev_token)
+            random.seed(self.hash_key * prev_token)
+            u=random.random()
+        else:
+            raise NotImplementedError(f"Unexpected seeding_scheme: {seeding_scheme}")
+        return torch.tensor(u).to(self.device)
+    def detect(self,args):
+        s=0
+        # effect_length=len(self.b_out)-self.x
+        for i in range(len(self.b_out)):
+            if i >= self.x:
+                u=self._seed_u(self.b_out[:i],args.seeding_scheme,self.x)
+                k=len(self.userid)
+                preference=self.userid[int(self.b_out[:i][-self.x:],2) % k]
+                if preference=='1':
+                    if self.b_out[i]=='0':
+                        s-=torch.log(1-u)
+                    elif self.b_out[i]=='1':
+                        s-=torch.log(u)
+                elif preference=='0':
+                    if self.b_out[i]=='0':
+                        s=s-torch.log(u)
+                    elif self.b_out[i]=='1':
+                        s-=torch.log(1-u)
+        return s
+    
+        
+        
