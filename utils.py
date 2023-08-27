@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import ipdb
 def gen_usr_list_dense():
     """
     generate fdense-user-watermark file
@@ -43,18 +44,27 @@ def read_usr_list(user_dist):
     # print(usr_list[19])
     return usr_list
 
+def group_usr_list(user_dist):
+    grp_num=10
+    res=[]
+    for i in range(grp_num):
+        res.append([])
+    with open(f"usr_list_{user_dist}.pkl", 'rb') as fo:
+        usr_list = pickle.load(fo, encoding='bytes')
+    if len(usr_list)%10!=0:
+        appended_len=len(usr_list)+grp_num-(len(usr_list)%grp_num)  
+    else:
+        appended_len=len(usr_list)
+    for i in range(appended_len):
+        if i<len(usr_list):
+            res[i%grp_num].append(usr_list[i])
+        else:
+            res[i%grp_num].append("")
+    res=np.array(res)
+    pickle.dump(res, open(f"usr_list_{user_dist}_grp{grp_num}.pkl", 'wb'))
 
-def compute_similarity(wm,id):
-    sim=0
-    wm=id[0]+wm
-    while len(id)<len(wm):
-        id+=id
-    id=id[:len(wm)]
-    for i in range(len(wm)):
-        if (wm[i]==id[i]):
-            sim+=1
-    # print(sim,len(wm))
-    return sim/len(wm)
+        
 
 # gen_usr_list_dense()
 # read_usr_list()
+# group_usr_list('dense')

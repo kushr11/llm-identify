@@ -13,6 +13,8 @@ import time
 import torch
 import sys
 import csv
+import ipdb
+import torch.nn as nn
 from transformers import (AutoTokenizer,
                           AutoModelForSeq2SeqLM,
                           AutoModelForCausalLM,
@@ -25,7 +27,8 @@ from utils import *
 # from datasets import load_dataset, Dataset
 from datasets import load_dataset
 # from torch.nn.parallel import DataParallel
-
+#for temp debug
+os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
@@ -46,6 +49,12 @@ def parse_args():
         description="A minimum working example of applying the watermark to any LLM that supports the huggingface 🤗 `generate` API")
 
     parser.add_argument(
+        "--gen_mode",
+        type=str,
+        default='pd_grouped',
+        help="simple_grouped, normal,pd_grouped"
+    )
+    parser.add_argument(
         "--ppl",
         type=str2bool,
         default=False,
@@ -60,7 +69,7 @@ def parse_args():
     parser.add_argument(
         "--detect_mode",
         type=str,
-        default="accumulate",
+        default="normal",
         help="normal or iterative or accumulate",
     )
     parser.add_argument(
@@ -78,7 +87,7 @@ def parse_args():
     parser.add_argument(  
         "--delta",
         type=float,
-        default=3,
+        default=4,
         help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
     )
     parser.add_argument(
@@ -91,7 +100,7 @@ def parse_args():
     parser.add_argument(
         "--max_new_tokens",
         type=int,
-        default=200,  # 200
+        default=25,  # 200
         help="Maximmum number of new tokens to generate.",
     )
     parser.add_argument(
@@ -246,7 +255,7 @@ def load_model(args):
     return model, tokenizer, device
 
 
-def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None):
+def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None,exp=None):
     """Instatiate the WatermarkLogitsProcessor according to the watermark parameters
        and generate watermarked text by passing it to the generate method of the model
        as a logits processor. """
@@ -258,7 +267,8 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
                                                                    wm_mode=args.wm_mode,
                                                                    seeding_scheme=args.seeding_scheme,
                                                                    select_green_tokens=args.select_green_tokens,
-                                                                   userid=userid
+                                                                   userid=userid,
+                                                                   args=args
                                                                    )
 
     gen_kwargs = dict(max_new_tokens=args.max_new_tokens,min_new_tokens=args.min_new_tokens)
@@ -276,6 +286,8 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     generate_without_watermark = partial(
         model.generate,
+        return_dict_in_generate=True, 
+        output_scores=True,
         **gen_kwargs
     )
     generate_with_watermark = partial(
@@ -302,8 +314,12 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     # sys.exit()
 
     torch.manual_seed(args.generation_seed)
-    output_without_watermark = generate_without_watermark(**tokd_input)
-
+    
+    output_without_watermark = generate_without_watermark(**tokd_input)[0]
+    clean_logit=generate_without_watermark(**tokd_input)[1]
+    clean_logit=torch.stack(list(clean_logit), dim=0) #tuple to list
+    clean_logit=clean_logit.reshape([clean_logit.shape[0],clean_logit.shape[-1]]) #(length,V)
+    # torch.save(clean_logit,f'./assest/clean_z_{exp}.pt')
 
     # optional to seed before second generation, but will not be the same again generally, unless delta==0.0, no-op watermark
     if args.seed_separately:
@@ -326,6 +342,11 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     out=generate_with_watermark(**tokd_input)                                                                                               
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
+    
+    logit = torch.stack(list(out[1]), dim=0)
+    logit=logit.reshape([logit.shape[0],logit.shape[-1]])
+    sm=nn.Softmax(dim=1)
+    pds=sm(logit) #([xx,50272])
     # out_max_logit=np.zeros(200)
     # out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
     # for k in range(len(out[1])):
@@ -333,7 +354,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
     #     out_max_logit[k]=out[1][k].max().cpu()
     # print("gap between sequence and out.score.argmax()",(out_max_idx-out_se[0].cpu().numpy()).mean())
     # print("gap between out.score.max and logit.max()",(out_max_logit-watermark_processor.max_logit).mean())
-    # logits = model(**tokd_input)[0]
+
 
     output_with_watermark = out[0]
     # print("tokdid:",tokd_input["input_ids"].shape)
@@ -361,6 +382,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
             decoded_output_without_watermark,
             decoded_output_with_watermark,
             watermark_processor,
+            pds,
             args)
     # decoded_output_with_watermark)
 
@@ -399,7 +421,7 @@ def list_format_scores(score_dict, detection_threshold):
     return lst_2d
 
 
-def detect(input_text, args, device=None, tokenizer=None, userid=None):
+def detect(input_text, args, pds,device=None, tokenizer=None, userid=None):
 
     """Instantiate the WatermarkDetection object and call detect on
         the input text returning the scores and outcome of the test"""
@@ -412,10 +434,12 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
                                                            z_threshold=args.detection_z_threshold,
                                                            normalizers=args.normalizers,
                                                            ignore_repeated_bigrams=args.ignore_repeated_bigrams,
+                                                           pds=pds,
                                                            select_green_tokens=args.select_green_tokens,
-                                                           userid=userid)
+                                                           userid=userid,
+                                                           args=args)
     if len(input_text) - 1 > watermark_detector.min_prefix_len:
-        score_dict, confidence, mark = watermark_detector.detect(input_text)
+        score_dict, confidence, grp_false_rate,mark = watermark_detector.detect(input_text)
         # output = str_format_scores(score_dict, watermark_detector.z_threshold)
         output = list_format_scores(score_dict, watermark_detector.z_threshold)
     else:
@@ -423,6 +447,7 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
         # output = (f"Error: string not long enough to compute watermark presence.")
         output = [["Error", "string too short to compute metrics"]]
         output += [["", ""] for _ in range(6)]
+    # print(f"in detect, confidence={confidence},1-grp false rate={1-grp_false_rate}")
     return output, confidence, mark,watermark_detector, args
 
 
@@ -469,31 +494,7 @@ def main(args):
         userid = usr_list[gen_id]
         # userid= usr_list[89]
         
-        # input_text = (
-        #     "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
-        #     "species of turtle native to the brackish coastal tidal marshes of the "
-        #     "Northeastern and southern United States, and in Bermuda.[6] It belongs "
-        #     "to the monotypic genus Malaclemys. It has one of the largest ranges of "
-        #     "all turtles in North America, stretching as far south as the Florida Keys "
-        #     "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
-        #     "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
-        #     "British English and American English. The name originally was used by "
-        #     "early European settlers in North America to describe these brackish-water "
-        #     "turtles that inhabited neither freshwater habitats nor the sea. It retains "
-        #     "this primary meaning in American English.[8] In British English, however, "
-        #     "other semi-aquatic turtle species, such as the red-eared slider, might "
-        #     "also be called terrapins. The common name refers to the diamond pattern "
-        #     "on top of its shell (carapace), but the overall pattern and coloration "
-        #     "vary greatly. The shell is usually wider at the back than in the front, "
-        #     "and from above it appears wedge-shaped. The shell coloring can vary "
-        #     "from brown to grey, and its body color can be grey, brown, yellow, "
-        #     "or white. All have a unique pattern of wiggly, black markings or spots "
-        #     "on their body and head. The diamondback terrapin has large webbed "
-        #     "feet.[9] The species is"
-        #     # "Hello! my name is Haggle."
-        #     # "How's your day?"
-        # )
-        # print("args.prompt max l",args.prompt_max_length)
+
         input_text=next(ds_iterator)['text'][:args.prompt_max_length]
         args.default_prompt = input_text
         # print("len of input:",len(input_text))
@@ -503,28 +504,25 @@ def main(args):
         # print("Prompt:")
         # print(input_text)
 
-        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
+        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,pds,_ = generate(
             input_text,
             args,
             model=model,
             device=device,
             tokenizer=tokenizer,
-            userid=userid)
-
+            userid=userid,
+            exp=i
+            )
 
 
         # loop_usr_id = userid
         # with_watermark_detection_result, confidence, mark,watermark_detector, _ = detect(decoded_output_with_watermark,
         #                                                                 args,
+        #                                                                 pds,
         #                                                                 device=device,
         #                                                                 tokenizer=tokenizer,
         #                                                          userid=loop_usr_id)
-        # res=0
-        # for k in range(len(watermark_detector.green_list)):
-        #     wp=watermark_processor.green_list[k]
-        #     wd=watermark_detector.green_list[k]
-        #     res+=((wp.cpu().numpy()-wd.cpu().numpy())**2).mean()
-        # print("green list gap:",res)
+
         # print(confidence)
         # sys.exit()
 
@@ -543,6 +541,7 @@ def main(args):
 
                 with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                 args,
+                                                                                pds,
                                                                                 device=device,
                                                                                 tokenizer=tokenizer,
                                                                                 userid=loop_usr_id)
@@ -594,6 +593,7 @@ def main(args):
             for loop_usr_id in code_list:
                 with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                     args,
+                                                                                    pds,
                                                                                     device=device,
                                                                                     tokenizer=tokenizer,
                                                                                     userid=loop_usr_id)
@@ -618,6 +618,7 @@ def main(args):
                         code_list.append(loop_usr_id)
                     with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                     args,
+                                                                                    pds,
                                                                                     device=device,
                                                                                     tokenizer=tokenizer,
                                                                                     userid=loop_usr_id)
@@ -635,6 +636,7 @@ def main(args):
             else:
                 with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                     args,
+                                                                                    pds,
                                                                                     device=device,
                                                                                     tokenizer=tokenizer,
                                                                                     userid=userid)
@@ -676,7 +678,7 @@ def main(args):
         if args.detect_mode=='iterative':
             print("userlist len:",usr_list.shape[-1],"detect list len:",len(sim_list),'average detect list len:',total_detect_len/(i+1))
         
-        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}_d{args.detect_mode}.txt"
+        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_t{args.sampling_temp}_d{args.detect_mode}_g{args.gen_mode}.txt"
         with open(save_file_name, "a+") as f:
             print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} ,time used: {time.time() - start_time}",file=f)
             print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
@@ -729,7 +731,7 @@ def testppl(args):
 
         term_width = 80
 
-        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark,_, _ = generate(
+        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark,_,pds, _ = generate(
             input_text,
             args,
             model=model,
