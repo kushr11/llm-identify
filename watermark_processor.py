@@ -32,8 +32,7 @@ from normalizers import normalization_strategy_lookup
 import copy
 import sys
 import math
-import pickle
-import ipdb
+
 class WatermarkBase:
     def __init__(
             self,
@@ -45,8 +44,7 @@ class WatermarkBase:
             seeding_scheme: str = "simple_1",  # mostly unused/always default
             hash_key: int = 15485863,  # just a large prime number to create a rng seed with sufficient bit width
             select_green_tokens: bool = True,
-            userid="10000100",
-            args=""
+            userid="10000100"
     ):
 
         # watermarking parameters
@@ -63,7 +61,6 @@ class WatermarkBase:
         self.idx_t = 0
         self.userid = userid
         self.hit = 0
-        self.args=args
         # self.max_logit = np.zeros(200)
         # self.green_list=[]
 
@@ -88,39 +85,19 @@ class WatermarkBase:
         # according to the seeding_scheme
         self._seed_rng(input_ids)
         # print(input_ids.shape)
-        if self.args.gen_mode=="normal":
-            greenlist_size = int(self.vocab_size * self.gamma)
-            vocab_permutation = torch.randperm(self.vocab_size, device=input_ids.device, generator=self.rng)
-            if self.select_green_tokens:  # directly
-                greenlist_ids = vocab_permutation[:greenlist_size]  # new
-                redlist_ids = vocab_permutation[greenlist_size:]
-            else:  # select green via red
-                greenlist_ids = vocab_permutation[(self.vocab_size - greenlist_size):]  # legacy behavior
-            return greenlist_ids, redlist_ids
-        elif "group" in self.args.gen_mode:
-            with open(f"usr_list_{self.args.user_dist}_grp10.pkl", 'rb') as fo:
-                grp_usr_list = pickle.load(fo, encoding='bytes')
-            grp_idx=-1
-            for g in grp_usr_list:
-                grp_idx+=1
-                if self.userid in g:
-                    break
-            grp_num=grp_usr_list.shape[0]
-            grp_size = int(self.vocab_size // grp_num)
-            vocab_permutation = torch.randperm(self.vocab_size, device=input_ids.device, generator=self.rng)
-            grp_voc=[]
-            for i in range(grp_num):
-                if i!=grp_num:
-                    grp_ids = vocab_permutation[i*grp_size:(i+1)*grp_size] 
-                else:
-                    grp_ids = vocab_permutation[i*grp_size:]  
-                grp_voc.append(grp_ids)
-            grp_ids=grp_voc[grp_idx]
-            greenlist_ids=grp_ids[:len(grp_ids//2)]
-            redlist_ids=grp_ids[len(grp_ids//2):]
-            return greenlist_ids, redlist_ids,grp_voc,grp_idx
-        else:
-            raise NotImplementedError(f"Unexpected gen mode: {self.args.gen_mode}")
+
+        greenlist_size = int(self.vocab_size * self.gamma)
+        vocab_permutation = torch.randperm(self.vocab_size, device=input_ids.device, generator=self.rng)
+        if self.select_green_tokens:  # directly
+            greenlist_ids = vocab_permutation[:greenlist_size]  # new
+            redlist_ids = vocab_permutation[greenlist_size:]
+        else:  # select green via red
+            greenlist_ids = vocab_permutation[(self.vocab_size - greenlist_size):]  # legacy behavior
+        return greenlist_ids, redlist_ids
+        # return greenlist_ids
+
+
+
 
 class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
 
@@ -147,6 +124,12 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # print("called-----------")
         # print("inputids",input_ids)
         n = len(self.userid)
+        # print("in processor, userid= ",self.userid)
+        # print(input_ids)
+        # print(input_ids.shape)
+        # print(input_ids)
+        # print(input_ids[0])
+        # sys.exit()
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
         if self.wm_mode =='previous1':
             preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
@@ -164,9 +147,9 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
 
         for b_idx in range(input_ids.shape[0]):
             if preferance == '1':
-                greenlist_ids, _ ,_,_= self._get_greenlist_ids(input_ids[b_idx])
+                greenlist_ids, _ = self._get_greenlist_ids(input_ids[b_idx])
             else:
-                _, greenlist_ids,_ ,_= self._get_greenlist_ids(input_ids[b_idx])
+                _, greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
             # greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
             # if self.idx_t!=1:
             #     self.green_list.append(greenlist_ids)
@@ -201,7 +184,6 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             # normalizers: list[str] = ["unicode"],
             normalizers: list[str] = ["unicode"],  # or also: ["unicode", "homoglyphs", "truecase"]
             ignore_repeated_bigrams: bool = False,
-            pds=[],
             # userid,
             **kwargs,
 
@@ -216,7 +198,6 @@ class WatermarkDetector_with_preferance(WatermarkBase):
 
         self.z_threshold = z_threshold
         self.rng = torch.Generator(device=self.device)
-        self.pds=pds
 
         if self.seeding_scheme == "simple_1" and self.wm_mode == 'previous1':
             self.min_prefix_len = 1
@@ -287,10 +268,11 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             # num tokens as the first prefix for the seeding scheme,
             # and at each step, compute the greenlist induced by the
             # current prefix and check if the current token falls in the greenlist.
-            green_token_count, false_grp_token_count, green_token_mask = 0, 0, []
+            green_token_count, green_token_mask = 0, []
             # print("in detecter,userid-", self.userid)
-            pdsum=np.zeros([10])
             for idx in range(self.min_prefix_len, len(input_ids)):
+                # if idx == self.min_prefix_len:
+                    # print(input_ids[idx])
                 curr_token = input_ids[idx]
                 n = len(self.userid)
                 if self.wm_mode == 'previous1':
@@ -300,22 +282,13 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                 # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
                 # print(preferance,end="")
                 if preferance == '1':
-                    greenlist_ids, redlist_ids,grp_voc,grp_idx = self._get_greenlist_ids(input_ids[:idx])
+                    greenlist_ids, _ = self._get_greenlist_ids(input_ids[:idx])
                 else:
-                    redlist_ids, greenlist_ids,grp_voc,grp_idx = self._get_greenlist_ids(input_ids[:idx])
+                    _, greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
                 # self.green_list.append(greenlist_ids)
                 # if (idx < 20):
                 #     print(idx, curr_token in greenlist_ids)
                 # greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
-                if self.args.gen_mode=="simple_grouped":
-                    if (curr_token not in greenlist_ids) and (curr_token not in redlist_ids): #detect false
-                        false_grp_token_count+=1
-
-                elif self.args.gen_mode=="pd_grouped":
-                    idx=0
-                    for grp in grp_voc:
-                        pdsum[idx]+=(np.log(self.pds[idx][grp].cpu()).sum())
-                        idx+=1
                 if curr_token in greenlist_ids:
                     if preferance == '1':
                         mark += '1'
@@ -329,7 +302,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                     else:
                         mark += '0'
                     green_token_mask.append(False)
-        
+
         score_dict = dict()
         if return_num_tokens_scored:
             score_dict.update(dict(num_tokens_scored=num_tokens_scored))
@@ -347,12 +320,8 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             score_dict.update(dict(p_value=self._compute_p_value(z_score)))
         if return_green_token_mask:
             score_dict.update(dict(green_token_mask=green_token_mask))
-        #if wrong group, no confidence
-        # pdsum=np.array(pdsum)
-        print(pdsum.argmax(),grp_idx)
-        if pdsum.argmax()!=grp_idx:
-            return score_dict,0,-1,-1
-        return score_dict, green_token_count / num_tokens_scored,false_grp_token_count/num_tokens_scored, mark
+
+        return score_dict, green_token_count / num_tokens_scored, mark
 
     def detect(
             self,
@@ -393,7 +362,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
         # call score method
         output_dict = {}
         # print("in _tokenized:", tokenized_text.shape)
-        score_dict, confidence,grp_false_rate, mark = self._score_sequence(tokenized_text, **kwargs)
+        score_dict, confidence, mark = self._score_sequence(tokenized_text, **kwargs)
         if return_scores:
             output_dict.update(score_dict)
         # if passed return_prediction then perform the hypothesis test and return the outcome
@@ -404,5 +373,5 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             if output_dict["prediction"]:
                 output_dict["confidence"] = 1 - score_dict["p_value"]
 
-        return output_dict, confidence, grp_false_rate,mark
+        return output_dict, confidence, mark
 
