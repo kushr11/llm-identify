@@ -29,6 +29,14 @@ To evaluate perplexity:
 CUDA_VISIBLE_DEVICES=0 python test.py --model_name_or_path facebook/opt-1.3b --user_dist dense --wm_mode combination --max_new_tokens 200 --delta 2 --ppl 1
 ```
 
+To run train.py:
+
+prepare clean logits in './assest/clean_z_25', where 25 means output length.
+Then call train_autoencoder() in train.py, which produce autoencoder_dx_ex.pt in ./assest/models, dx is delta constraint, ex is train epoch, and biased logits in dir ./assest/ncoded_z_25_dx_ex .
+
+Then call train_expander(), which takes files in ./assest/ncoded_z_25_dx_ex as input and produce expander_dx_ex.pt ./assest/models.
+
+
 
 note: the above settings depends on RTX3090, if you use other smaller devices, please modify `load_model()` in `test.py`.
 
