@@ -246,7 +246,7 @@ def load_model(args):
     return model, tokenizer, device
 
 
-def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None):
+def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None, index=None):
     """Instatiate the WatermarkLogitsProcessor according to the watermark parameters
        and generate watermarked text by passing it to the generate method of the model
        as a logits processor. """
@@ -326,6 +326,10 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None)
 
     out=generate_with_watermark(**tokd_input)                                                                                               
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
+    logit=out[1]
+    logit=torch.stack(logit)
+    torch.save(logit,f"./assest/clean_z_200/clean_z_{index}.pt")
+    
     # out_max_logit=np.zeros(200)
     # out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
     # for k in range(len(out[1])):
@@ -449,7 +453,7 @@ def main(args):
     # else:
     #     exp_num=50
     
-    exp_num=200
+    exp_num=1000
     
     total_detect_len=0 #for detect mode: iterative
     succ_num_top1=0
@@ -509,8 +513,11 @@ def main(args):
             model=model,
             device=device,
             tokenizer=tokenizer,
-            userid=userid)
-
+            userid=userid,
+            index=i)
+        
+        
+        continue
 
 
         # loop_usr_id = userid
