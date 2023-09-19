@@ -32,7 +32,8 @@ from normalizers import normalization_strategy_lookup
 import copy
 import sys
 import math
-
+import torch.nn.functional as F
+import ipdb
 class WatermarkBase:
     def __init__(
             self,
@@ -44,7 +45,8 @@ class WatermarkBase:
             seeding_scheme: str = "simple_1",  # mostly unused/always default
             hash_key: int = 15485863,  # just a large prime number to create a rng seed with sufficient bit width
             select_green_tokens: bool = True,
-            userid="10000100"
+            userid="10000100",
+            args=None,
     ):
 
         # watermarking parameters
@@ -61,6 +63,7 @@ class WatermarkBase:
         self.idx_t = 0
         self.userid = userid
         self.hit = 0
+        self.args=args
         # self.max_logit = np.zeros(200)
         # self.green_list=[]
 
@@ -79,21 +82,49 @@ class WatermarkBase:
         else:
             raise NotImplementedError(f"Unexpected seeding_scheme: {seeding_scheme}")
         return
+    def _seed_depth_rng(self) -> None:
+        self.rng.manual_seed(self.hash_key * int(self.userid,2))
+        return
+
 
     def _get_greenlist_ids(self, input_ids: torch.LongTensor) -> list[int]:
         # seed the rng using the previous tokens/prefix
         # according to the seeding_scheme
         self._seed_rng(input_ids)
         # print(input_ids.shape)
-
+        # ipdb.set_trace()
         greenlist_size = int(self.vocab_size * self.gamma)
         vocab_permutation = torch.randperm(self.vocab_size, device=input_ids.device, generator=self.rng)
-        if self.select_green_tokens:  # directly
-            greenlist_ids = vocab_permutation[:greenlist_size]  # new
-            redlist_ids = vocab_permutation[greenlist_size:]
-        else:  # select green via red
-            greenlist_ids = vocab_permutation[(self.vocab_size - greenlist_size):]  # legacy behavior
-        return greenlist_ids, redlist_ids
+
+        greenlist_ids = vocab_permutation[:greenlist_size]  # new
+        redlist_ids = vocab_permutation[greenlist_size:]
+        # ipdb.set_trace()
+        self._seed_depth_rng()
+        depth_permutation=torch.randperm(len(greenlist_ids), device=input_ids.device, generator=self.rng)
+        depth_green_ids=greenlist_ids[depth_permutation]
+        if len(redlist_ids)!=len(greenlist_ids):
+            depth_red_ids=redlist_ids[:-1][depth_permutation]
+            #append to tail
+            depth_red_ids=torch.cat((depth_red_ids,torch.tensor([redlist_ids[-1]]).to(depth_red_ids.device)))
+        else:
+            depth_red_ids=redlist_ids[depth_permutation]
+
+        if self.args.gen_mode=="depth_d":
+            green_d_masks=[]
+            red_d_masks=[]
+            discrete_depth=self.args.depth
+            g_discrete_length=greenlist_size//discrete_depth
+            r_discrete_length=greenlist_size//discrete_depth
+            for i in range(discrete_depth):
+                if i == discrete_depth-1:
+                    green_d_masks.append(depth_green_ids[i*g_discrete_length:])
+                    red_d_masks.append(depth_red_ids[i*r_discrete_length:])
+                else:
+                    green_d_masks.append(depth_green_ids[i*g_discrete_length:(i+1)*g_discrete_length])
+                    red_d_masks.append(depth_red_ids[i*r_discrete_length:(i+1)*r_discrete_length])
+            return greenlist_ids,redlist_ids,green_d_masks,red_d_masks
+        # ipdb.set_trace()
+        return greenlist_ids, redlist_ids,[],[]
         # return greenlist_ids
 
 
@@ -104,6 +135,13 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def _bias_depth_d_logits(self,scores: torch.FloatTensor,greenlist_token_ids,d_masks,delta):
+        for i in range(len(d_masks)):
+            delta=delta*0.5**i
+            for j in range(len(greenlist_token_ids)):
+                scores[j][d_masks[i]]=scores[j][d_masks[i]]+delta
+        return scores
+    
     def _calc_greenlist_mask(self, scores: torch.FloatTensor, greenlist_token_ids) -> torch.BoolTensor:
         # TODO lets see if we can lose this loop
         green_tokens_mask = torch.zeros_like(scores)
@@ -121,15 +159,8 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         return scores
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
-        # print("called-----------")
-        # print("inputids",input_ids)
         n = len(self.userid)
-        # print("in processor, userid= ",self.userid)
-        # print(input_ids)
-        # print(input_ids.shape)
-        # print(input_ids)
-        # print(input_ids[0])
-        # sys.exit()
+
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
         if self.wm_mode =='previous1':
             preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
@@ -144,33 +175,29 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
         # the seed and partition operations are not tensor/vectorized, thus
         # each sequence in the batch needs to be treated separately.
         batched_greenlist_ids = [None for _ in range(input_ids.shape[0])]
+        if self.args.gen_mode=='depth_d':
+            batched_d_masks = [None for _ in range(input_ids.shape[0])]
 
         for b_idx in range(input_ids.shape[0]):
+            # d_masks only availiable in "depth_d"
             if preferance == '1':
-                greenlist_ids, _ = self._get_greenlist_ids(input_ids[b_idx])
+                greenlist_ids, _ ,d_masks,_= self._get_greenlist_ids(input_ids[b_idx])
             else:
-                _, greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
-            # greenlist_ids = self._get_greenlist_ids(input_ids[b_idx])
-            # if self.idx_t!=1:
-            #     self.green_list.append(greenlist_ids)
+                _, greenlist_ids,_,d_masks = self._get_greenlist_ids(input_ids[b_idx])
+            
             batched_greenlist_ids[b_idx] = greenlist_ids
-            # if b_idx<2:
-            #     print(b_idx,greenlist_ids)
-        # print(preferance)
-        green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
-        scores_withnomask=copy.deepcopy(scores)
-        scores = self._bias_greenlist_logits(scores=scores, greenlist_mask=green_tokens_mask, greenlist_bias=self.delta,decrease_delta=self.decrease_delta)
+            if self.args.gen_mode=='depth_d':
+                batched_d_masks[b_idx] = d_masks
 
-        # print(self.idx_t,torch.argmax(scores) in greenlist_ids)
-        if (torch.argmax(scores) in greenlist_ids):
-            # if (self.idx_t < 11):
-            #     print("in generation, ", self.idx_t, torch.argmax(scores))
-            self.hit += 1
-        ##for debugging
-        # print(self.idx_t-1,self.hit,scores.mean())
-        # print(scores.max(),scores_withnomask.max())
-        # self.max_logit[self.idx_t-1]=scores.max()
-
+        if self.args.gen_mode !='depth_d':
+            green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
+            scores_withnomask=copy.deepcopy(scores)
+            scores = self._bias_greenlist_logits(scores=scores, greenlist_mask=green_tokens_mask, greenlist_bias=self.delta,decrease_delta=self.decrease_delta)
+            # ipdb.set_trace()
+        else:
+            scores_withnomask=copy.deepcopy(scores)
+            scores=self._bias_depth_d_logits(scores=scores,greenlist_token_ids=batched_greenlist_ids,d_masks=d_masks,delta=self.delta)
+            # ipdb.set_trace()
         return scores
 
 
@@ -269,6 +296,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             # and at each step, compute the greenlist induced by the
             # current prefix and check if the current token falls in the greenlist.
             green_token_count, green_token_mask = 0, []
+            depth_hit=torch.zeros(self.args.depth)
             # print("in detecter,userid-", self.userid)
             for idx in range(self.min_prefix_len, len(input_ids)):
                 # if idx == self.min_prefix_len:
@@ -282,13 +310,10 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                 # preferance = self.userid[(idx - n * (idx // n)) % n]  # 1->green ; 0-> red
                 # print(preferance,end="")
                 if preferance == '1':
-                    greenlist_ids, _ = self._get_greenlist_ids(input_ids[:idx])
+                    greenlist_ids, _, d_masks,_ = self._get_greenlist_ids(input_ids[:idx])
                 else:
-                    _, greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
-                # self.green_list.append(greenlist_ids)
-                # if (idx < 20):
-                #     print(idx, curr_token in greenlist_ids)
-                # greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
+                    _, greenlist_ids, _,d_masks = self._get_greenlist_ids(input_ids[:idx])
+
                 if curr_token in greenlist_ids:
                     if preferance == '1':
                         mark += '1'
@@ -296,6 +321,10 @@ class WatermarkDetector_with_preferance(WatermarkBase):
                         mark += '0'
                     green_token_count += 1
                     green_token_mask.append(True)
+                    if self.args.gen_mode=="depth_d":
+                        for j in range(len(d_masks)):
+                            if curr_token in d_masks[j]:
+                                depth_hit[j]+=1
                 else:
                     if preferance == '0':
                         mark += '1'
@@ -320,8 +349,24 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             score_dict.update(dict(p_value=self._compute_p_value(z_score)))
         if return_green_token_mask:
             score_dict.update(dict(green_token_mask=green_token_mask))
-
-        return score_dict, green_token_count / num_tokens_scored, mark
+        sim_score=green_token_count / num_tokens_scored
+        gr_sim_score=np.array(sim_score)
+        celoss=0
+        if self.args.gen_mode=="depth_d":
+            depth_pd=depth_hit/green_token_count
+            standard_depth_distribution=torch.tensor([0.6834,0.1800,0.1366])
+            depth_distribution_score=F.cosine_similarity(depth_pd,standard_depth_distribution,dim=0)
+            
+            loss_func = torch.nn.CrossEntropyLoss()
+            celoss = -loss_func(depth_pd, standard_depth_distribution)
+            
+            # kl_divergence = -F.kl_div(depth_pd.log(), depth_distribution_score, reduction='mean')
+            # sim_score=kl_divergence
+            gr_sim_score=np.array(sim_score)
+            celoss=np.array(celoss)
+            # print(green_token_count , num_tokens_scored,depth_hit,depth_pd,celoss)
+            # sim_score+=depth_distribution_score
+        return score_dict, gr_sim_score,celoss, mark
 
     def detect(
             self,
@@ -362,7 +407,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
         # call score method
         output_dict = {}
         # print("in _tokenized:", tokenized_text.shape)
-        score_dict, confidence, mark = self._score_sequence(tokenized_text, **kwargs)
+        score_dict, gr_score,depth_score, mark = self._score_sequence(tokenized_text, **kwargs)
         if return_scores:
             output_dict.update(score_dict)
         # if passed return_prediction then perform the hypothesis test and return the outcome
@@ -373,5 +418,5 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             if output_dict["prediction"]:
                 output_dict["confidence"] = 1 - score_dict["p_value"]
 
-        return output_dict, confidence, mark
+        return output_dict, gr_score,depth_score, mark
 
