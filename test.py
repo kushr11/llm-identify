@@ -85,8 +85,8 @@ def parse_args():
     parser.add_argument(
         "--user_magnitude",
         type=int,
-        default=10,
-        help="user number = 2**magnitude",
+        default=17,
+        help="user number = 2**magnitude, [7,10,14]",
     )
     parser.add_argument(  
         "--delta",
@@ -467,6 +467,7 @@ def main(args):
     total_detect_len=0 #for detect mode: iterative
     succ_num_top1=0
     succ_num_top3=0
+    succ_num_top10=0
     # for t in range(17):
     #         input_text=next(ds_iterator)
     for i in range(exp_num):
@@ -477,6 +478,7 @@ def main(args):
             gen_id=random.randint(0, 31)
 
         # gen_id=5
+        gen_id=i
         userid = usr_list[gen_id]
 
         
@@ -498,9 +500,24 @@ def main(args):
             tokenizer=tokenizer,
             userid=userid,
             index=i)
-        
-        
+        # pth=f"./assest/out_l{args.max_new_tokens}_g{args.gen_mode}_depth{args.depth}_mag{args.user_magnitude}"
+        # a = {'output': decoded_output_with_watermark,'code':userid,'id':gen_id}
+        # if not os.path.exists(pth):
+        #     os.makedirs(pth)
+        # with open(f'{pth}/atest_out_{i}.pkl', 'wb') as handle:
+        #     pickle.dump(a, handle)
         # continue
+        
+        
+        # pth=f"./assest/out_l{args.max_new_tokens}_g{args.gen_mode}_depth{args.depth}_mag{args.user_magnitude}"
+        # with open(f'{pth}/atest_out_{i}.pkl', 'rb') as handle:
+        #     temp_dict=pickle.load( handle)
+        # decoded_output_with_watermark1=temp_dict['output']
+        # gen_id1=temp_dict['id']
+        # userid1= usr_list[gen_id1]
+        
+        
+        
 
 
         # loop_usr_id = userid
@@ -509,9 +526,19 @@ def main(args):
         #                                                                 device=device,
         #                                                                 tokenizer=tokenizer,
         #                                                          userid=loop_usr_id)
-
+        # loop_usr_id = userid1
+        # with_watermark_detection_result, gr_score1,depth_score1, mark,watermark_detector, _ = detect(decoded_output_with_watermark1,
+        #                                                                 args,
+        #                                                                 device=device,
+        #                                                                 tokenizer=tokenizer,
+        #                                                          userid=loop_usr_id)
 
         # print(gr_score,depth_score)
+        # print(gr_score1,depth_score1)
+        
+        
+        # ipdb.set_trace()
+        # continue
         # sys.exit()
 
         # del(watermark_processor)
@@ -539,7 +566,7 @@ def main(args):
                 if gr_score> max_sim:
                     max_sim = gr_score
                     max_sim_idx = j
-            
+            # ipdb.set_trace()
             detect_range=len(usr_list)//10
             mapped_gr_score=gr_score_list[gen_id]
             mapped_depth_score=depth_score_list[gen_id]
@@ -592,6 +619,7 @@ def main(args):
                 result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
                 if_succ_top1=0
                 if_succ_top3=0
+                if_succ_top10=0
 
             elif args.gen_mode=='normal':
                 for r in range(detect_range): # sort with depth
@@ -609,6 +637,10 @@ def main(args):
             if gen_id in id_index[:3]:
                 succ_num_top3 += 1
                 if_succ_top3=1
+                
+            if gen_id in id_index[:10]:
+                succ_num_top10 += 1
+                if_succ_top10=1
 
             if gen_id in id_index[:1]:
                 succ_num_top1+=1
@@ -707,30 +739,30 @@ def main(args):
         pd.get_option('display.width')
         pd.set_option('display.width', 500)
         pd.set_option('display.max_columns', None)
-        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, time used: {time.time() - start_time}")
+        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, if top10 succ: {if_succ_top10},time used: {time.time() - start_time}")
         if args.gen_mode=="depth_d":
             print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}")
         else:
             print(f"gen id {userid}, mapped depth {mapped_depth_score}")
         print(DataFrame(result_dic).T)
-        print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n")
+        print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num},top10 succ rate: {succ_num_top10}/{exp_num} \n")
         if args.detect_mode=='iterative':
             print("userlist len:",usr_list.shape[-1],"detect list len:",len(gr_score_list),'average detect list len:',total_detect_len/(i+1))
         
-        save_file_name=f"comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}.txt"
+        save_file_name=f"comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}_depth{args.depth}.txt"
         with open(save_file_name, "a+") as f:
-            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} ,time used: {time.time() - start_time}",file=f)
+            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3},if top10 succ: {if_succ_top10} ,time used: {time.time() - start_time}",file=f)
             if args.gen_mode=="depth_d":
                 print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}",file=f)
             else:
                 print(f"gen id {userid}, mapped depth {mapped_depth_score}",file=f)
             print(DataFrame(result_dic).T,file=f)
-            print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n",file=f)
+            print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num},top10 succ rate: {succ_num_top10}/{exp_num}  \n",file=f)
             if args.detect_mode=='iterative':
                 print(f"userlist len:{usr_list.shape[-1]}, detect list len:,{len(gr_score_list)}, average detect list len: {total_detect_len/(i+1)}\n",file=f)
             print(f"data saved in {save_file_name}")
             f.close()
-        
+
 
 
             
