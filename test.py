@@ -457,14 +457,15 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
 def main(args):
     #load dataset
     # TODO：load another dataset, write a portal according to the papers/methods.
-    dataset_config_name = ''
+    
+    # 1. load 'c4' and 'xsum' dataset
+    
     dataset_name = args.dataset
-    if dataset_name == 'c4':
-        dateset_config_name = 'realnewslike'
-    elif dataset_name == 'xsum':
-        dataset_config_name = 'extremesummarization'
+    dataset_config_name = 'realnewslike'
+    
     dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
     ds_iterator = iter(dataset)
+    
     
     start_time = time.time()
     """Run a command line version of the generation and detection operations
@@ -493,8 +494,19 @@ def main(args):
         userid = usr_list[gen_id]
 
         
-
-        input_text=next(ds_iterator)['text'][:args.prompt_max_length]
+        # two datasets. Whether the length of sentences input is larger than prompt_max_length
+        if dataset_name == 'c4':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['text']) >= args.prompt_max_length:
+                input_text = next(ds_iterator)['text'][:args.prompt_max_length]
+            else:
+                input_text = next(ds_iterator)['text'][:]
+                
+        if dataset_name == 'xsum':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['document']) >= args.prompt_max_length:
+                input_text = next(ds_iterator)['document'][:args.prompt_max_length]
+            else:
+                input_text = next(ds_iterator)['document'][:]
+                
         args.default_prompt = input_text
         # print("len of input:",len(input_text))
 
