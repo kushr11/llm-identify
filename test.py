@@ -218,6 +218,13 @@ def parse_args():
         default=True,
         help="Whether to run model in float16 precsion.",
     )
+    
+    parser.add_argument(
+        "--dataset",
+        type = str,
+        default = 'c4',
+        help = "Select the dataset we want to use to run tests on",
+    )
 
     args = parser.parse_args()
     return args
@@ -449,7 +456,13 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
 
 def main(args):
     #load dataset
-    dataset_name, dataset_config_name = "c4", "realnewslike"
+    # TODO：load another dataset, write a portal according to the papers/methods.
+    dataset_config_name = ''
+    dataset_name = args.dataset
+    if dataset_name == 'c4':
+        dateset_config_name = 'realnewslike'
+    elif dataset_name == 'xsum':
+        dataset_config_name = 'extremesummarization'
     dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
     ds_iterator = iter(dataset)
     
