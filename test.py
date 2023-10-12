@@ -476,7 +476,7 @@ def main(args):
 
     model, tokenizer, device = load_model(args)
     
-    exp_num=200
+    exp_num=1000
     
     total_detect_len=0 #for detect mode: iterative
     succ_num_top1=0
