@@ -98,11 +98,11 @@ def tensor_to_binary_str(tensor):
 # for code in usr_list:
 #     encoded_text = binary_string_to_one_hot(code)
 #     codes.append(encoded_text)
-codes=torch.load('./usr_list_continuous.pt')
+#codes=torch.load('./usr_list_continuous.pt')
 
 input_size = unit_input.shape[-1]
 hidden_size = 64
-code_size=codes[0].shape[-1]
+#code_size=codes[0].shape[-1]
 
 num_epochs = 200
 d_constraint = 6  # 差异限制

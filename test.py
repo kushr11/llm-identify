@@ -349,7 +349,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None,
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
     logit=out[1]
     logit=torch.stack(logit)
-    # torch.save(logit,f"./assest/clean_z_200/clean_z_{index}.pt")
+    torch.save(logit,f"./assest/clean_z_200/clean_z_{index}.pt")
     
     # out_max_logit=np.zeros(200)
     # out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
@@ -525,7 +525,7 @@ def main(args):
             index=i)
         
         
-        # continue
+        continue
 
 
         # loop_usr_id = userid
