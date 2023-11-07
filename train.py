@@ -38,7 +38,7 @@ def parse_args():
     parser.add_argument(
         "--loss",
         type=str,
-        default="cos",
+        default="mae",
         help="cos or mae ",
     )
     parser.add_argument(
@@ -70,8 +70,8 @@ unit_input=torch.load(f"./assest/clean_z_200/clean_z_0.pt")
 print(unit_input.shape)
     
 
-with open(f"usr_list_dense.pkl", 'rb') as fo:
-        usr_list = pickle.load(fo, encoding='bytes')
+# with open(f"usr_list_dense.pkl", 'rb') as fo:
+#         usr_list = pickle.load(fo, encoding='bytes')
 
 
 def binary_string_to_one_hot(text):
@@ -102,13 +102,19 @@ def tensor_to_binary_str(tensor):
 #codes=torch.load('./usr_list_continuous.pt')
 
 input_size = unit_input.shape[-1]
+# input_size=100
 hidden_size = 64
 #code_size=codes[0].shape[-1]
 
-num_epochs = 200
+num_epochs = 2000
 d_constraint = 6  # 差异限制
-output_length=200
-vac_size=input_size
+#<<<<<<< GordonBai
+#output_length=200
+#vac_size=input_size
+
+output_length=unit_input.shape[0]
+voc_size=input_size
+
 sm=nn.Softmax()
 
 def Discrete_d_Feasibility_test():
@@ -116,17 +122,15 @@ def Discrete_d_Feasibility_test():
     V=unit_input.shape[-1]
     greenlist_size=V//2
     vocab_permutation = torch.randperm(V, device=device)
-    greenlist_ids = vocab_permutation[:greenlist_size]
-    discretor=0.5
+    
+    attenuation=0.9
     discrete_depth=args.depth
     discrete_length=greenlist_size//discrete_depth
-    d_masks=[]
+    
     green_hit=0
     depth_hit=torch.zeros(discrete_depth)
     total_s=0
-    for i in range(discrete_depth):
-        
-        d_masks.append(greenlist_ids[i*discrete_length:(i+1)*discrete_length])
+    
     root_path=f"./assest/clean_z_{output_length}"
     # debugging: check loop
     print(len(d_masks))
@@ -134,6 +138,16 @@ def Discrete_d_Feasibility_test():
     ct=0
     for file_name in os.listdir(root_path): 
         ct+=1
+
+        if ct>=500:
+            break
+        greenlist_ids = vocab_permutation[:greenlist_size]
+        d_masks=[]
+        for i in range(discrete_depth):
+        
+            d_masks.append(greenlist_ids[i*discrete_length:(i+1)*discrete_length])
+        
+
         input_z=torch.load(os.path.join(root_path,file_name))
         input_z = input_z.clone().detach().to(device)  # Updated line
         print('input_z shape 0 is: ', input_z.shape[0])
@@ -150,8 +164,12 @@ def Discrete_d_Feasibility_test():
         input_z=input_z.reshape(output_length,-1)
         
         for i in range(len(d_masks)):
-            print('d_mask loop')
-            delta=d*discretor**i
+#<<<<<<< GordonBai
+#            print('d_mask loop')
+#            delta=d*discretor**i
+
+            delta=d*attenuation**i
+  
             for j in range(input_z.shape[0]):
                 input_z[j][d_masks[i]]=input_z[j][d_masks[i]]+delta
         # ipdb.set_trace()
@@ -171,12 +189,162 @@ def Discrete_d_Feasibility_test():
                         depth_hit[j]+=1
         total_s+=length
         print(f"[{ct}]-th sentence, green hit: [{green_hit/total_s}], depth_hit:{(depth_hit/green_hit)}")
+                 
+class User_delta(nn.Module):
+    def __init__(self, code_size, hidden_size,voc_size):
+        super(User_delta, self).__init__()
+        self.process=nn.Sequential(
+            nn.Linear(code_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, voc_size),
+        )
+        for layer in self.process:
+            if isinstance(layer, nn.Linear):
+                nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
+    
+    def forward(self, code,d_constraint):
+        delta = self.process(code)
+
+        return delta
+    
+    
+def train_userdelta():
+    codes=torch.load('./usr_list_continuous.pt')
+    ud = User_delta( code_size,hidden_size,voc_size)
+    ud=ud.to(device)
+    ud_optimizer = optim.SGD(ud.parameters(), lr=0.005)
+    ud_criterion = nn.BCEWithLogitsLoss().to(device)
+    # 训练自编码器
+
+    train_start_time=time.time()
+    for epoch in range(num_epochs):
+        # 前向传播
+        # for j in range(len(codes)):
+            #train encoder
+            # code=codes[j]
+        # code=torch.stack(codes).to(device)
+        codes=codes.to(device)
+        # code=torch.tensor(code, dtype=torch.float32).to(device)
+        deltas = ud.process(codes)
+        
+        # negative_penalty=-deltas[deltas<0].mean()
+        # if deltas[deltas<0].sum()==0:
+        #     negative_penalty=0
+        
+        # max_penalty=deltas[deltas>5].mean()
+        # if deltas[deltas>5].sum()==0:
+        #     negative_penalty=0
             
-        
+        diff_measurements = []
+        for i in range(len(deltas)):
+            for j in range(i+1, len(deltas)):
+                distance = torch.norm(deltas[i] - deltas[j], p=2)
+                diff_measurements.append(distance)
+        diff_measurements=torch.stack(diff_measurements)
+        sim_penalty=-torch.mean(diff_measurements)/10
+        max_penalty = torch.max(torch.zeros_like(deltas), deltas - 5).max()*3
+        negative_penalty=torch.max(torch.zeros_like(deltas), -deltas).max()*3
+        random_purt=torch.rand(1).to(device)
+        # ipdb.set_trace()
+        # negative_penalty=0
+        ud_loss=negative_penalty+sim_penalty+max_penalty
+        print(f"-----Epoch [{epoch+1}/{num_epochs}], loss:{ud_loss.item()}, sim p:{sim_penalty}, neg p:{negative_penalty},max p:{max_penalty},time used: {time.time()-train_start_time}")
+        # ipdb.set_trace()
+       
+        ud_optimizer.zero_grad()
+        ud_loss.backward()
+        ud_optimizer.step()
+           
+        writer.add_scalar(f"process loss",ud_loss.item(),epoch)
+        writer.add_scalar(f"sim penaty",sim_penalty,epoch)
+        writer.add_scalar(f"neg penalty",negative_penalty,epoch) 
 
-        
-        
+            
+            # 打印损失
+        # if (epoch + 1) % 1 == 0:
+        #     print(f"-----Epoch [{epoch+1}/{num_epochs}], loss:{ud_loss.item()}, sim p:{sim_penalty}, neg p:{negative_penalty},time used: {time.time()-train_start_time}")
+        if(epoch+1)%10==0:
+            print(torch.max(deltas).max())
+            
+    torch.save(deltas,f"./assest/deltas.pt")
+    torch.save(ud.state_dict(), f"./assest/models/ud_d{d_constraint}_e{num_epochs}.pt")
+    # torch.save(decoder.state_dict(), "./assest/models/decoderB.pt")
 
+class Out2Code(nn.Module):
+    def __init__(self, code_size, hidden_size,voc_size):
+        super(Out2Code, self).__init__()
+        self.process=nn.Sequential(
+            nn.Linear(voc_size, code_size),
+            # nn.ReLU(),
+            # nn.Linear(hidden_size, voc_size),
+        )
+        for layer in self.process:
+            if isinstance(layer, nn.Linear):
+                nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
+    
+    def forward(self, opd):
+        code = self.process(opd)
+
+        return code
+def train_out():
+    deltas=torch.load("./assest/deltas.pt")
+    # ipdb.set_trace()
+    epoch=5
+    root_path=f"./assest/clean_z_{output_length}"
+    
+    o2c=Out2Code(code_size,hidden_size,voc_size).to(device)
+    o2c_optimizer = optim.SGD(o2c.parameters(), lr=0.005)
+    scheduler=optim.lr_scheduler.StepLR(o2c_optimizer,step_size=500000,gamma=0.7)
+    
+    train_start_time=time.time()
+    for epoch in range(num_epochs):
+        train_idx=-1
+        for file_name in os.listdir(root_path):
+            train_idx+=1
+            if (train_idx>2000):
+                continue
+            tinput=torch.load(os.path.join(root_path,file_name))
+            tinput=torch.tensor(tinput,dtype=torch.float32).to(device)
+            for inp in tinput:
+                finite_data = inp[(inp != float('inf')) & (inp != float('-inf'))]
+                min_value=finite_data.min()
+                max_value=finite_data.max()
+                inp[inp==float('-inf')]=min_value
+                inp[inp==float('inf')]=max_value
+            tinput=tinput.reshape(tinput.shape[0],-1)
+            for i in range(len(deltas)):
+                code=codes[i].to(device)
+                delta=deltas[i].to(device)
+                
+                for j in range(tinput.shape[0]):
+                    tinput[j]=tinput[j]+delta
+                sm=nn.Softmax(dim=1)
+                
+                biased_pd=sm(tinput)
+                categorical_dist = dist.Categorical(biased_pd)
+                s_out = categorical_dist.sample().float()
+                o_pd=torch.zeros_like(delta)
+                # ipdb.set_trace()
+                for s in s_out:
+                    o_pd[int(s)]=o_pd[int(s)]+1
+                # output pd
+                o_pd=o_pd/len(s_out)
+                
+                s_code=o2c(o_pd)
+                mae_loss = nn.L1Loss()
+                o2c_loss=mae_loss(s_code,code)
+                # if(i%50==0):
+                #     print(f"{train_idx}-th logit, {i}-th code, loss={o2c_loss}")
+                    
+                
+                o2c_optimizer.zero_grad()
+                o2c_loss.backward()
+                o2c_optimizer.step()
+                scheduler.step()
+            writer.add_scalar(f"process loss",o2c_loss.item(),train_idx)
+            print(f"{epoch}-epoch, {train_idx}-th logit,  loss={o2c_loss}, lr={scheduler.get_last_lr()}")
+    torch.save(o2c.state_dict(), f"./assest/models/o2c_e{num_epochs}.pt")
+        
 class Complete_process(nn.Module):
     def __init__(self, input_size, code_size, hidden_size,output_length):
         super(Complete_process, self).__init__()
@@ -194,11 +362,12 @@ class Complete_process(nn.Module):
         )
         
         self.decoder=nn.Sequential(
-            nn.Linear(output_length, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size*hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size*hidden_size, code_size)
+            # nn.Linear(output_length, hidden_size),
+            # nn.ReLU(),
+            # nn.Linear(hidden_size, hidden_size*hidden_size),
+            # nn.ReLU(),
+            # nn.Linear(hidden_size, code_size)
+            nn.Linear(output_length, code_size)
         )
         for layer in self.preprocess_input:
             if isinstance(layer, nn.Linear):
@@ -222,24 +391,25 @@ class Complete_process(nn.Module):
         concatenateds=torch.stack(concatenateds)
         output = self.encoder_fc(concatenateds)
         #constraint
-        output = torch.clamp(output, max=input+d_constraint)
+        # output = torch.clamp(output, max=input+d_constraint)
         return output
+    
     def forward(self, input_data, code,d_constraint):
-        
-        input_embedding = self.preprocess_input(input_data)
+        _,indexs=torch.topk(input_data,100)
+        cropped_input=input_data[indexs]
+        input_embedding = self.preprocess_input(cropped_input)
         code_embedding = self.preprocess_code(code)
         
-        encoder_output=self.encoder_combine(input_embedding,code_embedding,input_data,d_constraint)
+        encoder_output=self.encoder_combine(input_embedding,code_embedding,cropped_input,d_constraint)
         
         sm=nn.Softmax(dim=1)
-        biased_pd=sm(encoder_output)
+        input_data[indexs]=encoder_output
+        simu_logit=input_data
+        biased_pd=sm(simu_logit)
 
         categorical_dist = dist.Categorical(biased_pd)
         s = categorical_dist.sample().float()
         output=self.decoder(s)
-        # output[output>0]=1
-        # output[output<=0]=0
-        # output=torch.sigmoid(output) 
         output=F.normalize(output,dim=0)
         # ipdb.set_trace()
         return output
@@ -319,9 +489,6 @@ class Expander(nn.Module):
         expand_output=self.expand(input_data)
         expand_output = expand_output.reshape(self.output_length, self.vac_length)
         return expand_output
-
-
-
 
 
 
@@ -450,10 +617,10 @@ def train_expander():
     
     
     # output_length = biased_input.shape[1]
-    # vac_size = biased_input.shape[-1]
+    # voc_size = biased_input.shape[-1]
     # hidden_size = 64
     # output_size=biased_input[0].shape[-1]
-    expander = Expander(output_length,hidden_size,vac_size).to(device)
+    expander = Expander(output_length,hidden_size,voc_size).to(device)
     expander_optimizer = optim.SGD(expander.parameters(), lr=0.001)
     
     train_start_time=time.time()
@@ -491,7 +658,7 @@ def test_expander():
     #50/50
     succ=0
     # output_length = inputs[0].shape[0]
-    # vac_size = inputs[0].shape[-1]
+    # voc_size = inputs[0].shape[-1]
     # hidden_size = 64
     sim_criterion = nn.BCEWithLogitsLoss().to(device)
     # output_size=biased_input[0].shape[-1]model = AutoEncoder(input_size,code_size,hidden_size)
@@ -500,7 +667,7 @@ def test_expander():
     
     model = AutoEncoder(input_size,code_size,hidden_size)
     model.load_state_dict(torch.load(f"./assest/models/autoencoder_d{d_constraint}_e{num_epochs}.pt"))
-    expander = Expander(output_length,hidden_size,vac_size).to(device)
+    expander = Expander(output_length,hidden_size,voc_size).to(device)
     expander.load_state_dict(torch.load(f"./assest/models/expander_d{d_constraint}_e{num_epochs}_mseloss.pt"))
     model.eval().to(device)
     expander.eval().to(device)
@@ -584,9 +751,10 @@ def train_process():
     process = Complete_process(input_size,code_size,hidden_size,output_length).to(device)
     # process_optimizer = optim.SGD(process.parameters(), lr=args.lr)
     process_optimizer = optim.Adam(process.parameters(),lr=args.lr,weight_decay=0)
-    scheduler=optim.lr_scheduler.StepLR(process_optimizer,step_size=1000,gamma=0.5)
+    scheduler=optim.lr_scheduler.StepLR(process_optimizer,step_size=1000,gamma=0.7)
     
     train_start_time=time.time()
+
     for epoch in range(num_epochs):
         train_idx=-1
         
@@ -609,8 +777,27 @@ def train_process():
                         inp[inp==float('-inf')]=min_value
                         inp[inp==float('inf')]=max_value
                     input=input.reshape(output_length,-1)
-                    output=process(input,code,d_constraint)
                     
+                    values,indexs=torch.topk(input,100)
+                    cropped_input=input[indexs]
+                    input_embedding = process.preprocess_input(cropped_input)
+                    code_embedding = process.preprocess_code(code)
+                    encoder_output=process.encoder_combine(input_embedding,code_embedding,input,d_constraint)
+                    sm=nn.Softmax(dim=1)
+                    input[indexs]=encoder_output
+                    simu_logit=input
+                    biased_pd=sm(simu_logit)
+                    categorical_dist = dist.Categorical(biased_pd)
+                    s = categorical_dist.sample().float()
+                    output=process.decoder(s)
+                    output=F.normalize(output,dim=0)
+                    
+                    
+                    # output=process(input,code,d_constraint)
+                    process_loss
+                    logit_gap=encoder_output-values
+                    loss=-logit_gap[logit_gap<0].sum()*5
+                    loss+=logit_gap[logit_gap>0].sum()
                     if args.loss=='cos':
                         #cos
                         out_normalized = F.normalize(output, dim=0)
@@ -618,7 +805,9 @@ def train_process():
                         process_loss=1-F.cosine_similarity(out_normalized, code_normalized, dim=0)
                     elif args.loss=='mae':
                         #mae
-                        process_loss = F.l1_loss(output, code)
+                        ipdb.set_trace()
+                        process_loss = loss+F.l1_loss(output, code)
+                        
                     
                     
                     process_optimizer.zero_grad()
@@ -640,28 +829,81 @@ def train_process():
                     max_value=finite_data.max()
                     inp[inp==float('-inf')]=min_value
                     inp[inp==float('inf')]=max_value
+
                 input=input.reshape(output_length,-1)
-                output=process(input,code,d_constraint)
+                values,indexs=torch.topk(input,100)
+                # cropped_input=input[indexs]
+                cropped_input=[]
+                for i in range(input.shape[0]):
+                    cropped_input.append(input[i][indexs[i]])
+                cropped_input=torch.stack(cropped_input).to(device)
                 
+                input_embedding = process.preprocess_input(cropped_input)
+                code_embedding = process.preprocess_code(code)
+                encoder_output=process.encoder_combine(input_embedding,code_embedding,cropped_input,d_constraint)
+                sm=nn.Softmax(dim=1)
+                
+                for j in range(indexs.shape[0]):
+                    input[j][indexs[j]]=encoder_output[j]
+
+                simu_logit=input
+                biased_pd=sm(simu_logit)
+                categorical_dist = dist.Categorical(biased_pd)
+                s = categorical_dist.sample().float()
+                output=process.decoder(s)
+                output=F.normalize(output,dim=0)
+                
+                
+                # output=process(input,code,d_constraint)
+                logit_gap=encoder_output-values
+                if((logit_gap<0).sum()==0):
+                    loss=0
+                else:
+                    loss=-logit_gap[logit_gap<0].mean()*2
+                loss+=logit_gap[logit_gap>0].mean()
+                # print(loss)
+                # ipdb.set_trace()
                 if args.loss=='cos':
                     #cos
                     out_normalized = F.normalize(output, dim=0)
                     code_normalized = F.normalize(code, dim=0)
-                    # print(F.cosine_similarity(out_normalized, code_normalized, dim=0))
-                    process_loss=1-F.cosine_similarity(out_normalized, code_normalized, dim=0)
+                    process_loss=loss+1-F.cosine_similarity(out_normalized, code_normalized, dim=0)
                 elif args.loss=='mae':
                     #mae
-                    process_loss = F.l1_loss(output, code)
+                    
+                    code_loss=F.l1_loss(output, code)*6
+                    process_loss = loss+code_loss
+                    # print(code_loss,loss)
+                    # ipdb.set_trace()
                 
                 
+
+
+                
+                # ipdb.set_trace()
                 writer.add_scalar(f"process loss_{args.loss}",process_loss,epoch)
                 process_optimizer.zero_grad()
                 process_loss.backward()
+                # ipdb.set_trace()
+                
                 process_optimizer.step()
                 scheduler.step()
         if (epoch + 1) % 1 == 0:
             # print(simu_pd[0])
-            print(f"-----Epoch  [{epoch+1}/{num_epochs}],lr={scheduler.get_last_lr()},lf:{args.loss} loss:{process_loss.item()}, time used: {time.time()-train_start_time}")
+            # def print_gradient(module, grad_input, grad_output):
+            #     print("Gradient of module:", module)
+            #     for name, param in module.named_parameters():
+            #         # if param.grad is not None:
+            #         print(name, param.grad)
+            # handle=process.encoder_fc[1].register_backward_hook(print_gradient)
+            # handle.remove()
+            # ipdb.set_trace()
+            # print(process.encoder_fc[1].grad)
+            print(f"encoder: weight grad:{process.encoder_fc[1].weight.grad.sum()}, bias grad: {process.encoder_fc[1].bias.grad.sum()}  ")
+            print(f"decoder: weight grad:{process.decoder[0].weight.grad.sum()},bias grad: {process.decoder[0].bias.grad.sum()}")
+            # print(f"content loss:{loss},code_loss:{code_loss}")
+            print(f"-----Epoch  [{epoch+1}/{num_epochs}],lr={scheduler.get_last_lr()},lf:{args.loss} loss:{process_loss.item()} code_loss:{code_loss}, content_loss:{loss} time used: {time.time()-train_start_time}")
+            
     torch.save(process.state_dict(), f"./assest/models/process_cont_c{args.train_code_mode}_d{d_constraint}_e{num_epochs}_l{args.loss}_lr{args.lr}.pt")     
     writer.close()
 
@@ -671,7 +913,7 @@ def test_process():
     sim_criterion = nn.BCEWithLogitsLoss().to(device)
     model = Complete_process(input_size,code_size,hidden_size,output_length).to(device)
     model.load_state_dict(torch.load(f"./assest/models/process_cont_crandom_d6_e800_lmae_lr0.01.pt"))
-    # expander = Expander(output_length,hidden_size,vac_size).to(device)
+    # expander = Expander(output_length,hidden_size,voc_size).to(device)
     # expander.load_state_dict(torch.load(f"./assest/models/expander_d{d_constraint}_e{num_epochs}_mseloss.pt"))
     model.eval().to(device)
     # expander.eval().to(device)
@@ -743,6 +985,9 @@ def test_process():
 # train_expander()
 # test_process()
 # train_process()
+# train_userdelta()
+# train_out()
+
 Discrete_d_Feasibility_test()
 
 

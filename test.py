@@ -25,8 +25,11 @@ from utils import *
 # from datasets import load_dataset, Dataset
 from datasets import load_dataset
 # from torch.nn.parallel import DataParallel
+
 import kaggle_ds
 from pubmedqa import Dataset
+import itertools
+
 
 
 def str2bool(v):
@@ -472,13 +475,13 @@ def main(args):
     total_detect_len=0 #for detect mode: iterative
     succ_num_top1=0
     succ_num_top3=0
+    succ_num_top10=0
     # for t in range(17):
     #         input_text=next(ds_iterator)
     for i in range(exp_num):
         print(f"{i}th exp: ")
         if args.user_dist =='dense':
-            # gen_id=i
-            gen_id=random.randint(0, 127)
+            gen_id=random.randint(0, 2**args.user_magnitude-1)
         else:
             gen_id=random.randint(0, 31)
             # gen_id=i
@@ -647,6 +650,7 @@ def main(args):
             sim_result=[]
             id_result=[]
             id_index=[]
+#<<<<<<< GordonBai
             for r in range(detect_range):
                 sim = max(sim_list)
                 index = sim_list.index(sim)
@@ -657,6 +661,109 @@ def main(args):
             result_dic={"sim_score":sim_result, "id":id_result}
             if_succ_top1=0
             if_succ_top3=0
+#=======
+            # for r in range(detect_range): # sort with gr
+            #     sim = max(gr_score_list)
+            #     index = gr_score_list.index(sim)
+            #     gr_score_list[index] = -1
+            #     gr_result.append(sim)
+            #     depth_result.append(depth_score_list[index])
+            #     id_result.append(usr_list[index])
+            #     id_index.append(index)
+            # c_depth_result=copy.deepcopy(depth_result)
+            # final_index=[]
+            # # ipdb.set_trace()
+            # for r in range(detect_range): # sort with depth
+            #     sim = max(c_depth_result)
+            #     index = c_depth_result.index(sim)
+            #     c_depth_result[index] = -100
+            #     final_index.append(index)
+            
+            if args.gen_mode=='depth_d':
+                # for r in range(detect_range): # sort with gr
+                #     sim = max(gr_score_list)
+                #     index = gr_score_list.index(sim)
+                #     gr_score_list[index] = -1
+                #     gr_result.append(sim)
+                #     depth_result.append(depth_score_list[index])
+                #     id_result.append(usr_list[index])
+                #     id_index.append(index)
+                # c_depth_result=copy.deepcopy(depth_result)
+                # final_index=[]
+                # # ipdb.set_trace()
+                # for r in range(detect_range): # sort with depth
+                #     sim = max(c_depth_result)
+                #     index = c_depth_result.index(sim)
+                #     c_depth_result[index] = -100
+                #     final_index.append(index)
+                # final_index=np.array(final_index)
+                # gr_result=np.array(gr_result)[final_index]
+                # depth_result=np.array(depth_result)[final_index]
+                # id_result=np.array(id_result)[final_index]
+                # id_index=np.array(id_index)[final_index]
+                # result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
+                
+                # for r in range(detect_range): # sort with depth
+                #     sim = max(depth_score_list)
+                #     index = depth_score_list.index(sim)
+                #     depth_score_list[index] = -100
+                #     depth_result.append(sim)
+                #     gr_result.append(gr_score_list[index])
+                #     id_result.append(usr_list[index])
+                #     id_index.append(index)
+                # c_gr_result=copy.deepcopy(gr_result)
+            
+                # # ipdb.set_trace()
+                
+                # final_index=[]
+                # for r in range(detect_range): # sort with gr
+                #     sim = max(c_gr_result)
+                #     index = c_gr_result.index(sim)
+                #     c_gr_result[index] = -100
+                #     final_index.append(index)
+                # final_index=np.array(final_index)
+                # gr_result=np.array(gr_result)[final_index]
+                # depth_result=np.array(depth_result)[final_index]
+                # id_result=np.array(id_result)[final_index]
+                # id_index=np.array(id_index)[final_index]
+                # result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
+                # if_succ_top1=0
+                # if_succ_top3=0
+
+                #sort with comb depth score
+                for r in range(detect_range): # sort with depth
+                    sim = max(depth_score_list)
+                    index = depth_score_list.index(sim)
+                    depth_score_list[index] = -100
+                    depth_result.append(sim)
+                    id_result.append(usr_list[index])
+                    gr_result.append(gr_score_list[index])
+                    id_index.append(index)
+
+                result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
+                if_succ_top1=0
+                if_succ_top3=0
+                if_succ_top10=0
+                
+                
+                
+                
+                
+                
+            elif args.gen_mode=='normal':
+                for r in range(detect_range): # sort with depth
+                    sim = max(gr_score_list)
+                    index = gr_score_list.index(sim)
+                    gr_score_list[index] = -100
+                    gr_result.append(sim)
+                    id_result.append(usr_list[index])
+                    id_index.append(index)
+
+                result_dic={"gr_score":gr_result[:10], "id":id_result[:10]}
+                if_succ_top1=0
+                if_succ_top3=0
+                if_succ_top10=0
+#>>>>>>> main
 
             if gen_id in id_index[:3]:
                 succ_num_top3 += 1
@@ -665,8 +772,15 @@ def main(args):
             if max_sim_idx == gen_id:
                 succ_num_top1+=1
                 if_succ_top1=1
+
+                
+            if gen_id in id_index[:10]:
+                succ_num_top10+=1
+                if_succ_top10=1
+        
+        
         if args.detect_mode == 'iterative':
-            
+            detect_range=len(usr_list)//10
             max_sim=-1
             init_num=3
             sim_list=[]
@@ -716,29 +830,84 @@ def main(args):
             
             #calculate mapped sim
             if userid in code_list:
+
                 mapped_sim=sim_list[code_list.index(userid)]
+                mapped_gr_score=gr_score_list[code_list.index(userid)]
+                mapped_depth_score=depth_score_list[code_list.index(userid)]
+
             else:
                 with_watermark_detection_result, confidence, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                     args,
                                                                                     device=device,
                                                                                     tokenizer=tokenizer,
                                                                                     userid=userid)
+
                 mapped_sim=confidence
+                mapped_gr_score=gr_score
+                mapped_depth_score=depth_score
+
             
-            #calculate top10
+            #diverge best code
+            top10pids=[best_code]
+            top10p_depth_score=[]
+            top10p_gr_score=[]
+            indicator=1
+            item=[i for i in range(len(best_code))]
+            while len(top10pids)<detect_range:
+                comb=[p for p in itertools.combinations(item,indicator)]
+                for c in comb:
+                    modi_code=best_code
+                    for j in c:
+                        if j==0:
+                            modi_code=str(1-int(modi_code[j]))+modi_code[j+1:]
+                        elif j==len(best_code)-1:
+                            modi_code=modi_code[:-1]+str(1-int(modi_code[j]))
+                        else:
+                            modi_code=modi_code[:j]+str(1-int(modi_code[j]))+modi_code[j+1:]
+                    top10pids.append(modi_code)
+                    if len(top10pids)>=detect_range:
+                        break
+                indicator+=1
+
+            # cal top10 percentage depth score
+            for loop_id in top10pids:
+                with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                        args,
+                                                                                        device=device,
+                                                                                        tokenizer=tokenizer,
+                                                                                        userid=loop_id)
+                top10p_gr_score.append(gr_score)
+                top10p_depth_score.append(depth_score)
+                # ipdb.set_trace()
+                        
+            # calculate top10
             detect_range=10
-            sim_result=[]
+            gr_result=[]
+            depth_result=[]
             id_result=[]
             id_index=[]
             for r in range(detect_range):
-                sim = max(sim_list)
-                index = sim_list.index(sim)
-                sim_list[index] = -1
-                sim_result.append(sim)
-                id_result.append(code_list[index])
-            result_dic={"sim_score":sim_result, "id":id_result}
+#<<<<<<< GordonBai
+#                sim = max(sim_list)
+#                index = sim_list.index(sim)
+#                sim_list[index] = -1
+#                sim_result.append(sim)
+#                id_result.append(code_list[index])
+#            result_dic={"sim_score":sim_result, "id":id_result}
+
+                sim = max(top10p_depth_score)
+                index = top10p_depth_score.index(sim)
+                gr_result.append(top10p_gr_score[index])
+                depth_result.append(top10p_depth_score[index])
+                top10p_depth_score[index] = -999999
+                id_result.append(top10pids[index])
+
+            
+            result_dic={"gr_score":gr_result, "depth_score":depth_result,"id":id_result[:10]}
+
             if_succ_top1=0
             if_succ_top3=0
+            if_succ_top10=0
 
             if userid in id_result[:3]:
                 succ_num_top3 += 1
@@ -747,6 +916,10 @@ def main(args):
             if userid == id_result[0]:
                 succ_num_top1+=1
                 if_succ_top1=1
+            
+            if userid in id_result[:10]:
+                succ_num_top10+=1
+                if_succ_top10=1
 
             total_detect_len+=len(sim_list)
         
@@ -754,19 +927,30 @@ def main(args):
         pd.get_option('display.width')
         pd.set_option('display.width', 500)
         pd.set_option('display.max_columns', None)
-        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, time used: {time.time() - start_time}")
-        print(f"gen id {userid}, mapped sim {mapped_sim}")
+
+
+        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, if top10 succ: {if_succ_top10},time used: {time.time() - start_time}")
+        if args.gen_mode=="depth_d":
+            print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}")
+        else:
+            print(f"gen id {userid}, mapped gr {mapped_gr_score}")
+
         print(DataFrame(result_dic).T)
-        print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n")
+        print(f"top1 succ rate: {succ_num_top1}/{i+1},top3 succ rate: {succ_num_top3}/{i+1}, top10 succ rate: {succ_num_top10}/{i+1} \n")
         if args.detect_mode=='iterative':
-            print("userlist len:",usr_list.shape[-1],"detect list len:",len(sim_list),'average detect list len:',total_detect_len/(i+1))
-        
-        save_file_name=f"data_wm{args.wm_mode}_d{args.user_dist}_result_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_g{args.max_new_tokens}_t{args.sampling_temp}_d{args.detect_mode}.txt"
+
+            print("userlist len:",usr_list.shape[-1],"detect list len:",len(gr_score_list),'average detect list len:',total_detect_len/(i+1))
+
+        save_file_name=f"comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}.txt"
         with open(save_file_name, "a+") as f:
-            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} ,time used: {time.time() - start_time}",file=f)
-            print(f"gen id {userid}, mapped sim {mapped_sim}",file=f)
+            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} , if top10 succ: {if_succ_top10},time used: {time.time() - start_time}",file=f)
+            if args.gen_mode=="depth_d":
+                print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}",file=f)
+            else:
+                print(f"gen id {userid}, mapped gr {mapped_gr_score}",file=f)
+
             print(DataFrame(result_dic).T,file=f)
-            print(f"top1 succ rate: {succ_num_top1}/{exp_num},top3 succ rate: {succ_num_top3}/{exp_num} \n",file=f)
+            print(f"top1 succ rate: {succ_num_top1}/{i+1},top3 succ rate: {succ_num_top3}/{i+1} ,top10 succ rate: {succ_num_top10}/{i+1} \n",file=f)
             if args.detect_mode=='iterative':
                 print(f"userlist len:{usr_list.shape[-1]}, detect list len:,{len(sim_list)}, average detect list len: {total_detect_len/(i+1)}\n",file=f)
             print(f"data saved in {save_file_name}")

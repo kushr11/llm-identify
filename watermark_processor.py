@@ -357,22 +357,25 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             score_dict.update(dict(green_token_mask=green_token_mask))
         sim_score=green_token_count / num_tokens_scored
         gr_sim_score=np.array(sim_score)
-        celoss=0
+        depth_loss=0
         if self.args.gen_mode=="depth_d":
             depth_pd=depth_hit/green_token_count
             standard_depth_distribution=torch.tensor([0.6834,0.1800,0.1366])
-            depth_distribution_score=F.cosine_similarity(depth_pd,standard_depth_distribution,dim=0)
+            standard_gr=0.7959
             
             loss_func = torch.nn.CrossEntropyLoss()
-            celoss = -loss_func(depth_pd, standard_depth_distribution)
-            
+            depth_loss = -loss_func(depth_pd, standard_depth_distribution)
+            total_loss = -loss_func(depth_pd*sim_score, standard_depth_distribution*standard_gr)
             # kl_divergence = -F.kl_div(depth_pd.log(), depth_distribution_score, reduction='mean')
             # sim_score=kl_divergence
+            
             gr_sim_score=np.array(sim_score)
-            celoss=np.array(celoss)
+            depth_loss=np.array(depth_loss)
+            total_loss=np.array(total_loss)
             # print(green_token_count , num_tokens_scored,depth_hit,depth_pd,celoss)
             # sim_score+=depth_distribution_score
-        return score_dict, gr_sim_score,celoss, mark
+        return score_dict, gr_sim_score,total_loss, mark
+        # return score_dict, gr_sim_score,depth_loss, mark
 
     def detect(
             self,
