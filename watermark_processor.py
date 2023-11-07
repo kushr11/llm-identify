@@ -163,9 +163,15 @@ class WatermarkLogitsProcessor_with_preferance(WatermarkBase, LogitsProcessor):
 
         # preferance = self.userid[(self.idx_t - n * (self.idx_t // n)) % n]  # 1->green ; 0-> red
         if self.wm_mode =='previous1':
-            preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
+            if len(self.userid[-1]) < 2:
+                preferance = 1      # if the sentence is too short, we assign the pref to green by default
+            else:
+                preferance = self.userid[input_ids[-1][-1] % n]  # 1->green ; 0-> red
         else:
-            preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]) % n]  # 1->green ; 0-> red
+            if len(self.userid[-1]) < 2:
+                preferance = 1      # if the sentence is too short, we assign the pref to green by default
+            else:
+                preferance = self.userid[(input_ids[-1][-1]*input_ids[-1][-2]) % n]  # 1->green ; 0-> red
         self.idx_t += 1
         # this is lazy to allow us to colocate on the watermarked model's device
         if self.rng is None:

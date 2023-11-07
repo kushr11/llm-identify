@@ -67,6 +67,7 @@ args=parse_args()
 #     inputs.append(temp)
 
 unit_input=torch.load(f"./assest/clean_z_200/clean_z_0.pt")
+print(unit_input.shape)
     
 
 # with open(f"usr_list_dense.pkl", 'rb') as fo:
@@ -98,17 +99,22 @@ def tensor_to_binary_str(tensor):
 # for code in usr_list:
 #     encoded_text = binary_string_to_one_hot(code)
 #     codes.append(encoded_text)
-codes=torch.load('./usr_list_continuous.pt')
+#codes=torch.load('./usr_list_continuous.pt')
 
 input_size = unit_input.shape[-1]
 # input_size=100
 hidden_size = 64
-code_size=codes[0].shape[-1]
+#code_size=codes[0].shape[-1]
 
 num_epochs = 2000
 d_constraint = 6  # 差异限制
+#<<<<<<< GordonBai
+#output_length=200
+#vac_size=input_size
+
 output_length=unit_input.shape[0]
 voc_size=input_size
+
 sm=nn.Softmax()
 
 def Discrete_d_Feasibility_test():
@@ -126,9 +132,13 @@ def Discrete_d_Feasibility_test():
     total_s=0
     
     root_path=f"./assest/clean_z_{output_length}"
+    # debugging: check loop
+    print(len(d_masks))
+    print(root_path)
     ct=0
     for file_name in os.listdir(root_path): 
         ct+=1
+
         if ct>=500:
             break
         greenlist_ids = vocab_permutation[:greenlist_size]
@@ -137,10 +147,13 @@ def Discrete_d_Feasibility_test():
         
             d_masks.append(greenlist_ids[i*discrete_length:(i+1)*discrete_length])
         
+
         input_z=torch.load(os.path.join(root_path,file_name))
-        input_z=torch.tensor(input_z,dtype=torch.float32).to(device)
-        if input_z.shape[0]<output_length:
-                    continue
+        input_z = input_z.clone().detach().to(device)  # Updated line
+        print('input_z shape 0 is: ', input_z.shape[0])
+        print('output_length is : ', output_length)
+        #if input_z.shape[0]<output_length:
+        #           continue
         for inp in input_z:
             finite_data = inp[(inp != float('inf')) & (inp != float('-inf'))]
             min_value=finite_data.min()
@@ -151,7 +164,12 @@ def Discrete_d_Feasibility_test():
         input_z=input_z.reshape(output_length,-1)
         
         for i in range(len(d_masks)):
+#<<<<<<< GordonBai
+#            print('d_mask loop')
+#            delta=d*discretor**i
+
             delta=d*attenuation**i
+  
             for j in range(input_z.shape[0]):
                 input_z[j][d_masks[i]]=input_z[j][d_masks[i]]+delta
         # ipdb.set_trace()
