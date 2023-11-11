@@ -27,6 +27,8 @@ from utils import *
 from datasets import load_dataset
 # from torch.nn.parallel import DataParallel
 import itertools
+import kaggle_ds
+from pubmedqa import Dataset
 
 
 def str2bool(v):
@@ -78,6 +80,12 @@ def parse_args():
         help="sub list number",
     )
     parser.add_argument(
+        "--dataset",
+        type = str,
+        default = 'c4',
+        help = "c4, squad, xsum, PubMedQA, writingprompts",
+    )
+    parser.add_argument(
         "--user_dist",
         type=str,
         default="dense",
@@ -86,7 +94,7 @@ def parse_args():
     parser.add_argument(
         "--user_magnitude",
         type=int,
-        default=10,
+        default=7,
         help="user number = 2**magnitude",
     )
     parser.add_argument(  
@@ -445,14 +453,97 @@ def detect(input_text, args, device=None, tokenizer=None, userid=None):
         output += [["", ""] for _ in range(6)]
     return output, gr_score,depth_score, mark,watermark_detector, args
 
+def load_dataiter_by_name(dataset_name):
+    if dataset_name == 'c4':
+        dataset_config_name= "realnewslike"
+        dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
+        ds_iterator = iter(dataset)
 
+    # TODO: there will be 6 datasets that needs to be implemented from "DetectGPT: Zero-Shot Machine-Generated Text Detection using Probability Curvature"
+    # dataset: xsum
+    if dataset_name == 'xsum':
+        dataset_config_name= "realnewslike"
+        dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
+        ds_iterator = iter(dataset)
+        
+    # dataset: squad
+    # dataset_config_name = plain_text
+    if dataset_name == 'squad':
+        dataset_config_name = "plain_text"
+        dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
+        ds_iterator = iter(dataset)
+        
 
+    # dataset: WMT16
+    # dataset_config_name = 'ro-en'
+    if dataset_name == 'wmt16':
+        dataset_config_name = 'ro-en'
+        dataset = load_dataset(dataset_name, split="validation", streaming=True)
+        ds_iterator = iter(dataset)
 
+    # dataset: PubMedQA
+    # dataset_config_name = 'pubmed_qa_artificial_source'
+    if dataset_name == 'PubMedQA':
+        file_path = 'ori_pqal.json'
+        dataset = Dataset(file_path)
+        ds_iterator = iter(dataset.get_items())
+        _, item_data = next(ds_iterator)
+
+    # dataset: Reddit WritingPrompts dataset
+    # we load from local source
+    if dataset_name == 'writingprompts':
+        basepath='/data1/ybaiaj/llm-identify-main-new-6.7b-25/writing-prompts'
+        dataset = kaggle_ds.load_data(basepath)
+        ds_iterator = dataset.iterrows()
+        _, row_data = next(ds_iterator)
+    return  ds_iterator
+
+def load_text_by_iter(dataset_name,ds_iterator):
+    # dataset: xsum
+        if dataset_name == 'xsum':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['document']) >= args.prompt_max_length:
+                input_text = next(ds_iterator)['document'][:args.prompt_max_length]
+            else:
+                input_text = next(ds_iterator)['document'][:]
+
+        if dataset_name == 'squad':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['context']) >= args.prompt_max_length:
+                input_text = next(ds_iterator)['context'][:args.prompt_max_length]
+            else:
+                input_text = next(ds_iterator)['context'][:]
+            
+
+        # dataset: WMT16
+        # dataset_config_name = 'ro-en'
+        if dataset_name == 'wmt16':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['translation']) >= args.prompt_max_length:
+                input_text = tuple(next(ds_iterator)['translation'])[:args.prompt_max_length]
+            else:
+                input_text = tuple(next(ds_iterator)['translation'])[:]
+
+        # dataset: PubMedQA
+        # dataset_config_name = 'pubmed_qa_artificial_source'
+        if dataset_name == 'PubMedQA':
+            _, item_data = next(ds_iterator)
+            if args.prompt_max_length is not None and len(item_data['LONG_ANSWER']) >= args.prompt_max_length:
+                input_text = item_data['LONG_ANSWER'][:args.prompt_max_length]
+            else:
+                input_text = item_data['LONG_ANSWER'][:]
+
+        # dataset: Reddit WritingPrompts dataset
+        # we load from local source
+        if dataset_name == 'writingprompts':
+            _, row_data = next(ds_iterator)
+            if args.prompt_max_length is not None and len(row_data['story']) >= args.prompt_max_length:
+                input_text = row_data['story'][:args.prompt_max_length]
+            else:
+                input_text = row_data['story']
+        return input_text
 def main(args):
-    #load dataset
-    dataset_name, dataset_config_name = "c4", "realnewslike"
-    dataset = load_dataset(dataset_name, dataset_config_name, split="validation", streaming=True)
-    ds_iterator = iter(dataset)
+    # Load datasets
+    dataset_name = args.dataset
+    ds_iterator=load_dataiter_by_name(dataset_name)
+
     
     start_time = time.time()
     """Run a command line version of the generation and detection operations
@@ -480,17 +571,14 @@ def main(args):
 
         # gen_id=5
         userid = usr_list[gen_id]
-
         
-
-        input_text=next(ds_iterator)['text'][:args.prompt_max_length]
+        input_text=load_text_by_iter(dataset_name,ds_iterator)
+        
+        
         args.default_prompt = input_text
-        # print("len of input:",len(input_text))
 
         term_width = 80
-        # print("#"*term_width)
-        # print("Prompt:")
-        # print(input_text)
+
 
         input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
             input_text,
@@ -762,7 +850,7 @@ def main(args):
         if args.detect_mode=='iterative':
             print("userlist len:",usr_list.shape[-1],"detect list len:",len(gr_score_list),'average detect list len:',total_detect_len/(i+1))
 
-        save_file_name=f"comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}.txt"
+        save_file_name=f"./results/comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}.txt"
         with open(save_file_name, "a+") as f:
             print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} , if top10 succ: {if_succ_top10},time used: {time.time() - start_time}",file=f)
             if args.gen_mode=="depth_d":
