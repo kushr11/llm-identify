@@ -63,7 +63,7 @@ def parse_args():
         "--detect_mode",
         type=str,
         default="normal",
-        help="normal or iterative ",
+        help="normal",
     )
     parser.add_argument(
         "--gen_mode",
@@ -75,7 +75,7 @@ def parse_args():
         "--depth",
         type=int,
         default=3,
-        help="depth_d-3, depth_d-4, depth_d-3 ",
+        help="sub list number",
     )
     parser.add_argument(
         "--user_dist",
@@ -568,55 +568,6 @@ def main(args):
             #     final_index.append(index)
             
             if args.gen_mode=='depth_d':
-                # for r in range(detect_range): # sort with gr
-                #     sim = max(gr_score_list)
-                #     index = gr_score_list.index(sim)
-                #     gr_score_list[index] = -1
-                #     gr_result.append(sim)
-                #     depth_result.append(depth_score_list[index])
-                #     id_result.append(usr_list[index])
-                #     id_index.append(index)
-                # c_depth_result=copy.deepcopy(depth_result)
-                # final_index=[]
-                # # ipdb.set_trace()
-                # for r in range(detect_range): # sort with depth
-                #     sim = max(c_depth_result)
-                #     index = c_depth_result.index(sim)
-                #     c_depth_result[index] = -100
-                #     final_index.append(index)
-                # final_index=np.array(final_index)
-                # gr_result=np.array(gr_result)[final_index]
-                # depth_result=np.array(depth_result)[final_index]
-                # id_result=np.array(id_result)[final_index]
-                # id_index=np.array(id_index)[final_index]
-                # result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
-                
-                # for r in range(detect_range): # sort with depth
-                #     sim = max(depth_score_list)
-                #     index = depth_score_list.index(sim)
-                #     depth_score_list[index] = -100
-                #     depth_result.append(sim)
-                #     gr_result.append(gr_score_list[index])
-                #     id_result.append(usr_list[index])
-                #     id_index.append(index)
-                # c_gr_result=copy.deepcopy(gr_result)
-            
-                # # ipdb.set_trace()
-                
-                # final_index=[]
-                # for r in range(detect_range): # sort with gr
-                #     sim = max(c_gr_result)
-                #     index = c_gr_result.index(sim)
-                #     c_gr_result[index] = -100
-                #     final_index.append(index)
-                # final_index=np.array(final_index)
-                # gr_result=np.array(gr_result)[final_index]
-                # depth_result=np.array(depth_result)[final_index]
-                # id_result=np.array(id_result)[final_index]
-                # id_index=np.array(id_index)[final_index]
-                # result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
-                # if_succ_top1=0
-                # if_succ_top3=0
 
                 #sort with comb depth score
                 for r in range(detect_range): # sort with depth

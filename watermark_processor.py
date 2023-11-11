@@ -369,6 +369,7 @@ class WatermarkDetector_with_preferance(WatermarkBase):
             # print(green_token_count , num_tokens_scored,depth_hit,depth_pd,celoss)
             # sim_score+=depth_distribution_score
         return score_dict, gr_sim_score,total_loss, mark
+    
         # return score_dict, gr_sim_score,depth_loss, mark
 
     def detect(
