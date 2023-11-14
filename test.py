@@ -500,6 +500,11 @@ def load_dataiter_by_name(dataset_name):
 
 def load_text_by_iter(dataset_name,ds_iterator):
     # dataset: xsum
+        if dataset_name == 'c4':
+            if args.prompt_max_length is not None and len(next(ds_iterator)['text']) >= args.prompt_max_length:
+                input_text = next(ds_iterator)['text'][:args.prompt_max_length]
+            else:
+                input_text = next(ds_iterator)['text'][:]
         if dataset_name == 'xsum':
             if args.prompt_max_length is not None and len(next(ds_iterator)['document']) >= args.prompt_max_length:
                 input_text = next(ds_iterator)['document'][:args.prompt_max_length]
