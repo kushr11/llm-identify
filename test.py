@@ -23,6 +23,7 @@ from transformers import (AutoTokenizer,
 from watermark_processor import  WatermarkDetector_with_preferance, \
     WatermarkLogitsProcessor_with_preferance
 from utils import *
+from attack import attack_process
 # from datasets import load_dataset, Dataset
 from datasets import load_dataset
 # from torch.nn.parallel import DataParallel
@@ -54,6 +55,12 @@ def parse_args():
         type=str2bool,
         default=False,
         help="To evaluate ppl instead of run generating and detecting",
+    )
+    parser.add_argument(
+        "--attack_ep",
+        type=float,
+        default=0.1,
+        help="attack epsilon. 0 for not attack",
     )
     parser.add_argument(
         "--wm_mode",
@@ -94,7 +101,7 @@ def parse_args():
     parser.add_argument(
         "--user_magnitude",
         type=int,
-        default=7,
+        default=10,
         help="user number = 2**magnitude",
     )
     parser.add_argument(  
@@ -321,8 +328,7 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None,
 
     truncation_warning = True if tokd_input["input_ids"].shape[-1] == args.prompt_max_length else False
     redecoded_input = tokenizer.batch_decode(tokd_input["input_ids"], skip_special_tokens=True)[0]
-    # print(redecoded_input)
-    # sys.exit()
+
 
     torch.manual_seed(args.generation_seed)
     output_without_watermark = generate_without_watermark(**tokd_input)
@@ -332,55 +338,21 @@ def generate(prompt, args, model=None, device=None, tokenizer=None, userid=None,
     if args.seed_separately:
         torch.manual_seed(args.generation_seed)
     
-    # generate_with_watermark = partial(
-    #     model.generate,
-    #     logits_processor=LogitsProcessorList([watermark_processor]),
-    #     # output_scores=True,
-    #     **gen_kwargs
-
-    #just for test
-    # generate_logit_with_watermark = partial(
-    #     model.generate,
-    #     logits_processor=LogitsProcessorList([watermark_processor]),
-    #     return_dict_in_generate=True, 
-    #     output_scores=True,
-    #     **gen_kwargs
-    # )
 
     out=generate_with_watermark(**tokd_input)                                                                                               
     out_se = out[0][:, tokd_input["input_ids"].shape[-1]:]
     logit=out[1]
     logit=torch.stack(logit)
-    # torch.save(logit,f"./assest/clean_z_200/clean_z_{index}.pt")
-    
-    # out_max_logit=np.zeros(200)
-    # out_max_idx=np.zeros(200) # out score.max() - logits.max()=0
-    # for k in range(len(out[1])):
-    #     out_max_idx[k]=out[1][k].argmax().cpu()
-    #     out_max_logit[k]=out[1][k].max().cpu()
-    # print("gap between sequence and out.score.argmax()",(out_max_idx-out_se[0].cpu().numpy()).mean())
-    # print("gap between out.score.max and logit.max()",(out_max_logit-watermark_processor.max_logit).mean())
-    # logits = model(**tokd_input)[0]
 
     output_with_watermark = out[0]
-    # print("tokdid:",tokd_input["input_ids"].shape)
-    # print("before minus:",output_with_watermark.shape)
     if args.is_decoder_only_model:
         # need to isolate the newly generated tokens
         output_without_watermark = output_without_watermark[:, tokd_input["input_ids"].shape[-1]:] #取input_len后的
         output_with_watermark = output_with_watermark[:, tokd_input["input_ids"].shape[-1]:]
     
-    
-    # redecoded_output = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
-    # reencoded_output = tokenizer.encode(redecoded_output, return_tensors='pt',add_special_tokens=False)
-    # print(reencoded_output.shape,out_se.shape)
-    # sys.exit()
-    # print("len in gen:",(output_with_watermark.shape))
     decoded_output_without_watermark = tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0]
     decoded_output_with_watermark = tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0]
 
-    
-    # print(tokd_input["input_ids"].shape[-1])
     return (tokd_input["input_ids"].shape[-1],
             output_with_watermark.shape[-1],
             redecoded_input,
@@ -492,7 +464,7 @@ def load_dataiter_by_name(dataset_name):
     # dataset: Reddit WritingPrompts dataset
     # we load from local source
     if dataset_name == 'writingprompts':
-        basepath='/data1/ybaiaj/llm-identify-main-new-6.7b-25/writing-prompts'
+        basepath='./writing_prompts'
         dataset = kaggle_ds.load_data(basepath)
         ds_iterator = dataset.iterrows()
         _, row_data = next(ds_iterator)
@@ -543,6 +515,7 @@ def load_text_by_iter(dataset_name,ds_iterator):
                 input_text = row_data['story'][:args.prompt_max_length]
             else:
                 input_text = row_data['story']
+            ipdb.set_trace()
         return input_text
 def main(args):
     # Load datasets
@@ -567,307 +540,311 @@ def main(args):
     succ_num_top10=0
     # for t in range(17):
     #         input_text=next(ds_iterator)
+    count=0
     for i in range(exp_num):
-        print(f"{i}th exp: ")
-        if args.user_dist =='dense':
-            gen_id=random.randint(0, 2**args.user_magnitude-1)
-        else:
-            gen_id=random.randint(0, 31)
 
-        # gen_id=5
-        userid = usr_list[gen_id]
-        
         input_text=load_text_by_iter(dataset_name,ds_iterator)
         
         
         args.default_prompt = input_text
 
         term_width = 80
-
-
-        input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
-            input_text,
-            args,
-            model=model,
-            device=device,
-            tokenizer=tokenizer,
-            userid=userid,
-            index=i)
-        
-        
-        # continue
-
-
-        # loop_usr_id = userid
-        # with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector, _ = detect(decoded_output_with_watermark,
-        #                                                                 args,
-        #                                                                 device=device,
-        #                                                                 tokenizer=tokenizer,
-        #                                                          userid=loop_usr_id)
-
-
-        # print(gr_score,depth_score)
-        # sys.exit()
-
-        # del(watermark_processor)
-        #start detect
-        
-        if args.detect_mode == 'normal':
-        
-            gr_score_list = []
-            depth_score_list=[]
-            max_sim = 0
-            max_sim_idx = -1
+        for p in range(1):
+            count+=1
+            print(f"{i}th prompt, {p}-th rand user: ")
+            if args.user_dist =='dense':
+                gen_id=random.randint(0, 2**args.user_magnitude-1)
+            userid = usr_list[gen_id]
+            input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
+                input_text,
+                args,
+                model=model,
+                device=device,
+                tokenizer=tokenizer,
+                userid=userid,
+                index=i)
             
-            for j in range(usr_list.shape[-1]):
-
-                loop_usr_id = usr_list[j]
-
-                with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
-                                                                                args,
-                                                                                device=device,
-                                                                                tokenizer=tokenizer,
-                                                                                userid=loop_usr_id)
-                # sim = compute_similarity(mark, loop_usr_id)
-                gr_score_list.append(gr_score)
-                depth_score_list.append(depth_score)
-                if gr_score> max_sim:
-                    max_sim = gr_score
-                    max_sim_idx = j
             
-            detect_range=len(usr_list)//10
-            mapped_gr_score=gr_score_list[gen_id]
-            mapped_depth_score=depth_score_list[gen_id]
-            # sim_result=np.zeros([2,detect_range])
-            gr_result=[]
-            depth_result=[]
-            id_result=[]
-            id_index=[]
-            # for r in range(detect_range): # sort with gr
-            #     sim = max(gr_score_list)
-            #     index = gr_score_list.index(sim)
-            #     gr_score_list[index] = -1
-            #     gr_result.append(sim)
-            #     depth_result.append(depth_score_list[index])
-            #     id_result.append(usr_list[index])
-            #     id_index.append(index)
-            # c_depth_result=copy.deepcopy(depth_result)
-            # final_index=[]
-            # # ipdb.set_trace()
-            # for r in range(detect_range): # sort with depth
-            #     sim = max(c_depth_result)
-            #     index = c_depth_result.index(sim)
-            #     c_depth_result[index] = -100
-            #     final_index.append(index)
+            ##Attack
+            if args.attack_ep==0:
+                pass
+            else:
+                decoded_output_with_watermark,skip=attack_process(decoded_output_with_watermark,epsilon=args.attack_ep)
+                if(skip==True):
+                    break
+
+
+
+            # loop_usr_id = userid
+            # with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector, _ = detect(decoded_output_with_watermark,
+            #                                                                 args,
+            #                                                                 device=device,
+            #                                                                 tokenizer=tokenizer,
+            #                                                          userid=loop_usr_id)
+
+
+            # print(gr_score,depth_score)
+            # sys.exit()
+
+            # del(watermark_processor)
+            #start detect
             
-            if args.gen_mode=='depth_d':
-
-                #sort with comb depth score
-                for r in range(detect_range): # sort with depth
-                    sim = max(depth_score_list)
-                    index = depth_score_list.index(sim)
-                    depth_score_list[index] = -100
-                    depth_result.append(sim)
-                    id_result.append(usr_list[index])
-                    gr_result.append(gr_score_list[index])
-                    id_index.append(index)
-
-                result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
-                if_succ_top1=0
-                if_succ_top3=0
-                if_succ_top10=0
-                
-                
-                
-                
-                
-                
-            elif args.gen_mode=='normal':
-                for r in range(detect_range): # sort with depth
-                    sim = max(gr_score_list)
-                    index = gr_score_list.index(sim)
-                    gr_score_list[index] = -100
-                    gr_result.append(sim)
-                    id_result.append(usr_list[index])
-                    id_index.append(index)
-
-                result_dic={"gr_score":gr_result[:10], "id":id_result[:10]}
-                if_succ_top1=0
-                if_succ_top3=0
-                if_succ_top10=0
-
-            if gen_id in id_index[:3]:
-                succ_num_top3 += 1
-                if_succ_top3=1
-
-            if gen_id in id_index[:1]:
-                succ_num_top1+=1
-                if_succ_top1=1
-                
-            if gen_id in id_index[:10]:
-                succ_num_top10+=1
-                if_succ_top10=1
-        
-        
-        if args.detect_mode == 'iterative':
-            detect_range=len(usr_list)//10
-            max_sim=-1
-            init_num=3
-            gr_score_list=[]
-            depth_score_list=[]
-            code_list=[]
-            ## append initial code
-            code_list.append(usr_list[0])
-            for j in range (init_num-1):
-                code_list.append(usr_list[(usr_list.shape[-1]//init_num)*(j+1)])
-            code_list.append(usr_list[-1])
-            for loop_usr_id in code_list:
-                with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
-                                                                                    args,
-                                                                                    device=device,
-                                                                                    tokenizer=tokenizer,
-                                                                                    userid=loop_usr_id)
-                gr_score_list.append((gr_score))
-                depth_score_list.append(depth_score)
-            max_sim=max(gr_score_list)
-            best_code = code_list[gr_score_list.index(max_sim)]
-            # change loop_usr_id 1 by 1
+            if args.detect_mode == 'normal':
             
-            stop=False
-            while (not stop):
-                previous_max_sim=max_sim
-                for j in range(len(best_code)):
-                    if j==0:
-                        loop_usr_id=str(1-int(best_code[j]))+best_code[j+1:]
-                    elif j==len(best_code)-1:
-                        loop_usr_id=best_code[:-1]+str(1-int(best_code[j]))
-                    else:
-                        loop_usr_id=best_code[:j]+str(1-int(best_code[j]))+best_code[j+1:]
-                    if loop_usr_id in code_list:
-                        continue
-                    else:
-                        code_list.append(loop_usr_id)
+                gr_score_list = []
+                depth_score_list=[]
+                max_sim = 0
+                max_sim_idx = -1
+                
+                for j in range(usr_list.shape[-1]):
+
+                    loop_usr_id = usr_list[j]
                     with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                     args,
                                                                                     device=device,
                                                                                     tokenizer=tokenizer,
                                                                                     userid=loop_usr_id)
-                    gr_score_list.append((gr_score))
+                                                                                    
+                    # sim = compute_similarity(mark, loop_usr_id)
+                    gr_score_list.append(gr_score)
                     depth_score_list.append(depth_score)
-                    if gr_score>max_sim:
-                        max_sim=gr_score
-                        best_code = code_list[gr_score_list.index(max_sim)]
-                if previous_max_sim==max_sim:
-                    stop=True
-                previous_max_sim=max_sim
-            
-            #calculate mapped sim
-            if userid in code_list:
-                mapped_gr_score=gr_score_list[code_list.index(userid)]
-                mapped_depth_score=depth_score_list[code_list.index(userid)]
-            else:
-                with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
-                                                                                    args,
-                                                                                    device=device,
-                                                                                    tokenizer=tokenizer,
-                                                                                    userid=userid)
-                mapped_gr_score=gr_score
-                mapped_depth_score=depth_score
-            
-            #diverge best code
-            top10pids=[best_code]
-            top10p_depth_score=[]
-            top10p_gr_score=[]
-            indicator=1
-            item=[i for i in range(len(best_code))]
-            while len(top10pids)<detect_range:
-                comb=[p for p in itertools.combinations(item,indicator)]
-                for c in comb:
-                    modi_code=best_code
-                    for j in c:
-                        if j==0:
-                            modi_code=str(1-int(modi_code[j]))+modi_code[j+1:]
-                        elif j==len(best_code)-1:
-                            modi_code=modi_code[:-1]+str(1-int(modi_code[j]))
-                        else:
-                            modi_code=modi_code[:j]+str(1-int(modi_code[j]))+modi_code[j+1:]
-                    top10pids.append(modi_code)
-                    if len(top10pids)>=detect_range:
-                        break
-                indicator+=1
+                    if gr_score> max_sim:
+                        max_sim = gr_score
+                        max_sim_idx = j
+                
+                detect_range=len(usr_list)//10
+                mapped_gr_score=gr_score_list[gen_id]
+                mapped_depth_score=depth_score_list[gen_id]
+                # sim_result=np.zeros([2,detect_range])
+                gr_result=[]
+                depth_result=[]
+                id_result=[]
+                id_index=[]
+                # for r in range(detect_range): # sort with gr
+                #     sim = max(gr_score_list)
+                #     index = gr_score_list.index(sim)
+                #     gr_score_list[index] = -1
+                #     gr_result.append(sim)
+                #     depth_result.append(depth_score_list[index])
+                #     id_result.append(usr_list[index])
+                #     id_index.append(index)
+                # c_depth_result=copy.deepcopy(depth_result)
+                # final_index=[]
+                # # ipdb.set_trace()
+                # for r in range(detect_range): # sort with depth
+                #     sim = max(c_depth_result)
+                #     index = c_depth_result.index(sim)
+                #     c_depth_result[index] = -100
+                #     final_index.append(index)
+                
+                if args.gen_mode=='depth_d':
 
-            # cal top10 percentage depth score
-            for loop_id in top10pids:
-                with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                    #sort with comb depth score
+                    for r in range(detect_range): # sort with depth
+                        sim = max(depth_score_list)
+                        index = depth_score_list.index(sim)
+                        depth_score_list[index] = -100
+                        depth_result.append(sim)
+                        id_result.append(usr_list[index])
+                        gr_result.append(gr_score_list[index])
+                        id_index.append(index)
+
+                    result_dic={"gr_score":gr_result[:10], "depth_score":depth_result[:10],"id":id_result[:10]}
+                    if_succ_top1=0
+                    if_succ_top3=0
+                    if_succ_top10=0
+                    
+                    
+                    
+                    
+                    
+                    
+                elif args.gen_mode=='normal':
+                    for r in range(detect_range): # sort with depth
+                        sim = max(gr_score_list)
+                        index = gr_score_list.index(sim)
+                        gr_score_list[index] = -100
+                        gr_result.append(sim)
+                        id_result.append(usr_list[index])
+                        id_index.append(index)
+
+                    result_dic={"gr_score":gr_result[:10], "id":id_result[:10]}
+                    if_succ_top1=0
+                    if_succ_top3=0
+                    if_succ_top10=0
+
+                if gen_id in id_index[:3]:
+                    succ_num_top3 += 1
+                    if_succ_top3=1
+
+                if gen_id in id_index[:1]:
+                    succ_num_top1+=1
+                    if_succ_top1=1
+                    
+                if gen_id in id_index[:10]:
+                    succ_num_top10+=1
+                    if_succ_top10=1
+            
+            
+            if args.detect_mode == 'iterative':
+                detect_range=len(usr_list)//10
+                max_sim=-1
+                init_num=3
+                gr_score_list=[]
+                depth_score_list=[]
+                code_list=[]
+                ## append initial code
+                code_list.append(usr_list[0])
+                for j in range (init_num-1):
+                    code_list.append(usr_list[(usr_list.shape[-1]//init_num)*(j+1)])
+                code_list.append(usr_list[-1])
+                for loop_usr_id in code_list:
+                    with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
                                                                                         args,
                                                                                         device=device,
                                                                                         tokenizer=tokenizer,
-                                                                                        userid=loop_id)
-                top10p_gr_score.append(gr_score)
-                top10p_depth_score.append(depth_score)
-                # ipdb.set_trace()
-                        
-            # calculate top10
-            detect_range=10
-            gr_result=[]
-            depth_result=[]
-            id_result=[]
-            id_index=[]
-            for r in range(detect_range):
-                sim = max(top10p_depth_score)
-                index = top10p_depth_score.index(sim)
-                gr_result.append(top10p_gr_score[index])
-                depth_result.append(top10p_depth_score[index])
-                top10p_depth_score[index] = -999999
-                id_result.append(top10pids[index])
+                                                                                        userid=loop_usr_id)
+                    gr_score_list.append((gr_score))
+                    depth_score_list.append(depth_score)
+                max_sim=max(gr_score_list)
+                best_code = code_list[gr_score_list.index(max_sim)]
+                # change loop_usr_id 1 by 1
+                
+                stop=False
+                while (not stop):
+                    previous_max_sim=max_sim
+                    for j in range(len(best_code)):
+                        if j==0:
+                            loop_usr_id=str(1-int(best_code[j]))+best_code[j+1:]
+                        elif j==len(best_code)-1:
+                            loop_usr_id=best_code[:-1]+str(1-int(best_code[j]))
+                        else:
+                            loop_usr_id=best_code[:j]+str(1-int(best_code[j]))+best_code[j+1:]
+                        if loop_usr_id in code_list:
+                            continue
+                        else:
+                            code_list.append(loop_usr_id)
+                        with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                        args,
+                                                                                        device=device,
+                                                                                        tokenizer=tokenizer,
+                                                                                        userid=loop_usr_id)
+                        gr_score_list.append((gr_score))
+                        depth_score_list.append(depth_score)
+                        if gr_score>max_sim:
+                            max_sim=gr_score
+                            best_code = code_list[gr_score_list.index(max_sim)]
+                    if previous_max_sim==max_sim:
+                        stop=True
+                    previous_max_sim=max_sim
+                
+                #calculate mapped sim
+                if userid in code_list:
+                    mapped_gr_score=gr_score_list[code_list.index(userid)]
+                    mapped_depth_score=depth_score_list[code_list.index(userid)]
+                else:
+                    with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                        args,
+                                                                                        device=device,
+                                                                                        tokenizer=tokenizer,
+                                                                                        userid=userid)
+                    mapped_gr_score=gr_score
+                    mapped_depth_score=depth_score
+                
+                #diverge best code
+                top10pids=[best_code]
+                top10p_depth_score=[]
+                top10p_gr_score=[]
+                indicator=1
+                item=[i for i in range(len(best_code))]
+                while len(top10pids)<detect_range:
+                    comb=[p for p in itertools.combinations(item,indicator)]
+                    for c in comb:
+                        modi_code=best_code
+                        for j in c:
+                            if j==0:
+                                modi_code=str(1-int(modi_code[j]))+modi_code[j+1:]
+                            elif j==len(best_code)-1:
+                                modi_code=modi_code[:-1]+str(1-int(modi_code[j]))
+                            else:
+                                modi_code=modi_code[:j]+str(1-int(modi_code[j]))+modi_code[j+1:]
+                        top10pids.append(modi_code)
+                        if len(top10pids)>=detect_range:
+                            break
+                    indicator+=1
 
+                # cal top10 percentage depth score
+                for loop_id in top10pids:
+                    with_watermark_detection_result, gr_score,depth_score, mark,watermark_detector,_ = detect(decoded_output_with_watermark,
+                                                                                            args,
+                                                                                            device=device,
+                                                                                            tokenizer=tokenizer,
+                                                                                            userid=loop_id)
+                    top10p_gr_score.append(gr_score)
+                    top10p_depth_score.append(depth_score)
+                    # ipdb.set_trace()
+                            
+                # calculate top10
+                detect_range=10
+                gr_result=[]
+                depth_result=[]
+                id_result=[]
+                id_index=[]
+                for r in range(detect_range):
+                    sim = max(top10p_depth_score)
+                    index = top10p_depth_score.index(sim)
+                    gr_result.append(top10p_gr_score[index])
+                    depth_result.append(top10p_depth_score[index])
+                    top10p_depth_score[index] = -999999
+                    id_result.append(top10pids[index])
+
+                
+                result_dic={"gr_score":gr_result, "depth_score":depth_result,"id":id_result[:10]}
+                if_succ_top1=0
+                if_succ_top3=0
+                if_succ_top10=0
+
+                if userid in id_result[:3]:
+                    succ_num_top3 += 1
+                    if_succ_top3=1
+
+                if userid == id_result[0]:
+                    succ_num_top1+=1
+                    if_succ_top1=1
+                
+                if userid in id_result[:10]:
+                    succ_num_top10+=1
+                    if_succ_top10=1
+
+                total_detect_len+=len(gr_score_list)
             
-            result_dic={"gr_score":gr_result, "depth_score":depth_result,"id":id_result[:10]}
-            if_succ_top1=0
-            if_succ_top3=0
-            if_succ_top10=0
 
-            if userid in id_result[:3]:
-                succ_num_top3 += 1
-                if_succ_top3=1
-
-            if userid == id_result[0]:
-                succ_num_top1+=1
-                if_succ_top1=1
-            
-            if userid in id_result[:10]:
-                succ_num_top10+=1
-                if_succ_top10=1
-
-            total_detect_len+=len(gr_score_list)
-        
-
-        pd.get_option('display.width')
-        pd.set_option('display.width', 500)
-        pd.set_option('display.max_columns', None)
-        print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, if top10 succ: {if_succ_top10},time used: {time.time() - start_time}")
-        if args.gen_mode=="depth_d":
-            print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}")
-        else:
-            print(f"gen id {userid}, mapped gr {mapped_gr_score}")
-        print(DataFrame(result_dic).T)
-        print(f"top1 succ rate: {succ_num_top1}/{i+1},top3 succ rate: {succ_num_top3}/{i+1}, top10 succ rate: {succ_num_top10}/{i+1} \n")
-        if args.detect_mode=='iterative':
-            print("userlist len:",usr_list.shape[-1],"detect list len:",len(gr_score_list),'average detect list len:',total_detect_len/(i+1))
-
-        save_file_name=f"./results/comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_d{args.detect_mode}_g{args.gen_mode}_mag{args.user_magnitude}.txt"
-        with open(save_file_name, "a+") as f:
-            print(f"exp  {i}, if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} , if top10 succ: {if_succ_top10},time used: {time.time() - start_time}",file=f)
+            pd.get_option('display.width')
+            pd.set_option('display.width', 500)
+            pd.set_option('display.max_columns', None)
+            print(f"prompt {i}, {p}-th rand user; if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3}, if top10 succ: {if_succ_top10},time used: {time.time() - start_time}")
             if args.gen_mode=="depth_d":
-                print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}",file=f)
+                print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}")
             else:
-                print(f"gen id {userid}, mapped gr {mapped_gr_score}",file=f)
-            print(DataFrame(result_dic).T,file=f)
-            print(f"top1 succ rate: {succ_num_top1}/{i+1},top3 succ rate: {succ_num_top3}/{i+1} ,top10 succ rate: {succ_num_top10}/{i+1} \n",file=f)
+                print(f"gen id {userid}, mapped gr {mapped_gr_score}")
+            print(DataFrame(result_dic).T)
+            print(f"top1 succ rate: {succ_num_top1}/{count},top3 succ rate: {succ_num_top3}/{count}, top10 succ rate: {succ_num_top10}/{count} \n")
             if args.detect_mode=='iterative':
-                print(f"userlist len:{usr_list.shape[-1]}, detect list len:,{len(gr_score_list)}, average detect list len: {total_detect_len/(i+1)}\n",file=f)
-            print(f"data saved in {save_file_name}")
-            f.close()
+                print("userlist len:",usr_list.shape[-1],"detect list len:",len(gr_score_list),'average detect list len:',total_detect_len/(count))
+
+            save_file_name=f"./results/comb_score_d{args.user_dist}_m{args.model_name_or_path.split('/')[1]}_d{args.delta}_l{args.max_new_tokens}_mag{args.user_magnitude}_{args.dataset}_attack{args.attack_ep}.txt"
+            with open(save_file_name, "a+") as f:
+                print(f"prompt {i}, {p}-th rand user; if top1 succ: {if_succ_top1} ,if top3 succ: {if_succ_top3} , if top10 succ: {if_succ_top10},time used: {time.time() - start_time}",file=f)
+                if args.gen_mode=="depth_d":
+                    print(f"gen id {userid}, mapped depth {mapped_depth_score}, mapped gr {mapped_gr_score}",file=f)
+                else:
+                    print(f"gen id {userid}, mapped gr {mapped_gr_score}",file=f)
+                print(DataFrame(result_dic).T,file=f)
+                print(f"top1 succ rate: {succ_num_top1}/{count},top3 succ rate: {succ_num_top3}/{count} ,top10 succ rate: {succ_num_top10}/{count} \n",file=f)
+                if args.detect_mode=='iterative':
+                    print(f"userlist len:{usr_list.shape[-1]}, detect list len:,{len(gr_score_list)}, average detect list len: {total_detect_len/(count)}\n",file=f)
+                print(f"data saved in {save_file_name}")
+                f.close()
         
 
 
@@ -911,6 +888,8 @@ def testppl(args):
 
         term_width = 80
 
+        
+        
         input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
             input_text,
             args,
@@ -919,6 +898,24 @@ def testppl(args):
             tokenizer=tokenizer,
             userid=userid,
             index=i)
+        
+        
+        
+        for i in range(10):
+            # gen_id=random.randint(0, 127)
+            userid=usr_list[gen_id]
+            input_token_num, output_token_num, _, _, decoded_output_without_watermark, decoded_output_with_watermark, watermark_processor,_ = generate(
+                input_text,
+                args,
+                model=model,
+                device=device,
+                tokenizer=tokenizer,
+                userid=userid,
+                index=i)
+            print(i,"-th",decoded_output_with_watermark)
+            # print(i,"-th",decoded_output_without_watermark)
+        print(decoded_output_without_watermark)
+        
         
         # ppl evaluation
         sys.path.append("/ssddata1/user03/identification/lm-watermarking/experiments")
@@ -962,7 +959,7 @@ def testppl(args):
         result_wm[i]=ppl_wm
         result_bl[i]=ppl_bl
         print(baseline_output_wm)
-        print(ppl_bl,ppl_wm ,args.delta,args.max_new_tokens)
+        print(f"baseline ppl{ppl_bl}, delta={args.delta}, watermarked ppl{ppl_wm}")
         
     
         # sys.exit()

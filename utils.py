@@ -2,21 +2,24 @@ import pickle
 import numpy as np
 import ipdb
 import torch
+import math
 def gen_usr_list_dense():
     """
     generate fdense-user-watermark file
     :return: usr_list_dense.pkl
     """
 
-    magnitude=10
-    usr_list=np.empty([2**magnitude], dtype = '<U16', order = 'C')
+    magnitude=18
+    usr_list=np.empty([2**magnitude], dtype = '<U256', order = 'C')
     for i in range(2**magnitude):
         s_bin=bin(i)
+        
         s_bin=s_bin.split('b')[1]
         while len(s_bin)<magnitude:
             s_bin='0'+s_bin
         usr_list[i]=s_bin
     # print(usr_list[19])
+    # ipdb.set_trace()
     pickle.dump(usr_list, open(f"usr_list_dense_mag{magnitude}.pkl", 'wb'))
 
 def gen_usr_list_sparse():
@@ -47,7 +50,7 @@ def gen_usr_list_continous():
 def read_usr_list(user_dist,mag):
     with open(f"usr_list_{user_dist}_mag{mag}.pkl", 'rb') as fo:
         usr_list = pickle.load(fo, encoding='bytes')
-        # print(usr_list)
+        # print(usr_list.shape)
     # print(usr_list[19])
     return usr_list
 
@@ -70,9 +73,16 @@ def group_usr_list(user_dist):
     res=np.array(res)
     pickle.dump(res, open(f"usr_list_{user_dist}_grp{grp_num}.pkl", 'wb'))
 
-        
+def cal_attenuation(code): 
+    magnitude=len(code)
+    attenuation_list=[0.2,0.5,0.7,0.9]
+    idx=int(code,2)/2**magnitude
+    attenuation=attenuation_list[math.floor(idx*4)] 
+    # print(code,attenuation,math.floor(idx*4))
+    return attenuation,math.floor(idx*4)
 
 gen_usr_list_dense()
-# read_usr_list()
-# group_usr_list('dense')
+# print(cal_attenuation('10000'))
+# read_usr_list('dense',14)
+
 # gen_usr_list_continous()

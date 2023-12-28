@@ -117,7 +117,7 @@ def Discrete_d_Feasibility_test():
     greenlist_size=V//2
     vocab_permutation = torch.randperm(V, device=device)
     
-    attenuation=0.9
+    attenuation=0.8
     discrete_depth=args.depth
     discrete_length=greenlist_size//discrete_depth
     
@@ -129,7 +129,7 @@ def Discrete_d_Feasibility_test():
     ct=0
     for file_name in os.listdir(root_path): 
         ct+=1
-        if ct>=500:
+        if ct>=2000:
             break
         greenlist_ids = vocab_permutation[:greenlist_size]
         d_masks=[]
@@ -170,7 +170,7 @@ def Discrete_d_Feasibility_test():
                     if s in d_masks[j]:
                         depth_hit[j]+=1
         total_s+=length
-        print(f"[{ct}]-th sentence, green hit: [{green_hit/total_s}], depth_hit:{(depth_hit/green_hit)}")
+        print(f"[{ct}]-th sentence, green hit: [{green_hit/total_s}], depth_hit:{(depth_hit/green_hit)},attenuation={attenuation}")
                  
 class User_delta(nn.Module):
     def __init__(self, code_size, hidden_size,voc_size):
