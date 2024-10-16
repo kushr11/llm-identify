@@ -1,5 +1,5 @@
 # Where Am I From? Identifying Origin of LLM-generated Content
----
+--
 Official Implementation of 'Where Am I From? Identifying Origin of LLM-generated Content'
 
 
