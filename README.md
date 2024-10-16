@@ -1,7 +1,6 @@
-# User guide for llm identification
-
-Official Implementation of 'Where Am I From? Identifying Origin of LLM-generated Content'
+# Where Am I From? Identifying Origin of LLM-generated Content
 ---
+Official Implementation of 'Where Am I From? Identifying Origin of LLM-generated Content'
 
 
 
@@ -10,7 +9,7 @@ Setting up the environment : python 3.9 is recommended
 ```sh
 pip install -r requirments.txt
 ```
-## Useage
+## Usage:
 To generate userlist, please run `gen_usr_list_dense()` in utils.py, modify 'magnitude' to control user pool size.
 
 To generate and detect watermark:
